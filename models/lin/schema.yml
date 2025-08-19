@@ -1,0 +1,21 @@
+
+version: 2
+
+models:
+  - name: lin_creer_vue_dept19
+    description: "Filtre des données régionale sur le dept 19"
+    columns:
+      - name: id
+        description: "Clé primaire interne OTV"
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        description: "Clé primaire IGN"
+        data_tests:
+          - unique
+          - not_null
+      - name: dept
+        description: "Code du département sur 2 chiffres"
+        data_tests:
+          - not_null
