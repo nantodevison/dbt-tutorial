@@ -1,1 +1,0 @@
-{{ create_vue_dept_annee(2024, '19') }}

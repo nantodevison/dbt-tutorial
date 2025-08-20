@@ -1,4 +1,4 @@
-{% macro create_vue_dept_annee(annee, dept) %}
+{% macro creer_vue_dept_annee(annee=var('annee'), dept=var('dept')) %}
 {% set annee_str = annee | string %} 
 
 SELECT * 

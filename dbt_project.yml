@@ -25,6 +25,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # variables du projet
 vars:
   nature_verif: ('Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier')
+  annee: 2024
+  dept: '19'
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -33,8 +35,7 @@ vars:
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-  annee2024:
     dept19:
       lin:
-        # Config indicated by + and applies to all files under models/2024/dept19/lin
+        # Config indicated by + and applies to all files under models/dept19/lin
         +materialized: view

@@ -1,7 +1,7 @@
 
 version: 2
 
-models\annee2024\dept19\lin:
+models\dept19\lin:
     - name: lin_creer_vue_dept19
       description: "Filtre des données régionale sur le dept 19"
       columns:
