@@ -1,0 +1,9 @@
+
+version: 2
+
+models:
+  - name: lin_verif_nbpt_lgkm_19
+    columns:
+      - name: nb_pt
+        data_tests:
+          - not_null

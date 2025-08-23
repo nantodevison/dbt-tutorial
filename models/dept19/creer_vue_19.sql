@@ -4,4 +4,6 @@
     alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ annee_str_sfx ~ '_l'
 ) }}
 
-{{ creer_vue_dept_annee() }}
+SELECT * 
+FROM {{source('traf_2024', 'traf2024_bdt_na_ed24_l')}}
+WHERE dept='{{ var('dept') }}'

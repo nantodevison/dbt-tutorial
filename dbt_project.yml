@@ -35,7 +35,5 @@ vars:
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-    dept19:
-      lin:
-        # Config indicated by + and applies to all files under models/dept19/lin
-        +materialized: view
+  test_otv:    # Nom du projet
+    +materialized: view
