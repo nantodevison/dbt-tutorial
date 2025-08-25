@@ -7,3 +7,10 @@ models:
       - name: nb_pt
         data_tests:
           - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: sum_lg_km
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0

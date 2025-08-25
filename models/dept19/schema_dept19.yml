@@ -7,3 +7,8 @@ models:
         data_tests:
           - unique
           - not_null
+      - name: nature
+        data_tests:
+          - not_null
+          - accepted_values:
+                values: "{{ var('nature_verif') }}" # ça plus tard j'aimerait le faire pointer vers la variable de projet nature_verif
