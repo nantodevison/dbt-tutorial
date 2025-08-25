@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: traf_2024
+    database: test_dbt  
+    schema: lineaire  
+    tables:
+      - name: traf2024_bdt_na_ed24_l

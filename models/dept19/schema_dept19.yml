@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: creer_vue_19
+    description: "BdTopo des routes du département 19"
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        data_tests:
+          - unique
+          - not_null  
+      - name: nature
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Sentier','Bac ou liaison maritime','Bretelle','Chemin', 'Escalier', 'Piste cyclable', 'Rond-point', 'Route à 1 chaussée', 'Route à 2 chaussées', 'Route empierrée', 'Type autoroutier']
+      - name: sens
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Double sens','Sens direct','Sens inverse','Sans objets']
+              description: "Verifier que IGN n'a pas changé ses valeurs de *sens*"
+      - name: dept
+        data_tests:
+          - not_null
+      - name: long_km
+        data_tests:
+          - not_null
