@@ -9,7 +9,7 @@ from
             gestion gestionaire,
             '_{{annee}}' annee
         from
-            lineaire.traf{{annee}}_bdt{{dept}}_ed{{annee_str[-2:]}}_l
+            {{ref('creer_vue_' ~ var('dept'))}}
         order by
             gestion
     )

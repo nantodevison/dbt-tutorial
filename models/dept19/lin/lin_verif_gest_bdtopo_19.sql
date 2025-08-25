@@ -11,9 +11,9 @@ from
     (
         select distinct
             gestion gestionaire,
-            '_{{annee}}' annee
+            '_{{var('annee')}}' annee
         from
-            lineaire.traf{{annee_str}}_bdt{{var('dept')}}_ed{{annee_str[-2:]}}_l
+            {{ref('creer_vue_' ~ var('dept'))}}
         order by
             gestion
     )

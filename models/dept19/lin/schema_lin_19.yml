@@ -3,6 +3,7 @@ version: 2
 
 models:
   - name: lin_verif_nbpt_lgkm_19
+    description: "Vérification du nombre de points de comptage et de la longueur totale linéarisée à partir de ceux-ci"
     columns:
       - name: nb_pt
         data_tests:
@@ -14,3 +15,49 @@ models:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 0
+  - name: lin_verif_nature_19
+    description: "Vérification des valeurs prise par l'attribut nature. Chercher valeurs aberrantes (sentier, routes empierree...)"
+    columns:
+      - name: coment_cpt
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['estimation', 'linearisation']
+              description: "Vérifier que les valeurs de l'attribut nature sont valides"
+      - name: nature
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Sentier','Chemin', 'Route empierrée'] # passer ça ailleur dans une variable plus tard
+              description: "Vérifier que les valeurs de l'attribut nature sont celles attendues, i.e pas les plus communes, mais pas non plus les plus louches (genre *Bac ou liaison maritime*)"
+      - name: sum_lg_km
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              description: "Vérifier que moins de 1km est en nature inattendue"
+      - name: cnt
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              description: "Vérifier que si une nature est inattendue, au moins 1 tronçon est concerné"
+  - name: lin_verif_gest_bdtopo_19
+    description: "Vérification des valeurs du champs gestionaire"
+    columns:
+      - name: gestionaire
+        data_tests:
+          - relationships:
+              to: ref('lin_verif_gest_bdtopo_19_n_1')
+              field: gestionaire
+      - name: id
+        data_tests:
+          - not_null
+          - unique
+      - name: annee
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: '^_\d{4}$'
+              description: "Vérifier que l'année est au format _YYYY"

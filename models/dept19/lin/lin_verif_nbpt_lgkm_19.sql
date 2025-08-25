@@ -6,7 +6,7 @@
 
 select count(distinct id_comptag) as nb_pt,
        round(sum(long_km)::numeric) as sum_lg_km
-from lineaire.traf{{ annee_str }}_bdt{{ var('dept') }}_ed{{ annee_str[-2:] }}_l
+from {{ref('creer_vue_' ~ var('dept'))}}
 where id_comptag is not null
 
 {#  on peut aussi faire appel à la macro dédiée. 
