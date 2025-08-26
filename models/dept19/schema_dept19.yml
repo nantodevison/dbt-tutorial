@@ -5,27 +5,33 @@ models:
     description: "BdTopo des routes du département 19"
     columns:
       - name: id
+        description: "Identifiant unique interne OTR généré automatiquement"
         data_tests:
           - unique
           - not_null
       - name: id_ign
+        description: "Identifiant unique IGN"
         data_tests:
           - unique
           - not_null  
       - name: nature
+        description: "Nature de la route selon IGN"
         data_tests:
           - not_null
           - accepted_values:
               values: ['Sentier','Bac ou liaison maritime','Bretelle','Chemin', 'Escalier', 'Piste cyclable', 'Rond-point', 'Route à 1 chaussée', 'Route à 2 chaussées', 'Route empierrée', 'Type autoroutier']
       - name: sens
+        description: "Sens de circulation selon IGN"
         data_tests:
           - not_null
           - accepted_values:
               values: ['Double sens','Sens direct','Sens inverse','Sans objets']
               description: "Verifier que IGN n'a pas changé ses valeurs de *sens*"
       - name: dept
+        description: "Code du département sur 2 chiffres"
         data_tests:
           - not_null
       - name: long_km
+        description: "Longueur du tronçon en km"
         data_tests:
           - not_null
