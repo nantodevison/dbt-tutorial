@@ -2,7 +2,28 @@ version: 2
 
 sources:
   - name: traf_2024
+    description: > 
+      Fichier de ligne BdTopo Thème transport mars 2024 
+      [troncon_de_route](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+      Attention, dans le cadre du test dbt, cette doc donne un exemlpe, mais en réalité il y a tout un traitement pour transformer le fichier IGN vers 
+      la table traf_2024
     database: test_dbt  
     schema: lineaire  
     tables:
       - name: traf2024_bdt_na_ed24_l
+  - name: dept_2024
+    description: >
+      Fichier de surfaces BdTopo Thème administratif mars 2024 
+      [departement](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+      Décrit les département de Nouvelle-Aquitaine uniquement
+    database: test_dbt  
+    schema: aire  
+    tables: dpt_bdt_na_ed24_s
+  - name: comm_2024
+    description: >
+      Fichier de surfaces BdTopo Thème administratif mars 2024 
+      [commune](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+      Décrit les département de Nouvelle-Aquitaine uniquement
+    database: test_dbt  
+    schema: aire  
+    tables: com_bdt_na_ed24_s
