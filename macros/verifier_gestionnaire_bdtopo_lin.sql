@@ -1,4 +1,4 @@
-{% macro verifier_gestionnaire_bdtopo_lin(annee=var('annee'), dept=var('dept'), schema='lineaire') %}
+{% macro verifier_gestionnaire_bdtopo_lin(annee=var('annee'), dept=var('dept')) %}
 {% set annee_str = annee | string %} 
 select
     t.*,
@@ -9,7 +9,7 @@ from
             gestion gestionaire,
             '_{{annee}}' annee
         from
-            {{ref('creer_vue_' ~ var('dept'))}}
+            {{ref('creer_vue_' ~ dept)}}
         order by
             gestion
     ) as t

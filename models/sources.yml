@@ -11,19 +11,30 @@ sources:
     schema: lineaire  
     tables:
       - name: traf2024_bdt_na_ed24_l
-  - name: dept_2024
+  - name: admi_2024
     description: >
-      Fichier de surfaces BdTopo Thème administratif mars 2024 
-      [departement](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
-      Décrit les département de Nouvelle-Aquitaine uniquement
+      Fichiers de surfaces BdTopo Thème administratif mars 2024 
+      [departement et commune](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+      Décrit les départements et communes de Nouvelle-Aquitaine uniquement
     database: test_dbt  
     schema: aire  
-    tables: dpt_bdt_na_ed24_s
-  - name: comm_2024
+    tables: 
+      - name: dpt_bdt_na_ed24_s
+        description: "Table des départements."
+      - name: com_bdt_na_ed24_s
+        description: "Table des communes."
+  - name: cptg
     description: >
-      Fichier de surfaces BdTopo Thème administratif mars 2024 
-      [commune](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
-      Décrit les département de Nouvelle-Aquitaine uniquement
-    database: test_dbt  
-    schema: aire  
-    tables: com_bdt_na_ed24_s
+      Ensemble des tables et vues décrivant les comptages routiers présents dans OTR.
+      Contient les tables compteur, comptage, indic_agrege et une vue 'vue_compteur_last_annee_know_tmja_pc_pl'.
+    database: test_dbt
+    schema: comptage
+    tables:
+      - name: compteur
+        description: "Table des compteurs routiers, contient la géolocalisation"
+      - name: comptage
+        description: "Table des comptages réalisés sur les compteurs. 1 comptage par annéeet par compteur"
+      - name: indic_agrege
+        description: "Table des indicateurs agrégés issus des comptages, 1 ligne par comptage et indicateur"
+      - name: vue_compteur_last_annee_know_tmja_pc_pl
+        description: "Vue synthétique des compteurs avec la dernière année connue pour tmja, pc_pl"
