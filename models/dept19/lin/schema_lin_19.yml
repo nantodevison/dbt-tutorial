@@ -17,7 +17,9 @@ models:
           - dbt_utils.accepted_range:
               min_value: 0
   - name: lin_verif_nature_19
-    description: "Vérification des valeurs prise par l'attribut nature. Chercher valeurs aberrantes (sentier, routes empierree...)"
+    description: >
+      Vérification des valeurs prise par l'attribut nature. Cherche les valeurs aberrantes (sentier, routes empierree...).
+      Ce modèle utilise les données de [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19).
     columns:
       - name: coment_cpt
         description: "nature de la linéarisation parmi *estimation* ou *linearisation*"
@@ -49,7 +51,10 @@ models:
               min_value: 1
               description: "Vérifier que si une nature est inattendue, au moins 1 tronçon est concerné"
   - name: lin_verif_gest_bdtopo_19
-    description: "Vérification des valeurs du champs gestionaire"
+    description: >
+      Vérification des valeurs du champs gestionaire. 
+      Ce modèle référence les valeurs de [`lin_verif_gest_bdtopo_19_n_1`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19_n_1) 
+      et [`lin_verif_gest_bdtopo_compare_19`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_compare_19).
     columns:
       - name: gestionaire
         description: "Valeur BdTopo des gestionnaires"
@@ -69,10 +74,25 @@ models:
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: '^_\d{4}$'
               description: "Vérifier que l'année est au format _YYYY"
+  - name: lin_verif_gest_bdtopo_19_n_1
+    description: >
+      Ce modèle sert de base à la comparaison des gestionnaires présents dans la bdtopo, 
+      en fournissant les gestionnaires de l'année précédente à celle étudiée. 
+      Il est basé sur la macro `verifier_gestionnaire_bdtopo_lin` (qui s'appuie sur le modèle 
+      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) lui même issu de la macro `creer_vue_dept_annee`) 
+      et sert de référence au test de relationship du modèle [`lin_verif_gest_bdtopo_19`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19).
+    columns:
+      - name: gestionaire
+        description: "Gestionnaire de la voie selon la BDTopo IGN"
+      - name: annee
+        description: "Année de référence des données (_YYYY)"
+      - name: id
+        description: "Identifiant unique généré automatiquement"
   - name: lin_verif_dept_limitrophe_19
     description: >
       Ce modèle retourne la liste des départements limitrophes au département 19 (Corrèze),
-      en excluant les départements de la région Nouvelle-Aquitaine. Il utilise les géométries
+      en excluant les départements de la région Nouvelle-Aquitaine. Il est utilisé par le modèle [`lin_verif_cptg_limitrophe_19`](/#!/model/model.test_otv.lin_verif_cptg_limitrophe_19)
+      pour vérifier les comptages existants. Il utilise les géométries
       des communes et départements pour déterminer la contiguïté spatiale. Ils servent ensuite à vérifier si des comptages
       existent sur ces départements
     columns:
@@ -86,7 +106,7 @@ models:
               description: "Doit contenir uniquement les codes INSEE des départements limitrophes à la Corrèze (hors Nouvelle-Aquitaine), codés sur 2 chiffres."
   - name: lin_verif_cptg_limitrophe_19
     description: >
-      Ce modèle permet de vérifier les comptages présents en base de données pour les départements limitrophes à la Corrèze (19),
+      Ce modèle permet de vérifier les comptages présents en base de données pour les départements limitrophes à la Corrèze (19) (défini dans [`lin_verif_dept_limitrophe_19`](/#!/model/model.test_otv.lin_verif_dept_limitrophe_19)),
       mais en dehors des départements de la région Nouvelle-Aquitaine
 
       Sources web complémentaires pour certains départements limitrophes :
@@ -116,3 +136,13 @@ models:
         description: "Géométrie du point de comptage "
       - name: gestionnai
         description: "gestionnaire du point de comptage."
+  - name: lin_verif_gest_bdtopo_compare_19
+    description: >
+      Ce modèle permet une comparaison facilitée des résultats des modèles 
+      [`lin_verif_gest_bdtopo_19`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19) et 
+      [`lin_verif_gest_bdtopo_19_n_1`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19_n_1).
+    columns:
+      - name: gestionnaire_annee_n
+        description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N"
+      - name: gestionnaire_annee_2
+        description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N-1"
