@@ -9,13 +9,15 @@ models:
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
+              arguments:
+                min_value: 0
       - name: sum_lg_km
         description: "Longueur totale linéarisée en km"
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
+              arguments:
+                min_value: 0
   - name: lin_verif_nature_19
     description: >
       Vérification des valeurs prise par l'attribut nature. Cherche les valeurs aberrantes (sentier, routes empierree...).
@@ -26,30 +28,34 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: ['estimation', 'linearisation']
-              description: "Vérifier que les valeurs de l'attribut nature sont valides"
+              arguments:
+                values: ['estimation', 'linearisation']
+                description: "Vérifier que les valeurs de l'attribut nature sont valides"
       - name: nature
         description: "nature bdTopo louche parmi *Sentier*, *Chemin*, *Route empierrée*"
         data_tests:
           - not_null
           - accepted_values:
-              values: ['Sentier','Chemin', 'Route empierrée'] # passer ça ailleur dans une variable plus tard
-              description: "Vérifier que les valeurs de l'attribut nature sont celles attendues, i.e pas les plus communes, mais pas non plus les plus louches (genre *Bac ou liaison maritime*)"
+              arguments:
+                values: ['Sentier','Chemin', 'Route empierrée'] # passer ça ailleur dans une variable plus tard
+                description: "Vérifier que les valeurs de l'attribut nature sont celles attendues, i.e pas les plus communes, mais pas non plus les plus louches (genre *Bac ou liaison maritime*)"
       - name: sum_lg_km
         description: "Longueur totale linéarisée en km"
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1
-              description: "Vérifier que moins de 1km est en nature inattendue"
+              arguments:
+                min_value: 0
+                max_value: 1
+                description: "Vérifier que moins de 1km est en nature inattendue"
       - name: cnt
         description: "Nombre de tronçons concernés par la nature inattendue"
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 1
-              description: "Vérifier que si une nature est inattendue, au moins 1 tronçon est concerné"
+              arguments:
+                min_value: 1
+                description: "Vérifier que si une nature est inattendue, au moins 1 tronçon est concerné"
   - name: lin_verif_gest_bdtopo_19
     description: >
       Vérification des valeurs du champs gestionaire. 
@@ -60,8 +66,9 @@ models:
         description: "Valeur BdTopo des gestionnaires"
         data_tests:
           - relationships:
-              to: ref('lin_verif_gest_bdtopo_19_n_1')
-              field: gestionaire
+              arguments:
+                to: ref('lin_verif_gest_bdtopo_19_n_1')
+                field: gestionaire
       - name: id
         description: "Identifiant unique généré automatiquement"
         data_tests:
@@ -72,8 +79,9 @@ models:
         data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
-              regex: '^_\d{4}$'
-              description: "Vérifier que l'année est au format _YYYY"
+              arguments:
+                regex: '^_\d{4}$'
+                description: "Vérifier que l'année est au format _YYYY"
   - name: lin_verif_gest_bdtopo_19_n_1
     description: >
       Ce modèle sert de base à la comparaison des gestionnaires présents dans la bdtopo, 

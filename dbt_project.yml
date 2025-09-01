@@ -29,6 +29,9 @@ vars:
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']
 
+# configurations supplémentaires
+flags:
+  require_generic_test_arguments_property: True
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
