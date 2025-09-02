@@ -1,28 +1,41 @@
 version: 2
 
 sources:
-  - name: traf_2024
+  - name: traf
     description: > 
-      Fichier de ligne BdTopo Thème transport mars 2024 
-      [troncon_de_route](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
-      Attention, dans le cadre du test dbt, cette doc donne un exemlpe, mais en réalité il y a tout un traitement pour transformer le fichier IGN vers 
-      la table traf_2024
+      Fichier de ligne BdTopo Thème transport 
     database: test_dbt  
     schema: lineaire  
     tables:
       - name: traf2024_bdt_na_ed24_l
-  - name: admi_2024
+        description: >
+          Table des tronçons de route mars 2024 
+          [troncon_de_route](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+          Attention, dans le cadre du test dbt, cette doc donne un exemlpe, mais en réalité il y a tout un traitement pour transformer le fichier IGN vers 
+          la table traf_2024
+      - name: traf2023_bdt_na_ed23_l
+        description: >
+          Table des tronçons de route mars ou septembre 2023 
+          Attention, dans le cadre du test dbt, cette doc donne un exemlpe, mais en réalité il y a tout un traitement pour transformer le fichier IGN vers 
+          la table traf_2023
+  - name: admi
     description: >
-      Fichiers de surfaces BdTopo Thème administratif mars 2024 
-      [departement et commune](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
-      Décrit les départements et communes de Nouvelle-Aquitaine uniquement
+      Fichiers de surfaces BdTopo Thème administratif
     database: test_dbt  
     schema: aire  
     tables: 
       - name: dpt_bdt_na_ed24_s
-        description: "Table des départements."
+        description: >
+          Table des départements.
+          mars 2024 
+          [departement et commune](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+          Décrit les départements et communes de Nouvelle-Aquitaine uniquement
       - name: com_bdt_na_ed24_s
-        description: "Table des communes."
+        description: >
+          Table des communes
+          mars 2024 
+          [departement et commune](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
+          Décrit les départements et communes de Nouvelle-Aquitaine uniquement
   - name: cptg
     description: >
       Ensemble des tables et vues décrivant les comptages routiers présents dans OTR.

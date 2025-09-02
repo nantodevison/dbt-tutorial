@@ -25,6 +25,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # variables du projet
 vars:
   nature_verif: ('Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier')
+  importance_verif: ['1','2','3', '4', '5', '6']
   annee: 2024
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']

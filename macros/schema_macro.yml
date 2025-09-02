@@ -83,4 +83,16 @@ macros:
         description: "Année des données (par défaut: variable projet 'annee')"
       - name: dept
         type: string
-        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_attr_modif_bdtopo_lin
+    description: >
+      Compare les attributs (importance, numero, obs_supl) des tronçons routiers d'un millésimes de la BDTopo avec le précédent
+      là où des variation d'attribut ont été détectées (analyse de l'attribut attr_modif).
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année des données (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

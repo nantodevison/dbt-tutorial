@@ -2,7 +2,7 @@
 {% set annee_str = annee | string %} 
 
 SELECT * 
-FROM {{source('traf_' ~ annee_str, 'traf' ~ annee_str ~ '_bdt_na_ed' ~ annee_str[-2:] ~ '_l')}}
+FROM {{source('traf', 'traf' ~ annee_str ~ '_bdt_na_ed' ~ annee_str[-2:] ~ '_l')}}
 WHERE dept='{{ dept }}'
 
 {% endmacro %}

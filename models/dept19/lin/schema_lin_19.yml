@@ -154,3 +154,54 @@ models:
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N"
       - name: gestionnaire_annee_2
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N-1"
+  - name: lin_verif_attr_modif_19
+    description: >
+      Ce modèle met en evidence les attributs (`nature`, `coment_cpt`, `numero`, 
+      `importance`, `obs_supl`) des tronçons routiers d'un millésime 
+      de la BDTopo dont certains attributs varient avec le millésime précédent
+       (analyse de l'attribut `attr_modif`, traduction de variation sur `importance` et `numero`). 
+       Il est basé sur la macro `verifier_attr_modif_bdtopo_lin`.
+    columns:
+      - name: id_ign
+        description: "Identifiant IGN du tronçon"
+        data_tests:
+          - not_null
+          - unique
+      - name: nature
+        description: "nature selon la BdTopo"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier'] # a remplacer par une variable
+      - name: coment_cpt
+        description: "Valeur de l'attribut dans le millésime précédent"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['linearisation','estimation'] # a remplacer par une variable
+      - name: id_comptag # tests à rédiger : not_null si coment_cpt = linearisation, null si coment_cpt=estimation
+        description: "Identifiant du compteur"
+      - name: num_n
+        description: "numero du millésime actuel de la route selon la BdTopo"
+      - name: num_n_1
+        description: "numero du millésime précédent de la route selon la BdTopo"
+      - name: imp_n
+        description: "importance du millésime actuel selon la BdTopo"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['1','2','3', '4', '5', '6'] # a remplacer par une variable
+      - name: imp_n_1
+        description: "importance du millésime précédent selon la BdTopo"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['1','2','3', '4', '5', '6'] # a remplacer par une variable
+      - name: obs_n
+        description: "Observations supplémentaires millésime actuel"
+      - name: obs_n_1
+        description: "Observations supplémentaires millésime précédent"
