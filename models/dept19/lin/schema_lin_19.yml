@@ -160,7 +160,7 @@ models:
       `importance`, `obs_supl`) des tronçons routiers d'un millésime 
       de la BDTopo dont certains attributs varient avec le millésime précédent
        (analyse de l'attribut `attr_modif`, traduction de variation sur `importance` et `numero`). 
-       Il est basé sur la macro `verifier_attr_modif_bdtopo_lin`.
+       Il est basé sur la macro [`verifier_attr_modif_bdtopo_lin`](/#!/macro/macro.test_otv.verifier_attr_modif_bdtopo_lin).
     columns:
       - name: id_ign
         description: "Identifiant IGN du tronçon"
