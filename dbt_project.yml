@@ -32,6 +32,8 @@ vars:
 # configurations supplémentaires
 flags:
   require_generic_test_arguments_property: True
+  validate_macro_args: True
+  require-dbt-version: '>=1.10.5'
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models

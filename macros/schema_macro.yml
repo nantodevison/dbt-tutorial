@@ -1,0 +1,86 @@
+version: 2
+
+macros:
+  - name: create_vue_dept_annee
+    description: >
+      Crée une vue filtrée des données BDTopo routes pour un département 
+      et une année (millésime) spécifique.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_gestionnaire_bdtopo_lin
+    description: >
+      Extrait la liste unique des gestionnaires présents dans la BDTopo 
+      pour une année et un département donné.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année des données (par défaut: variable projet 'annee'))"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: comparer_gestionnaire_bdtopo_lin
+    description: >
+      Compare les gestionnaires présents dans la BDTopo entre deux années 
+      pour un département donné.
+    arguments:
+      - name: annee1
+        type: integer
+        description: "Première année de comparaison"
+      - name: annee2
+        type: integer
+        description: "Deuxième année de comparaison"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_nbpt_lgkm_lin
+    description: >
+      Calcule le nombre de points de comptage et la longueur totale linéarisée 
+      pour un département donné.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année des données (par défaut: variable projet 'annee'))"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: verifier_nature_bdtopo_lin
+    description: >
+      Identifie les tronçons dont la nature est inattendue (sentier, chemin, route empierrée) 
+      et calcule leur longueur cumulée.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année des données (par défaut: variable projet 'annee'))"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_dept_limitrophe_lin
+    description: >
+      Retourne la liste des départements limitrophes au département spécifié, hors de la région NA.
+      Cette liste est utilisée pour vérifier les comptages aux frontières départementales.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: verifier_comptage_limitrophe_lin
+    description: >
+      Extrait les données de comptage des départements limitrophes (hors NA) à partir de la vue 
+      des derniers comptages connus (TMJA et %PL).
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année des données (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
