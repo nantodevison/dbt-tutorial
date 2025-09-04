@@ -29,7 +29,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['estimation', 'linearisation']
+                values: "{{ var('coment_cpt_verif')}}" # a remplacer par une variable
                 description: "Vérifier que les valeurs de l'attribut nature sont valides"
       - name: nature
         description: "nature bdTopo louche parmi *Sentier*, *Chemin*, *Route empierrée*"
@@ -37,7 +37,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Sentier','Chemin', 'Route empierrée'] # passer ça ailleur dans une variable plus tard
+                values: "{{ var('rejected_nature_verif') }}" # passer ça ailleur dans une variable plus tard
                 description: "Vérifier que les valeurs de l'attribut nature sont celles attendues, i.e pas les plus communes, mais pas non plus les plus louches (genre *Bac ou liaison maritime*)"
       - name: sum_lg_km
         description: "Longueur totale linéarisée en km"
@@ -173,14 +173,14 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier'] # a remplacer par une variable
+                values: "{{ var('nature_verif') }}" # a remplacer par une variable
       - name: coment_cpt
         description: "Valeur de l'attribut dans le millésime précédent"
         data_tests:
           - not_null
           - accepted_values:
               arguments:
-                values: ['linearisation','estimation'] # a remplacer par une variable
+                values: "{{ var('coment_cpt_verif')}}" # a remplacer par une variable
       - name: id_comptag # tests à rédiger : not_null si coment_cpt = linearisation, null si coment_cpt=estimation
         description: "Identifiant du compteur"
       - name: num_n
@@ -193,14 +193,14 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['1','2','3', '4', '5', '6'] # a remplacer par une variable
+                values: "{{ var('importance_verif') }}" # a remplacer par une variable
       - name: imp_n_1
         description: "importance du millésime précédent selon la BdTopo"
         data_tests:
           - not_null
           - accepted_values:
               arguments:
-                values: ['1','2','3', '4', '5', '6'] # a remplacer par une variable
+                values: "{{ var('importance_verif') }}" # a remplacer par une variable
       - name: obs_n
         description: "Observations supplémentaires millésime actuel"
       - name: obs_n_1
