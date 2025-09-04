@@ -47,3 +47,9 @@ flags:
 models:
   test_otv:    # Nom du projet
     +materialized: view
+
+# Configuring Seeds
+seeds:
+  +schema: new_points_affectation
+  +quote_columns: false
+  +delimiter: ','

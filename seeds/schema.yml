@@ -1,0 +1,83 @@
+version: 2
+
+seeds:
+  - name: dept19_affectation_new_point
+    description: >-
+      Affectation manuelle de comptages vers des lignes BdTopo dans le dept 19
+      milléisme 2024
+    config:
+      column_types:
+        id_comptag: varchar(254)
+        id_ign: text
+        src_cpt: varchar(254)
+        coment_cpt: varchar(254)
+        obs_tmja: varchar(254)
+        obs_pc_pl: varchar(254)
+        ann_pt: int
+        ann_pc_pl: int
+        tmja: int
+        pc_pl: float
+        obs_supl: varchar(254)
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_ign
+        description: "Identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
+        data_tests :
+          - not_null
+      - name: src_cpt
+        description: "source du comptage ; n'accepte que otv"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['otv',]
+      - name: coment_cpt
+        description: "Commentaire sur le comptage (linearisation, estimation), doit etre linearisation"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['linearisation',]
+      - name: obs_tmja
+        description: "Observation sur le TMJA"
+      - name: obs_pc_pl
+        description: "Observation sur la part de PL"
+      - name: ann_pt
+        description: "Année de prise du comptage pour les véhicules légers"
+        data_tests:
+        - not_null
+        - dbt_utils.accepted_range:
+              arguments:
+                min_value: 2010
+                max_value: '{{ modules.datetime.date.today().year }}'
+                description: "L'année doit être comprise entre 2010 et l'année courante"
+      - name: ann_pc_pl
+        description: "Année de prise du comptage pour les poids lourds"
+        data_tests:
+        - dbt_utils.accepted_range:
+              arguments:
+                min_value: 2010
+                max_value: '{{ modules.datetime.date.today().year }}'
+                description: "L'année doit être comprise entre 2010 et l'année courante"
+      - name: tmja
+        description: "Trafic Moyen Journalier Annuel (TMJA)"
+        data_tests:
+        - not_null
+        - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                description: "Le TMJA doit être compris entre 0 et 300000"
+      - name: pc_pl
+        description: "Part des Poids Lourds (PL) en pourcentage"
+        data_tests:
+        - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                description: "La part des Poids Lourds doit être comprise entre 0 et 100"
+      - name: obs_supl
+        description: "Observation supplémentaire"
+    
