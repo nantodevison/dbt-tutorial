@@ -1,8 +1,8 @@
 version: 2
 
 seeds:
-  - name: dept19_affectation_new_point
-    description: >-
+  - name: dept19_affectation_pt_mano
+    description: >
       Affectation manuelle de comptages vers des lignes BdTopo dans le dept 19
       milléisme 2024
     config:
@@ -11,6 +11,7 @@ seeds:
         id_ign: text
         src_cpt: varchar(254)
         coment_cpt: varchar(254)
+        coment_tmj_f: varchar(254)
         obs_tmja: varchar(254)
         obs_pc_pl: varchar(254)
         ann_pt: int
@@ -18,6 +19,12 @@ seeds:
         tmja: int
         pc_pl: float
         obs_supl: varchar(254)
+        id_sect: varchar(254)
+        src_sect: varchar(254)
+        autor_sect: varchar(254)
+        obs_vts: varchar(254)
+        id_cpt1: varchar(254)
+
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -33,13 +40,19 @@ seeds:
         data_tests:
           - accepted_values:
               arguments:
-                values: ['otv',]
+                values: "{{ var('src_cpt_verif') }}"
       - name: coment_cpt
-        description: "Commentaire sur le comptage (linearisation, estimation), doit etre linearisation"
+        description: "Commentaire sur le comptage (linearisation, estimation)"
         data_tests:
           - accepted_values:
               arguments:
-                values: ['linearisation',]
+                values: "{{ var('coment_cpt_verif') }}"
+      - name: coment_tmj_f
+        description: "Commentaire sur le mode de calcul du tmja et le nombre de ligne qui représente la route"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
       - name: obs_tmja
         description: "Observation sur le TMJA"
       - name: obs_pc_pl
@@ -80,4 +93,13 @@ seeds:
                 description: "La part des Poids Lourds doit être comprise entre 0 et 100"
       - name: obs_supl
         description: "Observation supplémentaire"
-    
+      - name: id_sect
+        description: "Identifiant de section"
+      - name: src_sect
+        description: "Source de la section"
+      - name: autor_sect
+        description: "Auteur de la section"
+      - name: obs_vts
+        description: "Observation sur les vitesses"
+      - name: id_cpt1
+        description: "Attributs de travail sur les compteurs (calcul sur Bdx Metropole notamment)"
