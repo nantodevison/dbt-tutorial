@@ -96,3 +96,14 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: affecter_point_lin
+    description: >
+      Affecte des points de comptage aux lignes BDTopo à partir d'un fichier de seed (deptXX_affectation_pt_mano).
+      Cette macro permet de prioriser les colonnes fournit manuellement dans le fichier de 
+      seed pour les lignes à réaffecter. Les lignes non présentes dans le seed conservent
+      leurs valeurs originales de la BDTopo.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

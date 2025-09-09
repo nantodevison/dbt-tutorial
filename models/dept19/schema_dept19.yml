@@ -19,19 +19,253 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: ['Sentier','Bac ou liaison maritime','Bretelle','Chemin', 'Escalier', 'Piste cyclable', 'Rond-point', 'Route à 1 chaussée', 'Route à 2 chaussées', 'Route empierrée', 'Type autoroutier']
+              arguments:
+                values: "{{ var('toute_nature_verif') }}"
       - name: sens
         description: "Sens de circulation selon IGN"
         data_tests:
           - not_null
           - accepted_values:
-              values: ['Double sens','Sens direct','Sens inverse','Sans objets']
-              description: "Verifier que IGN n'a pas changé ses valeurs de *sens*"
+              arguments:
+                values: "{{ var('sens_verif') }}"
+                description: "Verifier que IGN n'a pas changé ses valeurs de *sens*"
       - name: dept
         description: "Code du département sur 2 chiffres"
         data_tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('dept_na') }}"
+                description: "Vérifier que seules les routes des départements NA sont présentes"
       - name: long_km
         description: "Longueur du tronçon en km"
         data_tests:
           - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description: "Vérifier que la longueur est positive"
+      - name: nom_coll_g
+        description: "nom de rue BdTopo coté gauche, issu de systeme collaboratif"
+      - name: nom_coll_d
+        description: "nom de rue BdTopo coté droit, issu de systeme collaboratif"
+      - name: numero
+        description: "numéro de la route, hors voies communales"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "(A|D|N|P)[0-9]+[A-Z]*[0-9]*"
+                row_condition: "numero is not null"
+                description: "Vérifier que les numéro respectent un format IGN"
+      - name: importance
+        description: "classement IGN de hiérarchie de réseau"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('importance_verif') }}"
+      - name: cl_admin
+        description: "classement administratif IGN (Autoroute, Nationale, Départementale)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('cl_admin_verif') }}"
+      - name: gestion
+        description: "Gestionnaire selon l'IGN ; peut comporter plusieurs valeurs séparées par des '/'"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('gestion_verif') }}"
+                where: "gestion is not null"
+      # colonnes à documenter :
+      - name: fictif
+        description: "existence réelle ou non de la voie selon l'IGN (0=voie réelle, 1=voie fictive)"
+        data_tests:
+          - not_null
+      - name: largeur
+        description: "Largeur de la voie en mètres"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value : 25
+                description: "Vérifier que la largeur est positive et inféreieure à 25m"
+      - name: nb_voies
+        description: "Nombre de voies de circulation selon l'IGN"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 10
+                description: "Vérifier que le nombre de voies est positif et inférieur à 10 (péage)"
+      - name: etat
+        description: "État de la route (projet, construction, en service) selon l'IGN"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('etat_verif') }}"
+      - name: inseecom_g
+        description: "Code insee de la commune côté gauche"
+      - name: inseecom_d
+        description: "Code insee de la commune côté droit"
+      - name: id_voie_g
+        description: "Identifiant IGN de la voie côté gauche"
+      - name: id_voie_d
+        description: "Identifiant IGN de la voie côté droit"
+      - name: urbain
+        description: "SI la route est en zone urbaine (1) ou non (0), selon l'IGN"
+      - name: vit_moy_vl
+        description: "Vitesse moyenne pratiquée par les véhicules légers selon l'IGN"
+      - name: restr_p
+        description: "restriction de poids Lourds (en Tonnes) selon l'IGN"
+      - name: "{{'dept_' ~ var('annee')}}"
+        description: "Attribut interne OTR de calcul du département d'appartenance du millésime en cours. Notion d'appartenance unique à un département pour les voies limitrophes"
+      - name: "{{'dept_' ~ (var('annee') | int - 1)}}"
+        description: "Attribut interne OTR de calcul du département d'appartenance du millésime précédent. Notion d'appartenance unique à un département pour les voies limitrophes"
+      - name: coment_cpt
+        description: "Attribut interne OTR ; traduit si la ligne est linearisee ou estimee"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_cpt_verif') }}"
+      - name: src_cpt
+        description: "Attribut interne OTR ; traduit la source du comptage des lignes linearisees (otv ou lin_bm)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('src_cpt_verif') }}" 
+      - name: id_comptag
+        description: "A COMPLETER"
+      - name: src_cpteur
+        description: "A COMPLETER"
+      - name: obs_supl
+        description: "A COMPLETER"
+      - name: ann_pt
+        description: "A COMPLETER"
+      - name: coment_tmj
+        description: "A COMPLETER"
+      - name: coment_tmj_f
+        description: "A COMPLETER"
+      - name: tmja
+        description: "A COMPLETER"
+      - name: tmja_final
+        description: "A COMPLETER"
+      - name: veh_km
+        description: "A COMPLETER"
+      - name: ann_pc_pl
+        description: "A COMPLETER"
+      - name: pc_pl
+        description: "A COMPLETER"
+      - name: pl
+        description: "A COMPLETER"
+      - name: pl_final
+        description: "A COMPLETER"
+      - name: pl_km
+        description: "A COMPLETER"
+      - name: obs_tmja
+        description: "A COMPLETER"
+      - name: obs_pc_pl
+        description: "A COMPLETER"
+      - name: id_cpt1
+        description: "A COMPLETER"
+      - name: id_cpt2
+        description: "A COMPLETER"
+      - name: obs_tmj1
+        description: "A COMPLETER"
+      - name: obs_tmj2
+        description: "A COMPLETER"
+      - name: tmja_cpt1
+        description: "A COMPLETER"
+      - name: tmja_cpt2
+        description: "A COMPLETER"
+      - name: id_sect
+        description: "A COMPLETER"
+      - name: src_sect
+        description: "A COMPLETER"
+      - name: autor_sect
+        description: "A COMPLETER"
+      - name: codau_cat
+        description: "A COMPLETER"
+      - name: milieu
+        description: "A COMPLETER"
+      - name: codau
+        description: "A COMPLETER"
+      - name: type_vdf
+        description: "A COMPLETER"
+      - name: vts_vl_vdf
+        description: "A COMPLETER"
+      - name: vts_pl_vdf
+        description: "A COMPLETER"
+      - name: vts_gest
+        description: "A COMPLETER"
+      - name: id_vts
+        description: "A COMPLETER"
+      - name: obs_vts
+        description: "A COMPLETER"
+      - name: vts_osm
+        description: "A COMPLETER"
+      - name: vts_modif
+        description: "A COMPLETER"
+      - name: vts_vl_f
+        description: "A COMPLETER"
+      - name: vts_pl_f
+        description: "A COMPLETER"
+      - name: vts_type_vl
+        description: "A COMPLETER"
+      - name: vts_type_pl
+        description: "A COMPLETER"
+      - name: src_vma
+        description: "A COMPLETER"
+      - name: vma_vl
+        description: "A COMPLETER"
+      - name: vma_pl
+        description: "A COMPLETER"
+      - name: vma_type
+        description: "A COMPLETER"
+      - name: codau_cont
+        description: "A COMPLETER"
+      - name: id_codau_cont
+        description: "A COMPLETER"
+      - name: tmja_cont
+        description: "A COMPLETER"
+      - name: pc_pl_cont
+        description: "A COMPLETER"
+      - name: source
+        description: "A COMPLETER"
+      - name: target
+        description: "A COMPLETER"
+      - name: cnt_src
+        description: "A COMPLETER"
+      - name: cnt_tgt
+        description: "A COMPLETER"
+      - name: imp_sup
+        description: "A COMPLETER"
+      - name: imp_sup_src
+        description: "A COMPLETER"
+      - name: imp_sup_tgt
+        description: "A COMPLETER"
+      - name: recup
+        description: "A COMPLETER"
+      - name: id_cnt2
+        description: "A COMPLETER"
+      - name: id_struct_rout
+        description: "A COMPLETER"
+      - name: id_sect_hom
+        description: "A COMPLETER"
+      - name: id_simpli
+        description: "A COMPLETER"
+      - name: attr_modif
+        description: "A COMPLETER"
+      - name: id_bdc
+        description: "A COMPLETER"
+      - name: geom
+        description: "A COMPLETER"
+      - name: ang_orient_src_vert1
+        description: "A COMPLETER"
+      - name: ang_orient_tgt_vert1
+        description: "A COMPLETER"
+      - name: list_id_inter
+        description: "A COMPLETER"
+      - name: nb_nod_non_topo
+        description: "A COMPLETER"
+      - name: id_struct
+        description: "A COMPLETER"

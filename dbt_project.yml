@@ -26,10 +26,15 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:
   nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier']
   rejected_nature_verif : ['Sentier','Chemin', 'Route empierrée']
+  toute_nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier','Sentier','Chemin', 'Route empierrée']
   importance_verif: ['1','2','3', '4', '5', '6']
+  sens_verif: ['Double sens','Sens direct','Sens inverse','Sans objets']
   coment_cpt_verif: ['linearisation', 'estimation']
   coment_tmj_verif: ['/2', '/3', '/4', '/6', '/12', '/15', '/30']
-  src_cpt_verif: ['otv',]
+  src_cpt_verif: ['otv', 'lin_bm']
+  cl_admin_verif : ['Autoroute', 'Nationale', 'Départementale']
+  gestion_verif : ["A''LIENOR", 'ASF', 'ATLANDES', 'Cantal', 'Charente', 'Charente-Maritime', 'Charente/Vienne', 'Cher', 'COFIROUTE', 'Corrèze', 'Corrèze/Puy-de-Dôme', 'Creuse', 'Creuse/Puy-de-Dôme', 'Deux-Sèvres', 'Deux-Sèvres/Vienne', 'DIR Atlantique', 'DIR Centre Ouest', 'DIR Ouest', 'DIR Sud Ouest', 'Dordogne', 'Gers', 'Gironde', 'Gironde/Dordogne', 'Gironde/Lot-et-Garonne', 'Haute-Vienne', 'Haute-Vienne/Vienne', 'Hautes-Pyrénées', 'Indre', 'Indre-et-Loire', 'Landes', 'Landes/Gers', 'Landes/Pyrénées-Atlantiques', 'Lot', 'Lot-et-Garonne', 'Lot/Dordogne', 'Maine-et-Loire', 'Pyrénées-Atlantiques', 'Pyrénées-Atlantiques/Hautes-Pyrénées', 'Pyrénées-Atlantiques/Pyrénées-Atlantiques', 'Tarn-et-Garonne', 'Tarn-et-Garonne/Lot-et-Garonne', 'Vendée', 'Vienne', 'Vienne/Deux-Sèvres']
+  etat_verif : ['En construction', 'En projet', 'En service']
   annee: 2024
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']

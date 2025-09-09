@@ -7,7 +7,13 @@ select
     anp.id_ign,
     anp.src_cpt,
     anp.coment_cpt,
-    anp.coment_tmj_f,
+    case  
+        when anp.coment_tmj_f is not null then anp.coment_tmj_f
+        when anp.coment_tmj_f is null and cv.coment_tmj_f is not null then cv.coment_tmj_f
+        when anp.coment_tmj_f is null and cv.coment_tmj_f is null and cv.sens in ('Sens direct','Sens inverse') then '/2' 
+        when anp.coment_tmj_f is null and cv.coment_tmj_f is null and cv.sens='Double sens' then null 
+        else null 
+        end as coment_tmj_f,
     anp.obs_tmja,
     anp.obs_pc_pl,
     anp.ann_pt::char(4),
