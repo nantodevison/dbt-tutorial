@@ -3,6 +3,17 @@ version: 2
 models:
   - name: creer_vue_19
     description: "BdTopo des routes du département 19"
+    data_tests:
+    - dbt_utils.expression_is_true:
+          arguments:
+            expression: "((id_comptag::text ~ '[0-9]{2}-(A|N|D|B)[0-9]{1,4}.*-[0-9]{1,4}\\+[0-9]{1,4}'::text OR id_comptag::text ~ '[0-9]{2}-(VC|C).*-[0-9]{1,4}\\+[0-9]{1,4}'::text OR id_comptag::text ~ '[0-9]{2}-(PISTE|VC).*--*[0-9]\\.[0-9]{0,4};[0-9]{1,2}\\.[0-9]{0,4}'::text OR id_comptag::text ~ '[0-9]{2}-DBAC.*'::text OR id_comptag::text ~ '[a-zA-Z]*.*-[a-zA-Z]*.*--?[0-9]\\.[0-9]{0,4};[0-9]{1,2}\\.[0-9]{0,4}'::text) AND (length(id_comptag::text) - length(replace(id_comptag::text, '-'::text, ''::text))) >= 2)"
+          config:
+            where: "id_comptag is not null"
+          description: "Vérifier que l'identifiant de comptage respecte les formats OTR"
+    - dbt_utils.expression_is_true:
+          arguments:
+            expression: "CASE WHEN id_comptag IS NULL THEN coment_cpt = 'estimation' WHEN id_comptag IS NOT NULL THEN coment_cpt = 'linearisation' ELSE FALSE END"
+            description: "Vérifier la cohérence entre id_comptag et coment_cpt (null->estimation, non-null->linearisation)"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
@@ -134,7 +145,7 @@ models:
               arguments:
                 values: "{{ var('src_cpt_verif') }}" 
       - name: id_comptag
-        description: "A COMPLETER"
+        description: "Identifiant du comptage interne OTR ; contient 2 formes selon le classement administratif : voie communale ou autre"
       - name: src_cpteur
         description: "A COMPLETER"
       - name: obs_supl

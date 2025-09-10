@@ -1,5 +1,5 @@
 {{ config(
-    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ annee_str_sfx ~ '_l'
+    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_l'
 ) }}
 
 {{creer_vue_dept_annee()}}
