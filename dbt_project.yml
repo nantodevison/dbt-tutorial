@@ -35,6 +35,16 @@ vars:
   cl_admin_verif : ['Autoroute', 'Nationale', 'Départementale']
   gestion_verif : ["A''LIENOR", 'ASF', 'ATLANDES', 'Cantal', 'Charente', 'Charente-Maritime', 'Charente/Vienne', 'Cher', 'COFIROUTE', 'Corrèze', 'Corrèze/Puy-de-Dôme', 'Creuse', 'Creuse/Puy-de-Dôme', 'Deux-Sèvres', 'Deux-Sèvres/Vienne', 'DIR Atlantique', 'DIR Centre Ouest', 'DIR Ouest', 'DIR Sud Ouest', 'Dordogne', 'Gers', 'Gironde', 'Gironde/Dordogne', 'Gironde/Lot-et-Garonne', 'Haute-Vienne', 'Haute-Vienne/Vienne', 'Hautes-Pyrénées', 'Indre', 'Indre-et-Loire', 'Landes', 'Landes/Gers', 'Landes/Pyrénées-Atlantiques', 'Lot', 'Lot-et-Garonne', 'Lot/Dordogne', 'Maine-et-Loire', 'Pyrénées-Atlantiques', 'Pyrénées-Atlantiques/Hautes-Pyrénées', 'Pyrénées-Atlantiques/Pyrénées-Atlantiques', 'Tarn-et-Garonne', 'Tarn-et-Garonne/Lot-et-Garonne', 'Vendée', 'Vienne', 'Vienne/Deux-Sèvres']
   etat_verif : ['En construction', 'En projet', 'En service']
+  src_cpteur_verif: ['bruit', 'sectionnement', 'compteur']
+  obs_tmja_pc_pl_verif: ['auto', 'mano']
+  milieu_verif: ['u', 'r']
+  vts_osm_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]
+  vts_modif_verif: [110,130,50,80,com,dsr,gsw,osm]
+  vts_type_verif: ['reglementaire', 'estimee', 'gestionnaire']
+  src_vma_verif: ['com 30','com 40','com 45','com 50','com 60','com 70','com 80','dsr 10','dsr 15','dsr 20','dsr 30','dsr 40','dsr 45','dsr 50','dsr 60','dsr 70','gsw 110','gsw 130','gsw 20','gsw 30','gsw 40','gsw 45','gsw 50','gsw 60','gsw 70','gsw 80','gsw 90','osm 10','osm 110','osm 130','osm 15','osm 20','osm 25','osm 30','osm 40','osm 45','osm 50','osm 60','osm 70','osm 80','osm 90']
+  vma_vl_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]
+  vma_pl_verif: [10,15,20,25,30,40,45,50,60,70,80,90]
+  vma_type_verif: ['estimee','verifiee']
   annee: 2024
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']
