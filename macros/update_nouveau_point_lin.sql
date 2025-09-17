@@ -1,12 +1,11 @@
-{% macro affecter_point_lin(dept=var('dept')) %}
+{% macro update_nouveau_point_lin(dept=var('dept')) %}
 
 -- Lignes présentes dans le seed (avec jointure)
 select 
-    -- Colonnes du seed
+    -- Colonnes du seed, avec fallback sur cv si null
     anp.id_comptag,
-    anp.id_ign,
-    anp.src_cpt,
-    anp.coment_cpt,
+    case when anp.src_cpt is not null then anp.src_cpt else cv.src_cpt end as src_cpt,
+    case when anp.coment_cpt is not null then anp.coment_cpt else cv.coment_cpt end as coment_cpt,
     case  
         when anp.coment_tmj_f is not null then anp.coment_tmj_f
         when anp.coment_tmj_f is null and cv.coment_tmj_f is not null then cv.coment_tmj_f
@@ -14,21 +13,18 @@ select
         when anp.coment_tmj_f is null and cv.coment_tmj_f is null and cv.sens='Double sens' then null 
         else null 
         end as coment_tmj_f,
-    anp.obs_tmja,
-    anp.obs_pc_pl,
-    anp.ann_pt::char(4),
-    anp.ann_pc_pl::char(4),
-    anp.tmja,
-    anp.pc_pl,
-    anp.obs_supl,
-    anp.id_sect,
-    anp.src_sect,
-    anp.autor_sect,
-    anp.obs_vts,
-    anp.id_cpt1,
+    case when anp.obs_tmja is not null then anp.obs_tmja else cv.obs_tmja end as obs_tmja,
+    case when anp.obs_pc_pl is not null then anp.obs_pc_pl else cv.obs_pc_pl end as obs_pc_pl,
+    case when anp.obs_supl is not null then anp.obs_supl else cv.obs_supl end as obs_supl,
+    case when anp.id_sect is not null then anp.id_sect else cv.id_sect end as id_sect,
+    case when anp.src_sect is not null then anp.src_sect else cv.src_sect end as src_sect,
+    case when anp.autor_sect is not null then anp.autor_sect else cv.autor_sect end as autor_sect,
+    case when anp.obs_vts is not null then anp.obs_vts else cv.obs_vts end as obs_vts,
+    case when anp.id_cpt1 is not null then anp.id_cpt1 else cv.id_cpt1 end as id_cpt1,
     
     -- Colonnes de creer_vue_19 non présentes dans le seed
     cv.id,
+    cv.id_ign,
     cv.nature,
     cv.nom_coll_g,
     cv.nom_coll_d,
@@ -52,6 +48,10 @@ select
     cv.dept_2024,
     cv.dept_2023,
     cv.long_km,
+    cv.ann_pt,
+    cv.ann_pc_pl,
+    cv.tmja,
+    cv.pc_pl,
     cv.veh_km,
     cv.tmja_final,
     cv.pl,
@@ -104,8 +104,9 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_affectation_pt_mano') }} anp 
-join {{ ref('creer_vue_' ~ dept)}} cv on anp.id_ign = cv.id_ign
+from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp 
+join {{ ref('creer_vue_' ~ dept)}} cv 
+    on ((cv.id_ign = any(string_to_array(anp.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(anp.id_simpli, ';')::integer[])))
 
 UNION
 
@@ -113,16 +114,11 @@ UNION
 select 
     -- Colonnes correspondant au seed (avec valeurs de creer_vue_19)
     cv.id_comptag,
-    cv.id_ign,
     cv.src_cpt,
     cv.coment_cpt,
     cv.coment_tmj_f,
     cv.obs_tmja,
     cv.obs_pc_pl,
-    cv.ann_pt,
-    cv.ann_pc_pl,
-    cv.tmja,
-    cv.pc_pl,
     cv.obs_supl,
     cv.id_sect,
     cv.src_sect,
@@ -132,6 +128,7 @@ select
     
     -- Colonnes de creer_vue_19
     cv.id,
+    cv.id_ign,
     cv.nature,
     cv.nom_coll_g,
     cv.nom_coll_d,
@@ -155,6 +152,10 @@ select
     cv.dept_2024,
     cv.dept_2023,
     cv.long_km,
+    cv.ann_pt,
+    cv.ann_pc_pl,
+    cv.tmja,
+    cv.pc_pl,
     cv.veh_km,
     cv.tmja_final,
     cv.pl,
@@ -210,8 +211,8 @@ select
 from {{ ref('creer_vue_' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_affectation_pt_mano') }} anp
-    where anp.id_ign = cv.id_ign
+    from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp
+    where cv.id_ign = any(string_to_array(anp.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(anp.id_simpli, ';')::integer[])
 )
 
 

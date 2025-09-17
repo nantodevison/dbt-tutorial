@@ -1,23 +1,27 @@
 version: 2
 
 seeds:
-  - name: dept19_affectation_pt_mano
+  - name: dept19_update_nouveau_pt
     description: >
-      Affectation manuelle de comptages vers des lignes BdTopo dans le dept 19
-      milléisme 2024
+      Affectation manuelle de nouveau comptages vers des lignes BdTopo dans le dept 19
+      milléisme 2024.
+      les champs id_ign et id_simpli sont exclusifs : si l'un est renseigné, l'autre doit être null ; 
+      si plusieurs lignes sont concernées, elles doivent etre séparées par des ';'.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(id_ign is not null and id_simpli is null) or (id_ign is null and id_simpli is not null)"
+            description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config:
       column_types:
         id_comptag: varchar(254)
         id_ign: text
+        id_simpli: text
         src_cpt: varchar(254)
         coment_cpt: varchar(254)
         coment_tmj_f: varchar(254)
         obs_tmja: varchar(254)
         obs_pc_pl: varchar(254)
-        ann_pt: int
-        ann_pc_pl: int
-        tmja: int
-        pc_pl: float
         obs_supl: varchar(254)
         id_sect: varchar(254)
         src_sect: varchar(254)
@@ -33,8 +37,8 @@ seeds:
           - unique
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
-        data_tests :
-          - not_null
+      - name: id_simpli
+        description: "Identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
       - name: src_cpt
         description: "source du comptage ; n'accepte que otv"
         data_tests:
@@ -57,40 +61,6 @@ seeds:
         description: "Observation sur le TMJA"
       - name: obs_pc_pl
         description: "Observation sur la part de PL"
-      - name: ann_pt
-        description: "Année de prise du comptage pour les véhicules légers"
-        data_tests:
-        - not_null
-        - dbt_utils.accepted_range:
-              arguments:
-                min_value: 2010
-                max_value: '{{ modules.datetime.date.today().year }}'
-                description: "L'année doit être comprise entre 2010 et l'année courante"
-      - name: ann_pc_pl
-        description: "Année de prise du comptage pour les poids lourds"
-        data_tests:
-        - dbt_utils.accepted_range:
-              arguments:
-                min_value: 2010
-                max_value: '{{ modules.datetime.date.today().year }}'
-                description: "L'année doit être comprise entre 2010 et l'année courante"
-      - name: tmja
-        description: "Trafic Moyen Journalier Annuel (TMJA)"
-        data_tests:
-        - not_null
-        - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 300000
-                description: "Le TMJA doit être compris entre 0 et 300000"
-      - name: pc_pl
-        description: "Part des Poids Lourds (PL) en pourcentage"
-        data_tests:
-        - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 100
-                description: "La part des Poids Lourds doit être comprise entre 0 et 100"
       - name: obs_supl
         description: "Observation supplémentaire"
       - name: id_sect

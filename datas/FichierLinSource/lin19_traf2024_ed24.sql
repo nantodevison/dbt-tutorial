@@ -10,7 +10,7 @@ aire.dpt_bdt_na_ed23_s => aire.dpt_bdt_na_ed24_s
 
 /*===================================================
 Creation de la vue lineaire.traf2024_bdt19_ed24_l 
-=====================================================/
+=====================================================*/
 DROP VIEW IF EXISTS lineaire.traf2024_bdt19_ed24_l;
 CREATE or REPLACE VIEW lineaire.traf2024_bdt19_ed24_l as 
 select * from lineaire.traf2024_bdt_na_ed24_l where dept='19';
@@ -2277,7 +2277,7 @@ VERIF ET CONSOLID SECT TRAF2023 (TOUTE ANNEE CONFONDUE)
 /*recup et coment_cpt='linearisation'
 select count(*) as cnt,recup from lineaire.traf2024_bdt19_ed24_l where coment_cpt='linearisation' group by recup;
 
-cnt,recup
+cnt,recup*/
 
 --VERIF QGIS
 dept='19' and coment_cpt='linearisation' and recup='recurs' => peut être nouveau rond-point créé par exemple
@@ -2338,7 +2338,7 @@ src_cpt='otv',coment_cpt='linearisation',obs_tmja=null,obs_pc_pl=null,
 id_comptag='19-D',
 obs_supl='linearisation etiree traf2024'
 --where id_ign in ('TRONROUT');
-where array_to_string(id_simpli::text[],',') in (');
+where array_to_string(id_simpli::text[],',') in ('');
 
 --19-D27-7+110
 --UPDATE 2 LE 20250822

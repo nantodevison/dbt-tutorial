@@ -10,7 +10,7 @@
     )
 }}
 
-{{ affecter_point_lin() }}
+{{ update_nouveau_point_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 

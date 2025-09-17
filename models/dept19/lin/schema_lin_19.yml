@@ -205,13 +205,14 @@ models:
         description: "Observations supplémentaires millésime actuel"
       - name: obs_n_1
         description: "Observations supplémentaires millésime précédent"
-  - name: lin_maj_affectation_point
+  - name: lin_update_nouveau_point
     description: >
-      Ce modèle se base sur la macro [`affecter_point_lin`](/#!/macro/macro.test_otv.affecter_point_lin).
+      Ce modèle se base sur la macro [`update_nouveau_point_lin`](/#!/macro/macro.test_otv.update_nouveau_point_lin).
       Il sert à remplacer les attributs de lignes affectées ou désaffectées à des points de comptages.
       Tous les tests de validation des données sont réalisés au préalable dans le modèle 
       [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) et dans le seed 
       [`dept19_affectation_pt_mano`](/#!/seed/seed.test_otv.dept19_affectation_pt_mano).
+      A terme, o, pourrait enlever les colonnes tmja, pc_pl, etc... qui font doublons avec les donnée contenues dans le schéma comptage
     columns:
       - name: id
       - name: id_ign
