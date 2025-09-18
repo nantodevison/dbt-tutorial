@@ -35,12 +35,17 @@ seeds:
         data_tests:
           - not_null
           - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
       - name: id_simpli
         description: "Identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
       - name: src_cpt
-        description: "source du comptage ; n'accepte que otv"
+        description: "source du comptage ; n'accepte que otv ou lin_bm"
         data_tests:
           - accepted_values:
               arguments:
@@ -52,7 +57,7 @@ seeds:
               arguments:
                 values: "{{ var('coment_cpt_verif') }}"
       - name: coment_tmj_f
-        description: "Commentaire sur le mode de calcul du tmja et le nombre de ligne qui représente la route"
+        description: "Commentaire sur le mode de calcul (i.e divise ou multiplie et le facteur) du tmja et le nombre de ligne qui représente la route"
         data_tests:
           - accepted_values:
               arguments:
@@ -73,3 +78,36 @@ seeds:
         description: "Observation sur les vitesses"
       - name: id_cpt1
         description: "Attributs de travail sur les compteurs (calcul sur Bdx Metropole notamment)"
+
+  - name: dept19_update_modif_linearisation
+    description: >
+      Modification manuelle de la linéarisation de comptages existants dans le dept 19
+      millésime 2024 : affectation d'uen partie du sectionnement à un autre point de comptage existant
+      Les champs id_ign et id_simpli sont exclusifs : si l'un est renseigné, l'autre doit être null ; 
+      si plusieurs lignes sont concernées, elles doivent être séparées par des ';'.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(id_ign is not null and id_simpli is null) or (id_ign is null and id_simpli is not null)"
+            description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
+    config:
+      column_types:
+        id_comptag: varchar(254)
+        id_ign: text
+        id_simpli: text
+
+    columns:
+      - name: id_comptag
+        description: "Identifiant du nouveau compteur de référence pour les lignes concernées"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
+      - name: id_ign
+        description: "Nouvel identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
+      - name: id_simpli
+        description: "Nouvel identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
