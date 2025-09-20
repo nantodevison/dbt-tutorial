@@ -1,12 +1,7 @@
 {{
   config(
     schema = 'affectation_pt_mano',
-    )
-}}
-
-{{
-  config(
-    schema = 'affectation_pt_mano',
+    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_affectation_pt_mano_l'
     )
 }}
 

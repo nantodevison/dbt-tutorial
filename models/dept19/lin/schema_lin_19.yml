@@ -205,7 +205,7 @@ models:
         description: "Observations supplémentaires millésime actuel"
       - name: obs_n_1
         description: "Observations supplémentaires millésime précédent"
-  - name: lin_update_nouveau_point
+  - name: lin_update_nouveau_point_19
     description: >
       Ce modèle se base sur la macro [`update_nouveau_point_lin`](/#!/macro/macro.test_otv.update_nouveau_point_lin).
       Il sert à remplacer les attributs de lignes affectées ou désaffectées à des points de comptages.
@@ -213,6 +213,114 @@ models:
       [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) et dans le seed 
       [`dept19_affectation_pt_mano`](/#!/seed/seed.test_otv.dept19_affectation_pt_mano).
       A terme, o, pourrait enlever les colonnes tmja, pc_pl, etc... qui font doublons avec les donnée contenues dans le schéma comptage
+    columns:
+      - name: id
+      - name: id_ign
+      - name: nature
+      - name: nom_coll_g
+      - name: nom_coll_d
+      - name: numero
+      - name: importance
+      - name: cl_admin
+      - name: gestion
+      - name: fictif
+      - name: largeur
+      - name: nb_voies
+      - name: sens
+      - name: etat
+      - name: inseecom_g
+      - name: inseecom_d
+      - name: id_voie_g
+      - name: id_voie_d
+      - name: urbain
+      - name: vit_moy_vl
+      - name: restr_p
+      - name: dept
+      - name: dept_2024
+      - name: dept_2023
+      - name: long_km
+      - name: coment_cpt
+      - name: src_cpt
+      - name: id_comptag
+      - name: src_cpteur
+      - name: obs_supl
+      - name: ann_pt
+      - name: coment_tmj
+      - name: coment_tmj_f
+      - name: tmja
+      - name: tmja_final
+      - name: veh_km
+      - name: ann_pc_pl
+      - name: pc_pl
+      - name: pl
+      - name: pl_final
+      - name: pl_km
+      - name: obs_tmja
+      - name: obs_pc_pl
+      - name: id_cpt1
+      - name: id_cpt2
+      - name: obs_tmj1
+      - name: obs_tmj2
+      - name: tmja_cpt1
+      - name: tmja_cpt2
+      - name: id_sect
+      - name: src_sect
+      - name: autor_sect
+      - name: codau_cat
+      - name: milieu
+      - name: codau
+      - name: type_vdf
+      - name: vts_vl_vdf
+      - name: vts_pl_vdf
+      - name: vts_gest
+      - name: id_vts
+      - name: obs_vts
+      - name: vts_osm
+      - name: vts_modif
+      - name: vts_vl_f
+      - name: vts_pl_f
+      - name: vts_type_vl
+      - name: vts_type_pl
+      - name: src_vma
+      - name: vma_vl
+      - name: vma_pl
+      - name: vma_type
+      - name: codau_cont
+      - name: id_codau_cont
+      - name: tmja_cont
+      - name: pc_pl_cont
+      - name: source
+      - name: target
+      - name: cnt_src
+      - name: cnt_tgt
+      - name: imp_sup
+      - name: imp_sup_src
+      - name: imp_sup_tgt
+      - name: recup
+      - name: id_cnt2
+      - name: id_struct_rout
+      - name: id_sect_hom
+      - name: id_simpli
+      - name: attr_modif
+      - name: id_bdc
+      - name: geom
+      - name: ang_orient_src_vert1
+      - name: ang_orient_tgt_vert1
+      - name: list_id_inter
+      - name: nb_nod_non_topo
+      - name: id_struct
+
+  - name: lin_update_modif_linearisation_19
+    description: >
+      Ce modèle se base sur la macro [`update_modif_linearisation_lin`](/#!/macro/macro.test_otv.update_modif_linearisation_lin).
+      Il sert à modifier la linéarisation (id_comptag) de ligne affectées à un autre point de comptage.
+      Contrairement au modèle [`lin_update_nouveau_point_19`](/#!/model/model.test_otv.lin_update_nouveau_point_19) qui traite 
+      les nouveaux points de comptage, ce modèle modifie uniquement la linéarisation de comptages déjà présents.
+      Tous les tests de validation des données sont réalisés au préalable dans le seed 
+      [`dept19_update_modif_linearisation`](/#!/seed/seed.test_otv.dept19_update_modif_linearisation) et 
+      s'appuie sur les résultats du modèle [`lin_update_nouveau_point_19`](/#!/model/model.test_otv.lin_update_nouveau_point_19).
+      Seuls l'identifiants de linéarisation (id_comptag) est modifié, tous les autres attributs 
+      restent inchangés par rapport au modèle source.
     columns:
       - name: id
       - name: id_ign

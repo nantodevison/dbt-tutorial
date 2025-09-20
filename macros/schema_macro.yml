@@ -109,3 +109,19 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: update_modif_linearisation_lin
+    description: >
+      Met à jour la linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_modif_linearisation).
+      Concerne uniquement les modifications de linéarisation pour des points de comptage existants (id_comptag déjà présent dans le millésime précédent).
+      s'appuie sur le résultat de la prise en compte des nouveaux points de comptage (voir macro [update_nouveau_point_lin](#update_nouveau_point_lin)).
+      Cette macro modifie uniquement les identifiants de comptage (id_comptag) pour les lignes spécifiées dans le seed,
+      tout en conservant toutes les autres valeurs originales du fichier de linearisation. Les lignes non présentes dans le seed
+      conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
