@@ -82,7 +82,7 @@ seeds:
   - name: dept19_update_modif_linearisation
     description: >
       Modification manuelle de la linéarisation de comptages existants dans le dept 19
-      millésime 2024 : affectation d'uen partie du sectionnement à un autre point de comptage existant
+      millésime 2024 : affectation d'une partie du sectionnement à un autre point de comptage existant
       Les champs id_ign et id_simpli sont exclusifs : si l'un est renseigné, l'autre doit être null ; 
       si plusieurs lignes sont concernées, elles doivent être séparées par des ';'.
     data_tests:
@@ -111,3 +111,37 @@ seeds:
         description: "Nouvel identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
       - name: id_simpli
         description: "Nouvel identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
+
+  - name: dept19_update_oubli_linearisation
+    description: >
+      Correction manuelle d'oublis de linéarisation de comptages existants dans le dept 19
+      millésime 2024 : affectation de lignes BdTopo qui auraient dû être rattachées à un point de comptage existant
+      mais qui ont été oubliées lors de la linéarisation initiale.
+      Les champs id_ign et id_simpli sont exclusifs : si l'un est renseigné, l'autre doit être null ; 
+      si plusieurs lignes sont concernées, elles doivent être séparées par des ';'.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(id_ign is not null and id_simpli is null) or (id_ign is null and id_simpli is not null)"
+            description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
+    config:
+      column_types:
+        id_comptag: varchar(254)
+        id_ign: text
+        id_simpli: text
+
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur de référence pour les lignes oubliées"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
+      - name: id_ign
+        description: "Identifiant IGN du(es) tronçon BdTopo oublié lors de la linéarisation initiale (séparation par ';' si plusieurs tronçons)"
+      - name: id_simpli
+        description: "Identifiant de section homogène interne OTR oublié lors de la linéarisation initiale (séparation par ';' si plusieurs tronçons)"

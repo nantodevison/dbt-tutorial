@@ -109,6 +109,9 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
   - name: update_modif_linearisation_lin
     description: >

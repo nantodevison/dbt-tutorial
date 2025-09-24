@@ -1,30 +1,14 @@
-{% macro update_nouveau_point_lin(dept=var('dept'), annee=var('annee')) %}
+{% macro update_oubli_lin(dept=var('dept')) %}
 
 -- Lignes présentes dans le seed (avec jointure)
 select 
-    -- Colonnes du seed, avec fallback sur cv si null
-    anp.id_comptag,
-    case when anp.src_cpt is not null then anp.src_cpt else cv.src_cpt end as src_cpt,
-    case when anp.coment_cpt is not null then anp.coment_cpt else cv.coment_cpt end as coment_cpt,
-    case  
-        when anp.coment_tmj_f is not null then anp.coment_tmj_f
-        when anp.coment_tmj_f is null and cv.coment_tmj_f is not null then cv.coment_tmj_f
-        when anp.coment_tmj_f is null and cv.coment_tmj_f is null and cv.sens in ('Sens direct','Sens inverse') then '/2' 
-        when anp.coment_tmj_f is null and cv.coment_tmj_f is null and cv.sens='Double sens' then null 
-        else null 
-        end as coment_tmj_f,
-    case when anp.obs_tmja is not null then anp.obs_tmja else cv.obs_tmja end as obs_tmja,
-    case when anp.obs_pc_pl is not null then anp.obs_pc_pl else cv.obs_pc_pl end as obs_pc_pl,
-    case when anp.obs_supl is not null then anp.obs_supl||';'||'nouveau point traf{{ annee }}' else 'nouveau point traf{{ annee }}' end as obs_supl,
-    case when anp.id_sect is not null then anp.id_sect else cv.id_sect end as id_sect,
-    case when anp.src_sect is not null then anp.src_sect else cv.src_sect end as src_sect,
-    case when anp.autor_sect is not null then anp.autor_sect else cv.autor_sect end as autor_sect,
-    case when anp.obs_vts is not null then anp.obs_vts else cv.obs_vts end as obs_vts,
-    case when anp.id_cpt1 is not null then anp.id_cpt1 else cv.id_cpt1 end as id_cpt1,
-    
-    -- Colonnes de creer_vue_19 non présentes dans le seed
-    cv.id,
+    -- Colonnes du seed
+    cv.id_comptag,
     cv.id_ign,
+    cv.id_simpli,
+    
+    -- Toutes les autres colonnes du modèle
+    cv.id,
     cv.nature,
     cv.nom_coll_g,
     cv.nom_coll_d,
@@ -48,8 +32,11 @@ select
     cv.dept_2024,
     cv.dept_2023,
     cv.long_km,
+    'otv' as src_cpt,
+    'linearisation' as coment_cpt,
     cv.ann_pt,
     cv.coment_tmj,
+    cv.coment_tmj_f,
     cv.ann_pc_pl,
     cv.tmja,
     cv.pc_pl,
@@ -58,6 +45,7 @@ select
     cv.pl,
     cv.pl_final,
     cv.pl_km,
+    cv.id_cpt1,
     cv.id_cpt2,
     cv.obs_tmj1,
     cv.obs_tmj2,
@@ -71,6 +59,13 @@ select
     cv.vts_pl_vdf,
     cv.vts_gest,
     cv.id_vts,
+    null as obs_tmja,
+    null as obs_pc_pl,
+    null as obs_supl,
+    cv.id_sect,
+    cv.src_sect,
+    cv.autor_sect,
+    cv.obs_vts,
     cv.vts_osm,
     cv.vts_modif,
     cv.vts_vl_f,
@@ -96,7 +91,6 @@ select
     cv.id_cnt2,
     cv.id_struct_rout,
     cv.id_sect_hom,
-    cv.id_simpli,
     cv.attr_modif,
     cv.id_bdc,
     cv.geom,
@@ -105,19 +99,70 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp 
-join {{ ref('creer_vue_' ~ dept)}} cv 
-    on ((cv.id_ign = any(string_to_array(anp.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(anp.id_simpli, ';')::integer[])))
+from {{ ref('dept' ~ dept ~ '_update_oubli_linearisation') }} uol
+join {{ ref('lin_update_modif_linearisation_' ~ dept)}} cv
+    on ((cv.id_ign = any(string_to_array(uol.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(uol.id_simpli, ';')::integer[])))
 
 UNION
 
 -- Lignes de creer_vue_19 non présentes dans le seed
 select 
-    -- Colonnes correspondant au seed (avec valeurs de creer_vue_19)
     cv.id_comptag,
+    cv.id_ign,
+    cv.id_simpli,
+    
+    -- Toutes les autres colonnes du modèle
+    cv.id,
+    cv.nature,
+    cv.nom_coll_g,
+    cv.nom_coll_d,
+    cv.numero,
+    cv.importance,
+    cv.cl_admin,
+    cv.gestion,
+    cv.fictif,
+    cv.largeur,
+    cv.nb_voies,
+    cv.sens,
+    cv.etat,
+    cv.inseecom_g,
+    cv.inseecom_d,
+    cv.id_voie_g,
+    cv.id_voie_d,
+    cv.urbain,
+    cv.vit_moy_vl,
+    cv.restr_p,
+    cv.dept,
+    cv.dept_2024,
+    cv.dept_2023,
+    cv.long_km,
     cv.src_cpt,
     cv.coment_cpt,
+    cv.ann_pt,
+    cv.coment_tmj,
     cv.coment_tmj_f,
+    cv.ann_pc_pl,
+    cv.tmja,
+    cv.pc_pl,
+    cv.veh_km,
+    cv.tmja_final,
+    cv.pl,
+    cv.pl_final,
+    cv.pl_km,
+    cv.id_cpt1,
+    cv.id_cpt2,
+    cv.obs_tmj1,
+    cv.obs_tmj2,
+    cv.tmja_cpt1,
+    cv.tmja_cpt2,
+    cv.codau_cat,
+    cv.milieu,
+    cv.codau,
+    cv.type_vdf,
+    cv.vts_vl_vdf,
+    cv.vts_pl_vdf,
+    cv.vts_gest,
+    cv.id_vts,
     cv.obs_tmja,
     cv.obs_pc_pl,
     cv.obs_supl,
@@ -125,57 +170,6 @@ select
     cv.src_sect,
     cv.autor_sect,
     cv.obs_vts,
-    cv.id_cpt1,
-    
-    -- Colonnes de creer_vue_19
-    cv.id,
-    cv.id_ign,
-    cv.nature,
-    cv.nom_coll_g,
-    cv.nom_coll_d,
-    cv.numero,
-    cv.importance,
-    cv.cl_admin,
-    cv.gestion,
-    cv.fictif,
-    cv.largeur,
-    cv.nb_voies,
-    cv.sens,
-    cv.etat,
-    cv.inseecom_g,
-    cv.inseecom_d,
-    cv.id_voie_g,
-    cv.id_voie_d,
-    cv.urbain,
-    cv.vit_moy_vl,
-    cv.restr_p,
-    cv.dept,
-    cv.dept_2024,
-    cv.dept_2023,
-    cv.long_km,
-    cv.ann_pt,
-    cv.coment_tmj,
-    cv.ann_pc_pl,
-    cv.tmja,
-    cv.pc_pl,
-    cv.veh_km,
-    cv.tmja_final,
-    cv.pl,
-    cv.pl_final,
-    cv.pl_km,
-    cv.id_cpt2,
-    cv.obs_tmj1,
-    cv.obs_tmj2,
-    cv.tmja_cpt1,
-    cv.tmja_cpt2,
-    cv.codau_cat,
-    cv.milieu,
-    cv.codau,
-    cv.type_vdf,
-    cv.vts_vl_vdf,
-    cv.vts_pl_vdf,
-    cv.vts_gest,
-    cv.id_vts,
     cv.vts_osm,
     cv.vts_modif,
     cv.vts_vl_f,
@@ -201,7 +195,6 @@ select
     cv.id_cnt2,
     cv.id_struct_rout,
     cv.id_sect_hom,
-    cv.id_simpli,
     cv.attr_modif,
     cv.id_bdc,
     cv.geom,
@@ -210,12 +203,11 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('creer_vue_' ~ dept)}} cv
+from {{ ref('lin_update_modif_linearisation' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp
-    where cv.id_ign = any(string_to_array(anp.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(anp.id_simpli, ';')::integer[])
+    from {{ ref('dept' ~ dept ~ '_update_oubli_linearisation') }} uol
+    where cv.id_ign = any(string_to_array(uol.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(uol.id_simpli, ';')::integer[])
 )
-
 
 {% endmacro %}
