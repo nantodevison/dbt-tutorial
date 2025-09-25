@@ -128,3 +128,20 @@ macros:
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: update_oubli_lin
+    description: >
+      Corrige les oublis de linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_oubli_linearisation).
+      Concerne uniquement la correction d'oublis pour des points de comptage existants : rattachement de lignes BdTopo qui auraient dû être incluses 
+      dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation 
+      (voir macro [update_modif_linearisation_lin](#update_modif_linearisation_lin)).
+      Cette macro ajoute les lignes oubliées en les rattachant au bon id_comptag, avec des valeurs standardisées :
+      src_cpt='otv', coment_cpt='linearisation', obs_supl=null, obs_tmja=null, obs_pc_pl=null.
+      Les lignes non présentes dans le seed conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
