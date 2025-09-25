@@ -11,5 +11,5 @@
     appel avec spécification de variable: 
         dbt run --vars '{"dept": "19"}'
     Dans sa forme basée sur les des variables passées manuellement :
-        {{affecter_point_lin(dept='19')}}   
+        {{affecter_point_lin(dept='19', annee=2024)}}   
 #}

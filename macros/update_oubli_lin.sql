@@ -203,7 +203,7 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('lin_update_modif_linearisation' ~ dept)}} cv
+from {{ ref('lin_update_modif_linearisation_' ~ dept)}} cv
 where not exists (
     select 1 
     from {{ ref('dept' ~ dept ~ '_update_oubli_linearisation') }} uol
