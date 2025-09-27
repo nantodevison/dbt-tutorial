@@ -1,11 +1,11 @@
 {{
   config(
     schema = 'affectation_pt_mano',
-    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_oubli_linearisation_l'
+    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_oubli_erreur_linearisation_l'
     )
 }}
 
-{{ update_oubli_lin() }}
+{{ update_oubli_erreur_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 

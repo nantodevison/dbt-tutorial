@@ -110,7 +110,7 @@ seeds:
       - name: id_simpli
         description: "Nouvel identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
 
-  - name: dept19_update_oubli_linearisation
+  - name: dept19_update_oubli_erreur_linearisation
     description: >
       Correction manuelle d'oublis de linéarisation de comptages existants dans le dept 19
       millésime 2024 : affectation de lignes BdTopo qui auraient dû être rattachées à un point de comptage existant

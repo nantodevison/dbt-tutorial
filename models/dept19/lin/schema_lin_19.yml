@@ -419,11 +419,11 @@ models:
       - name: nb_nod_non_topo
       - name: id_struct
 
-  - name: lin_update_oubli_linearisation_19
+  - name: lin_update_oubli_erreur_linearisation_19
     description: >
-      Ce modèle se base sur la macro [`update_oubli_lin`](/#!/macro/macro.test_otv.update_oubli_lin).
-      Il sert à corriger les oublis de linéarisation : rattachement de lignes BdTopo qui auraient dû être incluses 
-      dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation 
+      Ce modèle se base sur la macro [`update_oubli_erreur_lin`](/#!/macro/macro.test_otv.update_oubli_erreur_lin).
+      Il sert à corriger les oublis de linéarisation : rattachement de lignes BdTopo qui auraient dû être incluses
+      dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation
       (voir modèle [`lin_update_modif_linearisation_19`](/#!/model/model.test_otv.lin_update_modif_linearisation_19)).
       Cette macro ajoute les lignes oubliées en les rattachant au bon id_comptag, avec des valeurs standardisées :
       src_cpt='otv', coment_cpt='linearisation', obs_supl=null, obs_tmja=null, obs_pc_pl=null.
@@ -538,7 +538,7 @@ models:
       Ce modèle se base sur la macro [`update_etirer_lin`](/#!/macro/macro.test_otv.update_etirer_lin).
       Il sert à étirer la linéarisation : extension de la linéarisation d'un point de comptage existant
       en y rattachant des lignes BdTopo supplémentaires (étirement de la zone couverte). S'appuie sur le résultat 
-      de la correction d'oublis de linéarisation (voir modèle [`lin_update_oubli_linearisation_19`](/#!/model/model.test_otv.lin_update_oubli_linearisation_19)).
+      de la correction d'oublis de linéarisation (voir modèle [`lin_update_oubli_erreur_linearisation_19`](/#!/model/model.test_otv.lin_update_oubli_erreur_linearisation_19)).
       Ajoute les lignes supplémentaires en les rattachant au bon id_comptag, avec des valeurs standardisées :
       src_cpt='otv', coment_cpt='linearisation', obs_supl='linearisation etiree traf{annee}', obs_tmja=null, obs_pc_pl=null.
       Les lignes non présentes dans le seed conservent leurs attributs originaux.

@@ -1,4 +1,4 @@
-{% macro update_oubli_lin(dept=var('dept')) %}
+{% macro update_oubli_erreur_lin(dept=var('dept')) %}
 
 -- Lignes présentes dans le seed (avec jointure)
 select 
@@ -99,7 +99,7 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_update_oubli_linearisation') }} uol
+from {{ ref('dept' ~ dept ~ '_update_oubli_erreur_linearisation') }} uol
 join {{ ref('lin_update_modif_linearisation_' ~ dept)}} cv
     on ((cv.id_ign = any(string_to_array(uol.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(uol.id_simpli, ';')::integer[])))
 
@@ -206,7 +206,7 @@ select
 from {{ ref('lin_update_modif_linearisation_' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_oubli_linearisation') }} uol
+    from {{ ref('dept' ~ dept ~ '_update_oubli_erreur_linearisation') }} uol
     where cv.id_ign = any(string_to_array(uol.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(uol.id_simpli, ';')::integer[])
 )
 
