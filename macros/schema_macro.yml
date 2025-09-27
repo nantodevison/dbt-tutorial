@@ -162,3 +162,20 @@ macros:
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: update_vers_estimation_lin
+    description: >
+      Fait basculer des lignes BDTopo linéarisées vers un statut d'estimation à partir de choix manuels compris dans le fichier de seed (deptXX_update_vers_estimation_linearisation).
+      S'appuie sur le résultat de l'étirement de linéarisation 
+      (voir macro [update_etirer_lin](#update_etirer_lin)).
+      Cette macro transforme les lignes spécifiées en supprimant les références de comptage (id_comptag=null, src_cpt=null) 
+      et en passant en mode estimation (coment_cpt='estimation', obs_tmja='auto', obs_pc_pl='auto').
+      L'historique de transformation est conservé dans obs_supl avec l'ancien id_comptag et l'année précédente.
+      Les lignes non présentes dans le seed conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
