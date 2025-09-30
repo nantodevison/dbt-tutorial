@@ -812,3 +812,56 @@ models:
       - name: list_id_inter
       - name: nb_nod_non_topo
       - name: id_struct
+
+  - name: lin_verif_pt_sans_geom_19
+    description: >
+      Ce modèle se base sur la macro [`verifier_pt_sans_geom_lin`](/#!/macro/macro.test_otv.verifier_pt_sans_geom_lin).
+      Il vérifie s'il existe des points de comptage qui ont des valeurs de trafic (indicateur TMJA) 
+      mais qui n'ont pas de géométrie associée dans la table compteur.
+      Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs 
+      avec des données de trafic ont bien une géométrie.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          arguments:
+            value: 0
+            description: "Vérifier que le modèle ne contient aucune ligne - tous les compteurs avec des données TMJA doivent avoir une géométrie"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: gestionnai
+        description: "Gestionnaire de la route"
+      - name: type_poste
+        description: "Type de poste de comptage"
+      - name: annee
+        description: "Année de la donnée de comptage (la plus récente pour ce compteur)"
+        data_tests:
+          - not_null
+      - name: periode
+        description: "Période de comptage"
+      - name: id
+        description: "Identifiant interne de la donnée de comptage"
+        data_tests:
+          - not_null
+      - name: id_comptag_uniq
+        description: "Identifiant unique de de la table des indicateurs agrégés"
+        data_tests:
+          - not_null
+      - name: indicateur
+        description: "Type d'indicateur (toujours 'tmja' dans ce modèle)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['tmja']
+      - name: valeur
+        description: "Valeur de l'indicateur TMJA"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description: "Vérifier que la valeur TMJA est positive"
+      - name: fichier
+        description: "Fichier source de la donnée de comptage"

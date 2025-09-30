@@ -97,6 +97,15 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: verifier_pt_sans_geom_lin
+    description: >
+      Identifie les points de comptage dans la table des compteurs qui n'ont pas de géométries mais ont des valeurs de trafic.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
   - name: update_nouveau_point_lin
     description: >
       Met à jour les des lignes BDTopo à partir d'un relevé manuel compris dans le fichier de seed (deptXX_update_nouveau_pt).
