@@ -144,6 +144,7 @@ models:
         description: "Géométrie du point de comptage "
       - name: gestionnai
         description: "gestionnaire du point de comptage."
+
   - name: lin_verif_gest_bdtopo_compare_19
     description: >
       Ce modèle permet une comparaison facilitée des résultats des modèles 
@@ -154,6 +155,7 @@ models:
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N"
       - name: gestionnaire_annee_2
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N-1"
+
   - name: lin_verif_attr_modif_19
     description: >
       Ce modèle met en evidence les attributs (`nature`, `coment_cpt`, `numero`, 
@@ -205,6 +207,110 @@ models:
         description: "Observations supplémentaires millésime actuel"
       - name: obs_n_1
         description: "Observations supplémentaires millésime précédent"
+
+  - name: lin_verif_pt_sans_geom_19
+    description: >
+      Ce modèle se base sur la macro [`verifier_pt_sans_geom_lin`](/#!/macro/macro.test_otv.verifier_pt_sans_geom_lin).
+      Il vérifie s'il existe des points de comptage qui ont des valeurs de trafic (indicateur TMJA) 
+      mais qui n'ont pas de géométrie associée dans la table compteur.
+      Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs 
+      avec des données de trafic ont bien une géométrie.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          arguments:
+            value: 0
+            description: "Vérifier que le modèle ne contient aucune ligne - tous les compteurs avec des données TMJA doivent avoir une géométrie"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: gestionnai
+        description: "Gestionnaire de la route"
+      - name: type_poste
+        description: "Type de poste de comptage"
+      - name: annee
+        description: "Année de la donnée de comptage (la plus récente pour ce compteur)"
+        data_tests:
+          - not_null
+      - name: periode
+        description: "Période de comptage"
+      - name: id
+        description: "Identifiant interne de la donnée de comptage"
+        data_tests:
+          - not_null
+      - name: id_comptag_uniq
+        description: "Identifiant unique de de la table des indicateurs agrégés"
+        data_tests:
+          - not_null
+      - name: indicateur
+        description: "Type d'indicateur (toujours 'tmja' dans ce modèle)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['tmja']
+      - name: valeur
+        description: "Valeur de l'indicateur TMJA"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description: "Vérifier que la valeur TMJA est positive"
+      - name: fichier
+        description: "Fichier source de la donnée de comptage"
+
+  - name: lin_verif_pt_linearise_absent_comptage_19
+    description: >
+      Ce modèle se base sur la macro [`verifier_pt_linearise_absent_comptage_lin`](/#!/macro/macro.test_otv.verifier_pt_linearise_absent_comptage_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['creer_vue_19'](/#!/model/model.test_otv.creer_vue_19)
+      mais absent dans la table des comptages (schéma comptage).
+      Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs référencés sont bien présents dans la table des comptages.
+      Si un compteur est absent, le modele teste s'il ets présent dans la table des compteurs associés (schema associe). Un test est réalisé pour vérifier
+      qu'un comptage absent est forcément un comptage assoc. Si ce n'est pas le cas, il faut chercher pourquoi.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          arguments:
+            value: 0
+            row_condition: "is_assoc = false"
+            description: "Vérifier que le modèle ne contient aucune ligne qui n'est pas un comptage associé - tous les compteurs référencés sont présents dans le schéma comptage ou comptage assoc"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "CASE WHEN is_assoc  = true THEN id_cpteur_ref IS NOT NULL END"
+            description: "Vérifier la cohérence is_assoc et id_cpteur_ref : si is_assoc=true alors id_cpteur_ref doit être renseigné"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: is_assoc
+        description: "Indique si le compteur est est un compteur associé ou non"
+        data_tests:
+          - not_null
+      - name: id_cpteur_ref
+        description: "Identifiant du compteur de référence (pour les compteurs associés)"
+
+  - name: lin_update_pt_linearise_devenu_assoc_19
+    description: >
+      Ce modèle se base sur la macro [`verifier_pt_linearise_devenu_assoc_lin`](/#!/macro/macro.test_otv.verifier_pt_linearise_devenu_assoc_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['creer_vue_19'](/#!/model/model.test_otv.creer_vue_19)
+      qui étaient linéarisés sur un point de comptage dans le millésime précédent mais qui sont devenus des compteurs associés dans le millésime actuel.
+      pour les lignes concernées par ces comptages devenenus associés, le modèle récupère l'id_comptag du compteur de référence (id_cpteur_ref). Pour le reste, les valeurs de
+      la vue de référence sont conservées.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: |
+              NOT EXISTS (
+                SELECT 1 
+                FROM {{ ref('lin_verif_pt_linearise_absent_comptage_19') }} verif
+                WHERE verif.id_cpteur_ref = id_comptag 
+                AND (src_cpt != 'otv' OR coment_cpt != 'linearisation')
+              )
+            description: "Vérifier que les lignes dont l'id_comptag correspond à un id_cpteur_ref ont bien src_cpt='otv' et coment_cpt='linearisation'"
+
   - name: lin_update_nouveau_point_19
     description: >
       Ce modèle se base sur la macro [`update_nouveau_point_lin`](/#!/macro/macro.test_otv.update_nouveau_point_lin).
@@ -812,56 +918,3 @@ models:
       - name: list_id_inter
       - name: nb_nod_non_topo
       - name: id_struct
-
-  - name: lin_verif_pt_sans_geom_19
-    description: >
-      Ce modèle se base sur la macro [`verifier_pt_sans_geom_lin`](/#!/macro/macro.test_otv.verifier_pt_sans_geom_lin).
-      Il vérifie s'il existe des points de comptage qui ont des valeurs de trafic (indicateur TMJA) 
-      mais qui n'ont pas de géométrie associée dans la table compteur.
-      Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs 
-      avec des données de trafic ont bien une géométrie.
-    data_tests:
-      - dbt_expectations.expect_table_row_count_to_equal:
-          arguments:
-            value: 0
-            description: "Vérifier que le modèle ne contient aucune ligne - tous les compteurs avec des données TMJA doivent avoir une géométrie"
-    columns:
-      - name: id_comptag
-        description: "Identifiant du compteur"
-        data_tests:
-          - not_null
-          - unique
-      - name: gestionnai
-        description: "Gestionnaire de la route"
-      - name: type_poste
-        description: "Type de poste de comptage"
-      - name: annee
-        description: "Année de la donnée de comptage (la plus récente pour ce compteur)"
-        data_tests:
-          - not_null
-      - name: periode
-        description: "Période de comptage"
-      - name: id
-        description: "Identifiant interne de la donnée de comptage"
-        data_tests:
-          - not_null
-      - name: id_comptag_uniq
-        description: "Identifiant unique de de la table des indicateurs agrégés"
-        data_tests:
-          - not_null
-      - name: indicateur
-        description: "Type d'indicateur (toujours 'tmja' dans ce modèle)"
-        data_tests:
-          - accepted_values:
-              arguments:
-                values: ['tmja']
-      - name: valeur
-        description: "Valeur de l'indicateur TMJA"
-        data_tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                description: "Vérifier que la valeur TMJA est positive"
-      - name: fichier
-        description: "Fichier source de la donnée de comptage"

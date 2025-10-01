@@ -106,6 +106,30 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
+  - name: verifier_pt_linearise_absent_comptage_lin
+    description: >
+      Identifie les référence à des comptages sur la table linéarisée qui n'ont sont absent de la table des compteurs et comptages.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: update_pt_linearise_devenu_assoc_lin
+    description: >
+      Met à jour les lignes BDTopo linéarisées qui étaient associées à des points de comptage qui sont devenu des comptages associés.
+      Cette macro s'appuie sur le résultat de la vérification des points de comptage absents 
+      (voir macro [verifier_pt_linearise_absent_comptage_lin](#verifier_pt_linearise_absent_comptage_lin)).
+      Elle remplace l'id_comptag par l'id_cpteur_ref pour les lignes concernées, modifie obs_supl pour la traçabilité, s'assure que src_cpt = 'otv' et comen_cpt='linearisation' 
+      tout en conservant toutes les autres valeurs originales du fichier de linéarisation.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
   - name: update_nouveau_point_lin
     description: >
       Met à jour les des lignes BDTopo à partir d'un relevé manuel compris dans le fichier de seed (deptXX_update_nouveau_pt).
