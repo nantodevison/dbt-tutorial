@@ -130,6 +130,31 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
+  - name: verifier_pt_emprise_dept_non_linearise_lin
+    description: >
+      Identifie les points de comptage situés dans le département donné qui ne sont pas encore linéarisés.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+      S'appuie sur les sources `cptg.compteur`, `cptg.comptage`, `admi.dpt_bdt_na_ed~ (annee | string)[-2:] ~_s` 
+      et la ref `lin_update_pt_linearise_devenu_assoc_{dept}`.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: verifier_pt_attr_dept_non_linearise_lin
+    description: >
+      Identifie les points de comptage avec un attribut dept correspondant au département à linéarisé, mais qui ne le sont pas.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+      S'appuie sur les sources `cptg.compteur`, `cptg.vue_compteur_last_annee_know_tmja_pc_pl`
+      et la ref `lin_update_pt_linearise_devenu_assoc_{dept}`.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
   - name: update_nouveau_point_lin
     description: >
       Met à jour les des lignes BDTopo à partir d'un relevé manuel compris dans le fichier de seed (deptXX_update_nouveau_pt).
