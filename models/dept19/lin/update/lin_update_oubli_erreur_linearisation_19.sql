@@ -1,6 +1,6 @@
 {{
   config(
-    schema = 'affectation_pt_mano',
+    schema = 'update',
     alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_oubli_erreur_linearisation_l'
     )
 }}

@@ -203,7 +203,7 @@ select
 from {{ref('creer_vue_' ~ dept)}} cv
 where not exists (
     select 1 
-    from lineaire_verif.lin_verif_pt_linearise_absent_comptage_19 vpl
+    from {{ref('lin_verif_pt_linearise_absent_comptage_' ~ dept)}} vpl
     where vpl.id_comptag = cv.id_comptag)
 
 {% endmacro %}

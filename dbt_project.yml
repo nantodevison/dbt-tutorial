@@ -48,6 +48,7 @@ vars:
   annee: 2024
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']
+  dept_limitrophes: ['03','32','36','37','46','49','65','82']
 
 # configurations supplémentaires
 flags:
@@ -64,6 +65,7 @@ flags:
 models:
   test_otv:    # Nom du projet
     +materialized: view
+
 
 # Configuring Seeds
 seeds:

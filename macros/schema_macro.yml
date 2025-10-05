@@ -144,6 +144,65 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
+  - name: cte_update_auto_pt_non_linearise_lin__project_cpt
+    description: >
+      Identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
+      Effectue une recherche spatiale (distance < 50m) et calcule un score de similarité textuelle 
+      entre le nom de route du compteur et le numéro/nom du tronçon.
+      S'appuie sur les modèles [`lin_verif_pt_non_linearise_{dept}`](/#!/models/models.test_otv.lin_verif_pt_non_linearise_{dept}) et
+      et [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
+      Utilise aussi la source `cptg.compteur` 
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"  
+
+  - name: cte_update_auto_pt_non_linearise_lin__rang
+    description: >
+      Classe les tronçons candidats issus de la macro [cte_update_auto_pt_non_linearise_lin__project_cpt](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__project_cpt) 
+      pour chaque compteur selon une logique différentielle :
+      entrée/sortie sur bretelles (distance), autres compteurs (similarité puis distance).
+      Macro qui imbrique cte_update_auto_pt_non_linearise_lin__project_cpt 
+      pour éviter les cycles de dépendances.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"   
+
+  - name: cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc
+    description: >
+      Sélectionne le meilleur tronçon candidat (rang 1) pour chaque compteur non linéarisé,
+      issus de la macro [cte_update_auto_pt_non_linearise_lin__rang](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__rang).
+      Utilise DISTINCT ON pour ne garder qu'une seule proposition par compteur.
+      Macro finale du processus de matching automatique (imbrique cte_update_auto_pt_non_linearise_lin__rang).
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: update_auto_pt_non_linearise_lin
+    description: >
+      Pipeline complet de linéarisation automatique des points de comptage non linéarisés.
+      Utilise la macro [cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc)
+      et la joint aux données issues du modèle [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
+      pour proposer des associations compteur-tronçon basées sur la proximité spatiale et la similarité textuelle, et compléter avec les lignes non concernées.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
   - name: verifier_pt_attr_dept_non_linearise_lin
     description: >
       Identifie les points de comptage avec un attribut dept correspondant au département à linéarisé, mais qui ne le sont pas.
