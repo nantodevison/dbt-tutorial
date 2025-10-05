@@ -9,9 +9,4 @@ else dense_rank()over(partition by id_comptag order by coalesce(sim,null,0) desc
 --,imp_sup,imp_sup_src,imp_sup_tgt
 from ({{cte_update_auto_pt_non_linearise_lin__project_cpt(annee, dept)}}) t1
 
-{#  Documentation d'utilisation :
-    j'aurais aimé faire appel à des macros, mais j'ai l'erreur de dépendance dbt was unable to infer all dependencies for the model "lin_cte_update_auto_pt_non_linearise_19__rang"
-    je reste donc sur du code direct dans le modele
-#}
-
 {% endmacro %}
