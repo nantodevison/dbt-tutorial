@@ -101,7 +101,7 @@ select
     cv.id_struct
 from {{ ref('dept' ~ dept ~ '_update_oubli_erreur_linearisation') }} uol
 join {{ ref('lin_update_modif_linearisation_' ~ dept)}} cv
-    on ((cv.id_ign = any(string_to_array(uol.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(uol.id_simpli, ';')::integer[])))
+    on (array[cv.id_ign]::text[] && uol.id_ign) or (cv.id_simpli && uol.id_simpli)
 
 UNION
 
@@ -207,7 +207,7 @@ from {{ ref('lin_update_modif_linearisation_' ~ dept)}} cv
 where not exists (
     select 1 
     from {{ ref('dept' ~ dept ~ '_update_oubli_erreur_linearisation') }} uol
-    where cv.id_ign = any(string_to_array(uol.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(uol.id_simpli, ';')::integer[])
+    where (array[cv.id_ign]::text[] && uol.id_ign) or (cv.id_simpli && uol.id_simpli)
 )
 
 {% endmacro %}

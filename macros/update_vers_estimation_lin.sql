@@ -102,7 +102,7 @@ select
     cv.id_struct
 from {{ ref('dept' ~ dept ~ '_update_vers_estimation_linearisation') }} vel
 join {{ ref('lin_update_etire_lin_' ~ dept)}} cv
-    on ((cv.id_ign = any(string_to_array(vel.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(vel.id_simpli, ';')::integer[])))
+    on (array[cv.id_ign]::text[] && vel.id_ign) or (cv.id_simpli && vel.id_simpli) or (cv.id_comptag = vel.id_comptag)
 
 UNION
 
@@ -208,7 +208,7 @@ from {{ ref('lin_update_etire_lin_' ~ dept)}} cv
 where not exists (
     select 1 
     from {{ ref('dept' ~ dept ~ '_update_vers_estimation_linearisation') }} vel
-    where cv.id_ign = any(string_to_array(vel.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(vel.id_simpli, ';')::integer[])
+    where (array[cv.id_ign]::text[] && vel.id_ign) or (cv.id_simpli && vel.id_simpli) or (cv.id_comptag = vel.id_comptag)
 )
 
 {% endmacro %}

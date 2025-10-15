@@ -1,5 +1,6 @@
 {{ config(
-    schema='update'
+    schema='update',
+    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_update_auto_pt_non_linearise_l'
 ) }}
 
 {{update_auto_pt_non_linearise_lin()}}

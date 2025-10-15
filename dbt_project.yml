@@ -64,11 +64,59 @@ flags:
 # files using the `{{ config(...) }}` macro.
 models:
   test_otv:    # Nom du projet
-    +materialized: view
-
+    dept19:
+      lin:
+        before_update_mano:  # Nom du sous-dossier
+          cte:  # Nom du sous-dossier
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+          update:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+        update_mano:
+          +materialized: table
+          +indexes:
+            - columns: ['id_ign']
+              type: btree
+            - columns: ['id_comptag']
+              type: btree
+            - columns: ['id_simpli']
+              type: gin
 
 # Configuring Seeds
 seeds:
-  +schema: affectation_pt_mano
-  +quote_columns: false
-  +delimiter: ','
+  test_otv:    # Nom du projet
+    dept19:
+      lin:
+        +schema: affectation_pt_mano
+        +quote_columns: false
+        +delimiter: ','
+        +post-hook: |
+            -- D'abord modifier le type des colonnes
+            ALTER TABLE {{ this }} 
+            ALTER COLUMN id_simpli TYPE integer[] USING (
+              CASE 
+                WHEN id_simpli IS NOT NULL AND id_simpli != '' 
+                THEN string_to_array(id_simpli, ';')::integer[] 
+                ELSE NULL 
+              END
+            ),
+            ALTER COLUMN id_ign TYPE text[] USING (
+              CASE 
+                WHEN id_ign IS NOT NULL AND id_ign != '' 
+                THEN string_to_array(id_ign, ';')::text[] 
+                ELSE NULL 
+              END
+            );

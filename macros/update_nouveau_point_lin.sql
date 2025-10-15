@@ -4,8 +4,8 @@
 select 
     -- Colonnes du seed, avec fallback sur cv si null
     anp.id_comptag,
-    case when anp.src_cpt is not null then anp.src_cpt else cv.src_cpt end as src_cpt,
-    case when anp.coment_cpt is not null then anp.coment_cpt else cv.coment_cpt end as coment_cpt,
+    'otv' as src_cpt,
+    'linearisation' as coment_cpt,
     case  
         when anp.coment_tmj_f is not null then anp.coment_tmj_f
         when anp.coment_tmj_f is null and cv.coment_tmj_f is not null then cv.coment_tmj_f
@@ -106,14 +106,14 @@ select
     cv.nb_nod_non_topo,
     cv.id_struct
 from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp 
-join {{ ref('creer_vue_' ~ dept)}} cv 
-    on ((cv.id_ign = any(string_to_array(anp.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(anp.id_simpli, ';')::integer[])))
+join {{ ref('lin_update_auto_pt_non_linearise_' ~ dept)}} cv 
+    on (array[cv.id_ign]::text[] && anp.id_ign) or (cv.id_simpli && anp.id_simpli)
 
 UNION
 
--- Lignes de creer_vue_19 non présentes dans le seed
+-- Lignes de lin_update_auto_pt_non_linearise_19 non présentes dans le seed
 select 
-    -- Colonnes correspondant au seed (avec valeurs de creer_vue_19)
+    -- Colonnes correspondant au seed (avec valeurs de lin_update_auto_pt_non_linearise_19)
     cv.id_comptag,
     cv.src_cpt,
     cv.coment_cpt,
@@ -210,11 +210,11 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('creer_vue_' ~ dept)}} cv
+from {{ ref('lin_update_auto_pt_non_linearise_' ~ dept)}} cv
 where not exists (
     select 1 
     from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp
-    where cv.id_ign = any(string_to_array(anp.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(anp.id_simpli, ';')::integer[])
+    where (array[cv.id_ign]::text[] && anp.id_ign) or (cv.id_simpli && anp.id_simpli)
 )
 
 

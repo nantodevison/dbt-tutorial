@@ -204,6 +204,7 @@ from {{ref('lin_update_pt_linearise_devenu_assoc_'~dept)}} t1
 where not exists (
     select 1 
     from {{ref('lin_cte_update_auto_pt_non_linearise_'~dept~'__choix_cpt_tronc')}} t2
-    where t2.id_simpli = t1.id_simpli)
+    where (t2.id_simpli = t1.id_simpli) and (t1.coment_cpt = 'estimation' and t2.coment_cpt = 'estimation' 
+        and t2.sim > 0.2 and t2.dist < 20))
 
 {% endmacro %}

@@ -105,7 +105,7 @@ select
     cv.id_struct
 from {{ ref('dept' ~ dept ~ '_update_modif_linearisation') }} ml
 join {{ ref('lin_update_nouveau_point_' ~ dept) }} cv
-    on ((cv.id_ign = any(string_to_array(ml.id_ign, ';'))) or (cv.id_simpli[1] = any(string_to_array(ml.id_simpli, ';')::integer[])))
+    on (array[cv.id_ign]::text[] && ml.id_ign) or (cv.id_simpli && ml.id_simpli)
 
 UNION
 
@@ -210,7 +210,7 @@ from {{ ref('lin_update_nouveau_point_' ~ dept) }} cv
 where not exists (
     select 1 
     from {{ ref('dept' ~ dept ~ '_update_modif_linearisation') }} ml
-    where cv.id_ign = any(string_to_array(ml.id_ign, ';')) or cv.id_simpli[1] = any(string_to_array(ml.id_simpli, ';')::integer[])
+    where (array[cv.id_ign]::text[] && ml.id_ign) or (cv.id_simpli && ml.id_simpli)
 )
 
 {% endmacro %}

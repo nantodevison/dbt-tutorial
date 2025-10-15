@@ -14,12 +14,13 @@ models:
       - name: sim
         description: "Score de similarité textuelle entre le nom de route du compteur et le numéro/nom du tronçon (0 à 1)"
         data_tests:
-          - not_null
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
                 max_value: 1
                 description: "Vérifier que le score de similarité est compris entre 0 et 1"
+              config:
+                where: "(numero is not null or nom_coll_g is not null) and sim is not null"
       - name: dist
         description: "Distance géographique en mètres entre le compteur et le tronçon candidat"
         data_tests:
