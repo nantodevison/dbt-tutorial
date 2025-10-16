@@ -296,3 +296,15 @@ macros:
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: verifier_stats_linearisation_pt_comptage_lin
+    description: >
+      Calcule les statistiques des nouveaux points de comptage linéarisés pour une année donnée :
+      nombre de compteurs distincts et kilométrage total concerné.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime"
+      - name: dept  
+        type: string
+        description: "Code département"
