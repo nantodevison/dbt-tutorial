@@ -96,3 +96,215 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_pt_sans_geom_lin
+    description: >
+      Identifie les points de comptage dans la table des compteurs qui n'ont pas de géométries mais ont des valeurs de trafic.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: verifier_pt_linearise_absent_comptage_lin
+    description: >
+      Identifie les référence à des comptages sur la table linéarisée qui n'ont sont absent de la table des compteurs et comptages.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: update_pt_linearise_devenu_assoc_lin
+    description: >
+      Met à jour les lignes BDTopo linéarisées qui étaient associées à des points de comptage qui sont devenu des comptages associés.
+      Cette macro s'appuie sur le résultat de la vérification des points de comptage absents 
+      (voir macro [verifier_pt_linearise_absent_comptage_lin](#verifier_pt_linearise_absent_comptage_lin)).
+      Elle remplace l'id_comptag par l'id_cpteur_ref pour les lignes concernées, modifie obs_supl pour la traçabilité, s'assure que src_cpt = 'otv' et comen_cpt='linearisation' 
+      tout en conservant toutes les autres valeurs originales du fichier de linéarisation.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: verifier_pt_emprise_dept_non_linearise_lin
+    description: >
+      Identifie les points de comptage situés dans le département donné qui ne sont pas encore linéarisés.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+      S'appuie sur les sources `cptg.compteur`, `cptg.comptage`, `admi.dpt_bdt_na_ed~ (annee | string)[-2:] ~_s` 
+      et la ref `lin_update_pt_linearise_devenu_assoc_{dept}`.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: cte_update_auto_pt_non_linearise_lin__project_cpt
+    description: >
+      Identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
+      Effectue une recherche spatiale (distance < 50m) et calcule un score de similarité textuelle 
+      entre le nom de route du compteur et le numéro/nom du tronçon.
+      S'appuie sur les modèles [`lin_verif_pt_non_linearise_{dept}`](/#!/models/models.test_otv.lin_verif_pt_non_linearise_{dept}) et
+      et [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
+      Utilise aussi la source `cptg.compteur` 
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"  
+
+  - name: cte_update_auto_pt_non_linearise_lin__rang
+    description: >
+      Classe les tronçons candidats issus de la macro [cte_update_auto_pt_non_linearise_lin__project_cpt](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__project_cpt) 
+      pour chaque compteur selon une logique différentielle :
+      entrée/sortie sur bretelles (distance), autres compteurs (similarité puis distance).
+      Macro qui imbrique cte_update_auto_pt_non_linearise_lin__project_cpt 
+      pour éviter les cycles de dépendances.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"   
+
+  - name: cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc
+    description: >
+      Sélectionne le meilleur tronçon candidat (rang 1) pour chaque compteur non linéarisé,
+      issus de la macro [cte_update_auto_pt_non_linearise_lin__rang](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__rang).
+      Utilise DISTINCT ON pour ne garder qu'une seule proposition par compteur.
+      Macro finale du processus de matching automatique (imbrique cte_update_auto_pt_non_linearise_lin__rang).
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: update_auto_pt_non_linearise_lin
+    description: >
+      Pipeline complet de linéarisation automatique des points de comptage non linéarisés.
+      Utilise la macro [cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc)
+      et la joint aux données issues du modèle [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
+      pour proposer des associations compteur-tronçon basées sur la proximité spatiale et la similarité textuelle, et compléter avec les lignes non concernées.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_pt_attr_dept_non_linearise_lin
+    description: >
+      Identifie les points de comptage avec un attribut dept correspondant au département à linéarisé, mais qui ne le sont pas.
+      Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
+      S'appuie sur les sources `cptg.compteur`, `cptg.vue_compteur_last_annee_know_tmja_pc_pl`
+      et la ref `lin_update_pt_linearise_devenu_assoc_{dept}`.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
+
+  - name: update_nouveau_point_lin
+    description: >
+      Met à jour les des lignes BDTopo à partir d'un relevé manuel compris dans le fichier de seed (`deptXX_update_nouveau_pt`).
+      Ne concerne que les lignes affectées à de nouveaux points de comptage (`id_comptag` non présent dans le millésime précédent).
+      Permet l'affectation soit par `id_ign` (identifiant BdTopo) soit par `id_simpli` (identifiant interne OTR).
+      Cette macro permet de prioriser les colonnes fournit manuellement dans le fichier de
+      seed pour les lignes à réaffecter. Les lignes non présentes dans le seed conservent
+      leurs valeurs originales de la BDTopo. `src_cpt` et `coment_cpt` sont forcés à 'otv' et 'linearisation'.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: update_modif_linearisation_lin
+    description: >
+      Met à jour la linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_modif_linearisation).
+      Concerne uniquement les modifications de linéarisation pour des points de comptage existants (id_comptag déjà présent dans le millésime précédent).
+      s'appuie sur le résultat de la prise en compte des nouveaux points de comptage (voir macro [update_nouveau_point_lin](#update_nouveau_point_lin)).
+      Cette macro modifie uniquement les identifiants de comptage (id_comptag) pour les lignes spécifiées dans le seed,
+      tout en conservant toutes les autres valeurs originales du fichier de linearisation. Les lignes non présentes dans le seed
+      conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: update_oubli_erreur_lin
+    description: >
+      Corrige les oublis de linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_oubli_erreur_linearisation).
+      Concerne uniquement la correction d'oublis pour des points de comptage existants : rattachement de lignes BdTopo qui auraient dû être incluses 
+      dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation 
+      (voir macro [update_modif_linearisation_lin](#update_modif_linearisation_lin)).
+      Cette macro ajoute les lignes oubliées en les rattachant au bon id_comptag, avec des valeurs standardisées :
+      src_cpt='otv', coment_cpt='linearisation', obs_supl=null, obs_tmja=null, obs_pc_pl=null.
+      Les lignes non présentes dans le seed conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: update_etirer_lin
+    description: >
+      Étire la linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_etire_linearisation).
+      Concerne l'extension de la linéarisation d'un point de comptage existant en y rattachant des lignes BdTopo supplémentaires (étirement de la zone couverte).
+      S'appuie sur le résultat de la correction d'oublis de linéarisation 
+      (voir macro [update_oubli_erreur_lin](#update_oubli_erreur_lin)).
+      Cette macro ajoute les lignes supplémentaires en les rattachant au bon id_comptag, avec des valeurs standardisées :
+      src_cpt='otv', coment_cpt='linearisation', obs_supl='linearisation etiree traf{annee}', obs_tmja=null, obs_pc_pl=null.
+      Les lignes non présentes dans le seed conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: update_vers_estimation_lin
+    description: >
+      Fait basculer des lignes BDTopo linéarisées vers un statut d'estimation à partir de choix manuels compris dans le fichier de seed (deptXX_update_vers_estimation_linearisation).
+      S'appuie sur le résultat de l'étirement de linéarisation 
+      (voir macro [update_etirer_lin](#update_etirer_lin)).
+      Cette macro transforme les lignes spécifiées en supprimant les références de comptage (id_comptag=null, src_cpt=null) 
+      et en passant en mode estimation (coment_cpt='estimation', obs_tmja='auto', obs_pc_pl='auto').
+      L'historique de transformation est conservé dans obs_supl avec l'ancien id_comptag et l'année précédente.
+      Les lignes non présentes dans le seed conservent leurs attributs originaux.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: verifier_stats_linearisation_pt_comptage_lin
+    description: >
+      Calcule les statistiques des nouveaux points de comptage linéarisés pour une année donnée :
+      nombre de compteurs distincts et kilométrage total concerné.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime"
+      - name: dept  
+        type: string
+        description: "Code département"

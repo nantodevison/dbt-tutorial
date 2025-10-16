@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: lin_cte_update_auto_pt_non_linearise_19__project_cpt
+    description: >
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`lin_update_auto_pt_non_linearise_19`](#!/#!/model/model.test_otv.lin_update_auto_pt_non_linearise_19).
+      Ce modèle identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
+      Le modèle effectue une recherche spatiale (distance < 50m) entre les compteurs sans linéarisation [`lin_verif_pt_non_linearise_19`](/#!/model/model.test_otv.lin_verif_pt_non_linearise_19)
+      et les tronçons du modèle [`lin_update_pt_linearise_devenu_assoc_19`](/#!/model/model.test_otv.lin_update_pt_linearise_devenu_assoc_19).
+      Pour chaque compteur, il calcule la similarité textuelle entre le nom de route du compteur et le numéro/nom du tronçon,
+      ainsi que la distance géographique. Les résultats sont triés par compteur et distance croissante
+      pour faciliter la sélection du meilleur candidat.
+    columns:
+      - name: sim
+        description: "Score de similarité textuelle entre le nom de route du compteur et le numéro/nom du tronçon (0 à 1)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                description: "Vérifier que le score de similarité est compris entre 0 et 1"
+              config:
+                where: "(numero is not null or nom_coll_g is not null) and sim is not null"
+      - name: dist
+        description: "Distance géographique en mètres entre le compteur et le tronçon candidat"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 50
+                description: "Vérifier que la distance est positive et inférieure à 50m (contrainte du st_dwithin)"
+
+  - name: lin_cte_update_auto_pt_non_linearise_19__rang
+    description: >
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`lin_update_auto_pt_non_linearise_19`](#!/#!/model/model.test_otv.lin_update_auto_pt_non_linearise_19).
+      Ce modèle ajoute un classement (rang) aux tronçons candidats identifiés par la macro
+      [`cte_update_auto_pt_non_linearise_lin__project_cpt`](/#!/macro/macro.test_otv.cte_update_auto_pt_non_linearise_lin__project_cpt).
+
+      Pour chaque compteur (id_comptag), il applique une logique de classement différentielle :
+      - Pour les compteurs  qui comprennent la mention 'entrée' ou 'sortie' sur bretelles : classement par distance croissante uniquement
+      - Pour les compteurs qui comprennent la mention 'entrée' ou 'sortie' hors bretelles : classement par distance croissante uniquement  
+      - Pour les **autres compteurs** : classement par similarité décroissante puis distance croissante
+      Le rang permet de prioriser le meilleur tronçon candidat pour chaque compteur (rang 1 = meilleur choix).
+    columns:
+      - name: rg
+        description: "Rang du tronçon candidat pour ce compteur (1 = meilleur choix). Logique différentielle selon le type de compteur et la nature du tronçon"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                description: "Vérifier que le rang est positif (commence à 1)"
+
+  - name: lin_cte_update_auto_pt_non_linearise_19__choix_cpt_tronc
+    description: >
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`lin_update_auto_pt_non_linearise_19`](#!/#!/model/model.test_otv.lin_update_auto_pt_non_linearise_19).
+      Ce modèle sélectionne le **meilleur tronçon candidat** pour chaque compteur à partir des résultats 
+      classés de la macro [`cte_update_auto_pt_non_linearise_lin__rang`](/#!/macro/macro.test_otv.cte_update_auto_pt_non_linearise_lin__rang).
+      Utilise `SELECT DISTINCT ON (id_comptag)` avec un tri par `id_comptag, rg` pour récupérer 
+      uniquement le tronçon ayant le rang 1 (meilleur score) pour chaque compteur.
+      Ce modèle constitue le résultat final du processus de linéarisation automatique : 
+      une seule proposition de tronçon BdTopo par compteur non linéarisé.
+      Implémenté directement dans le modèle (sans macro) pour éviter les problèmes de dépendances DBT
+      avec les références dynamiques entre modèles.
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur à linéariser automatiquement (un seul tronçon sélectionné par compteur)"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_ign
+        description: "Identifiant unique IGN du tronçon sélectionné"
+        data_tests:
+          - not_null
+          - unique
+      - name: rg
+        description: "Rang du tronçon sélectionné pour ce compteur (toujours égal à 1 dans ce modèle = meilleur choix)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1]
+                description: "Vérifier que seuls les tronçons de rang 1 sont présents"
+

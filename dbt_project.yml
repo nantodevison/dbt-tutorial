@@ -26,11 +26,29 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:
   nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier']
   rejected_nature_verif : ['Sentier','Chemin', 'Route empierrée']
+  toute_nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier','Sentier','Chemin', 'Route empierrée']
   importance_verif: ['1','2','3', '4', '5', '6']
+  sens_verif: ['Double sens','Sens direct','Sens inverse','Sans objets']
   coment_cpt_verif: ['linearisation', 'estimation']
+  coment_tmj_verif: ['/2', '/3', '/4', '/6', '/12', '/15', '/30']
+  src_cpt_verif: ['otv', 'lin_bm']
+  cl_admin_verif : ['Autoroute', 'Nationale', 'Départementale']
+  gestion_verif : ["A''LIENOR", 'ASF', 'ATLANDES', 'Cantal', 'Charente', 'Charente-Maritime', 'Charente/Vienne', 'Cher', 'COFIROUTE', 'Corrèze', 'Corrèze/Puy-de-Dôme', 'Creuse', 'Creuse/Puy-de-Dôme', 'Deux-Sèvres', 'Deux-Sèvres/Vienne', 'DIR Atlantique', 'DIR Centre Ouest', 'DIR Ouest', 'DIR Sud Ouest', 'Dordogne', 'Gers', 'Gironde', 'Gironde/Dordogne', 'Gironde/Lot-et-Garonne', 'Haute-Vienne', 'Haute-Vienne/Vienne', 'Hautes-Pyrénées', 'Indre', 'Indre-et-Loire', 'Landes', 'Landes/Gers', 'Landes/Pyrénées-Atlantiques', 'Lot', 'Lot-et-Garonne', 'Lot/Dordogne', 'Maine-et-Loire', 'Pyrénées-Atlantiques', 'Pyrénées-Atlantiques/Hautes-Pyrénées', 'Pyrénées-Atlantiques/Pyrénées-Atlantiques', 'Tarn-et-Garonne', 'Tarn-et-Garonne/Lot-et-Garonne', 'Vendée', 'Vienne', 'Vienne/Deux-Sèvres']
+  etat_verif : ['En construction', 'En projet', 'En service']
+  src_cpteur_verif: ['bruit', 'sectionnement', 'compteur']
+  obs_tmja_pc_pl_verif: ['auto', 'mano']
+  milieu_verif: ['u', 'r']
+  vts_osm_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]
+  vts_modif_verif: [110,130,50,80,com,dsr,gsw,osm]
+  vts_type_verif: ['reglementaire', 'estimee', 'gestionnaire']
+  src_vma_verif: ['com 30','com 40','com 45','com 50','com 60','com 70','com 80','dsr 10','dsr 15','dsr 20','dsr 30','dsr 40','dsr 45','dsr 50','dsr 60','dsr 70','gsw 110','gsw 130','gsw 20','gsw 30','gsw 40','gsw 45','gsw 50','gsw 60','gsw 70','gsw 80','gsw 90','osm 10','osm 110','osm 130','osm 15','osm 20','osm 25','osm 30','osm 40','osm 45','osm 50','osm 60','osm 70','osm 80','osm 90']
+  vma_vl_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]
+  vma_pl_verif: [10,15,20,25,30,40,45,50,60,70,80,90]
+  vma_type_verif: ['estimee','verifiee']
   annee: 2024
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']
+  dept_limitrophes: ['03','32','36','37','46','49','65','82']
 
 # configurations supplémentaires
 flags:
@@ -46,4 +64,59 @@ flags:
 # files using the `{{ config(...) }}` macro.
 models:
   test_otv:    # Nom du projet
-    +materialized: view
+    dept19:
+      lin:
+        before_update_mano:  # Nom du sous-dossier
+          cte:  # Nom du sous-dossier
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+          update:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+        update_mano:
+          +materialized: table
+          +indexes:
+            - columns: ['id_ign']
+              type: btree
+            - columns: ['id_comptag']
+              type: btree
+            - columns: ['id_simpli']
+              type: gin
+
+# Configuring Seeds
+seeds:
+  test_otv:    # Nom du projet
+    dept19:
+      lin:
+        +schema: affectation_pt_mano
+        +quote_columns: false
+        +delimiter: ','
+        +post-hook: |
+            -- D'abord modifier le type des colonnes
+            ALTER TABLE {{ this }} 
+            ALTER COLUMN id_simpli TYPE integer[] USING (
+              CASE 
+                WHEN id_simpli IS NOT NULL AND id_simpli != '' 
+                THEN string_to_array(id_simpli, ';')::integer[] 
+                ELSE NULL 
+              END
+            ),
+            ALTER COLUMN id_ign TYPE text[] USING (
+              CASE 
+                WHEN id_ign IS NOT NULL AND id_ign != '' 
+                THEN string_to_array(id_ign, ';')::text[] 
+                ELSE NULL 
+              END
+            );

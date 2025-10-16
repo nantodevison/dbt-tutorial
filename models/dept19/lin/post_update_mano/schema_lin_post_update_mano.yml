@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: lin_verif_stat_lin_pt_comptag_19
+    description: >
+      Modèle de contrôle statistique post-traitement qui calcule les métriques des nouveaux points de comptage linéarisés.
+      Basé sur la macro [`verifier_stats_linearisation_pt_comptage_lin`](/#!/macro/macro.test_otv.verifier_stats_linearisation_pt_comptage_lin).
+      Fournit un tableau de bord synthétique pour valider l'impact quantitatif des opérations de linéarisation :
+      nombre de compteurs distincts traités et kilométrage total du réseau concerné.
+      Les statistiques portent sur les tronçons marqués comme 'nouveau point traf{annee}' dans le champ obs_supl
+      du modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
+    columns:
+      - name: nb_id_comptag
+        description: "Nombre de compteurs distincts ayant fait l'objet d'une linéarisation automatique ou manuelle (nouveaux points)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                description: "Vérifier qu'au moins un compteur a été traité dans le processus de linéarisation"
+      - name: sum_lg_km
+        description: "Kilométrage total du réseau routier concerné par les nouveaux points de comptage (somme des longueurs des tronçons en km, arrondi à 3 décimales)"
+        data_tests:
+          - not_null
+      - name: nb_modif_lin
+        description: "Nombre de compteurs distincts ayant fait l'objet de modifications de linéarisation (obs_supl contenant 'ex' et l'année précédente)"
+        data_tests:
+        - not_null
+        - dbt_utils.accepted_range:
+            arguments:
+                min_value: 0
+                description: "Vérifier que le nombre de modifications est positif ou nul"
+      - name: nb_etire_lin
+        description: "Nombre de compteurs distincts ayant fait l'objet d'étirements de linéarisation (obs_supl = 'linearisation etiree traf{annee}')"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description: "Vérifier que le nombre d'étirements est positif ou nul"
