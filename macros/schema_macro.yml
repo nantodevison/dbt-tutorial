@@ -346,3 +346,16 @@ macros:
         type: string
         description: "Code du département sur 2 caractères pour filtrer l'emprise géographique (par défaut: variable projet 'dept')"
 
+  - name: verifier_tmjo_lin
+    description: >
+      Identifie les compteurs linéarisés par OTV qui disposent de données TMJO (Trafic Moyen Journalier Ouvrable).
+      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      avec le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
+      Applique un DISTINCT ON pour ne retourner qu'un seul résultat par compteur (le plus récent).
+      Retourne les informations essentielles : identifiant compteur, année de comptage, gestionnaire.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+

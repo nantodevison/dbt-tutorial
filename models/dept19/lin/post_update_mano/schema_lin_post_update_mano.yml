@@ -50,10 +50,9 @@ models:
       et les traitements automatiques, ou des évolutions dans les critères de linéarisation.
       Retourne toutes les colonnes de la table comptage pour faciliter l'analyse des cas problématiques.
     data_tests:
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: "not_lin_why IS NOT NULL"
-            description: "Vérifier que tous les compteurs retournés ont bien un motif de non-linéarisation renseigné"
+      - dbt_expectations.expect_table_row_count_to_equal:
+          value: 0
+          description: "Vérifier qu'il n'existe pas de compteurs linéarisés avec un motif de non-linéarisation renseigné"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur présentant une incohérence de statut"
@@ -100,3 +99,20 @@ models:
         description: "Type de poste du compteur (issu de la table compteur)"
       - name: definition
         description: "Libellé explicite du motif de non-linéarisation (issu de la table enum_not_lin_why)"
+
+  - name: lin_verif_tmjo_19
+    description: >
+      Modèle de contrôle post-traitement qui identifie les compteurs linéarisés par OTV 
+      disposant de données TMJO (Trafic Moyen Journalier Ouvrable).
+      Basé sur la macro [`verifier_tmjo_lin`](/#!/macro/macro.test_otv.verifier_tmjo_lin).
+      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      avec le modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
+      Applique un DISTINCT ON pour ne retourner qu'un seul résultat par compteur (le plus récent).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé disposant de données TMJO"
+        data_tests:
+          - not_null
+          - unique
+
