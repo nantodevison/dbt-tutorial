@@ -41,7 +41,8 @@ sources:
   - name: cptg
     description: >
       Ensemble des tables et vues décrivant les comptages routiers présents dans OTR.
-      Contient les tables compteur, comptage, indic_agrege et une vue 'vue_compteur_last_annee_know_tmja_pc_pl'.
+      Contient les tables compteur, comptage, indic_agrege, une vue 'vue_compteur_last_annee_know_tmja_pc_pl',
+      une table d'énumération enum_not_lin_why.
     database: test_dbt
     schema: comptage
     tables:
@@ -53,6 +54,8 @@ sources:
         description: "Table des indicateurs agrégés issus des comptages, 1 ligne par comptage et indicateur"
       - name: vue_compteur_last_annee_know_tmja_pc_pl
         description: "Vue synthétique des compteurs avec la dernière année connue pour tmja, pc_pl"
+      - name: enum_not_lin_why
+        description: "Table d'énumération des raisons de non-linéarisation des comptages"
 
   - name: cptg_assoc
     description: >

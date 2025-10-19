@@ -326,3 +326,23 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_cptg_not_lin_why_geom_dept_lin
+    description: >
+      Identifie les compteurs géographiquement situés dans l'emprise du département 
+      qui ont un motif de non-linéarisation renseigné (not_lin_why IS NOT NULL).
+      Utilise l'aire géographique
+      du département via la source [`aire.dpt_bdt_na_ed{annee}_s`](/#!/source/source.test_otv.aire.dpt_bdt_na_ed24_s).
+      Effectue ensuite une jointure avec la table [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) 
+      pour récupérer les informations de comptage. Permet un contrôle exhaustif géographique
+      des compteurs "problématiques" dans l'emprise territoriale, indépendamment de leur présence
+      dans les modèles de linéarisation. Retourne les informations essentielles : identifiant compteur,
+      année de mise en place et période de comptage.
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY pour construire le nom de la table aire (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères pour filtrer l'emprise géographique (par défaut: variable projet 'dept')"
+
