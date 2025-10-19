@@ -38,3 +38,34 @@ models:
               arguments:
                 min_value: 0
                 description: "Vérifier que le nombre d'étirements est positif ou nul"
+  - name: lin_verif_not_lin_why_19
+    description: >
+      Modèle de contrôle de cohérence post-traitement qui identifie les compteurs avec des statuts contradictoires.
+      Basé sur la macro [`verifier_not_lin_why_lin`](/#!/macro/macro.test_otv.verifier_not_lin_why_lin).
+      Détecte les compteurs marqués comme "non linéarisables" (not_lin_why IS NOT NULL) dans la source 
+      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) mais qui ont néanmoins été linéarisés 
+      dans le modèle 
+      [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
+      Ces incohérences peuvent indiquer des problèmes de synchronisation entre les données métier
+      et les traitements automatiques, ou des évolutions dans les critères de linéarisation.
+      Retourne toutes les colonnes de la table comptage pour faciliter l'analyse des cas problématiques.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "not_lin_why IS NOT NULL"
+            description: "Vérifier que tous les compteurs retournés ont bien un motif de non-linéarisation renseigné"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur présentant une incohérence de statut"
+        data_tests:
+          - not_null
+          - unique
+      - name: not_lin_why
+        description: "Motif de non-linéarisation renseigné dans la table comptage (source de l'incohérence) - ne peut jamais être null dans ce modèle"
+        data_tests:
+          - not_null:
+              description: "Vérifier que le motif de non-linéarisation est toujours renseigné (condition de base du modèle)"
+          - accepted_values:
+              arguments:
+                values: "{{ var('not_lin_why_verif') }}"
+                description: "Vérifier que les motifs de non-linéarisation appartiennent à la liste attendue"

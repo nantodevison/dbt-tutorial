@@ -308,3 +308,21 @@ macros:
       - name: dept  
         type: string
         description: "Code département"
+
+  - name: verifier_not_lin_why_lin
+    description: >
+      Identifie les lignes BdTopo avec des statuts contradictoires : affectées à des comptage,
+      mais ces comptages sont marqués comme "non linéarisables" 
+      (not_lin_why IS NOT NULL) dans la table comptage.
+      Permet de détecter les incohérences entre les données métier de comptage et les traitements 
+      automatiques de linéarisation. Retourne tous les attributs de la table comptage pour faciliter 
+      l'analyse des cas problématiques et identifier les causes des contradictions.
+      S'appuie sur la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et le modèle 
+      [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
+    arguments:
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

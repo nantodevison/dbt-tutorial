@@ -794,6 +794,10 @@ PTS AVEC not_lin_why is not null
 select * from comptage.comptage where not_lin_why is not null and
 id_comptag in (select distinct id_comptag from lineaire.traf2024_bdt19_ed24_l where src_cpt='otv');
 
+/*=======================================
+ATTENTION !!!!! reprendre cette verif post MaJ indicateurs !!!!!
+=======================================*/
+
 
 /*autre verif,apres REMAJ des indic,que pt avec not_lin_why soit non utilisé*/
 select t1.id_comptag,t1.ann_pt,t2.periode

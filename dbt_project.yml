@@ -49,6 +49,7 @@ vars:
   dept: '19'
   dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']
   dept_limitrophes: ['03','32','36','37','46','49','65','82']
+  not_lin_why_verif: "{{ range(1, 23) | list }}"
 
 # configurations supplémentaires
 flags:
