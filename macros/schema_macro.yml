@@ -359,3 +359,18 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: verifier_tmjo_tmja_lin
+    description: >
+      Vérifie que les compteurs linéarisés par OTV qui disposent de données TMJO ont aussi du TMJA.
+      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage), [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      et le modèle [`lin_verif_tmjo_{dept}`](/#!/model/model.test_otv.lin_verif_tmjo_19).
+      Applique un DISTINCT ON pour ne retourner qu'un seul résultat par compteur (le plus récent).
+      Retourne les informations complètes de l'indicateur TMJA : identifiant, valeur, fichier source.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+
+

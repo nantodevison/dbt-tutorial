@@ -115,4 +115,44 @@ models:
         data_tests:
           - not_null
           - unique
+  - name: lin_verif_tmjo_exists_tmja_19
+    description: >
+      Modèle de contrôle post-traitement qui vérifie que les compteurs linéarisés par OTV 
+      qui sont en TMJO disposent aussi de TMJA (Trafic Moyen Journalier Annuel).
+      Basé sur la macro [`verifier_tmjo_exists_tmja_lin`](/#!/macro/macro.test_otv.verifier_tmjo_exists_tmja_lin).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé disposant de données TMJO et TMJA"
+        data_tests:
+          - not_null
+          - unique
+      - name: annee
+        description: "Année du comptage TMJA (la plus récente pour le compteur)"
+      - name: type_poste
+        description: "Type de poste du compteur (issu de la table compteur)"
+      - name: id_indic_agrege
+        description: "Identifiant unique de l'indicateur agrégé TMJA"
+      - name: id_comptag_uniq
+        description: "Identifiant unique du comptage (clé étrangère vers la table comptage)"
+      - name: indicateur
+        description: "Type d'indicateur (toujours 'tmja' dans ce modèle)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['tmja']
+                description: "Vérifier que l'indicateur est toujours TMJA"
+      - name: valeur
+        description: "Valeur du Trafic Moyen Journalier Annuel en véhicules/jour"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 200000
+                description: "Vérifier que les valeurs TMJA sont dans une fourchette réaliste"
+      - name: fichier
+        description: "Nom du fichier source de l'indicateur TMJA"
+        data_tests:
+          - not_null
 
