@@ -372,5 +372,15 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: verifier_ann_pt_2020_lin
+    description: >
+      Identifie les compteurs linéarisés ayant une année de mise en place (ann_pt) égale à 2020.
+      Pour rappel, cette année COVID est considérée comme non représentative pour les analyses de trafic.
+      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      comme source de données après traitement de linéarisation.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
 

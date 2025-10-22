@@ -51,8 +51,9 @@ models:
       Retourne toutes les colonnes de la table comptage pour faciliter l'analyse des cas problématiques.
     data_tests:
       - dbt_expectations.expect_table_row_count_to_equal:
-          value: 0
-          description: "Vérifier qu'il n'existe pas de compteurs linéarisés avec un motif de non-linéarisation renseigné"
+          arguments:
+            value: 0
+            description: "Vérifier qu'il n'existe pas de compteurs linéarisés avec un motif de non-linéarisation renseigné"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur présentant une incohérence de statut"
@@ -68,6 +69,7 @@ models:
               arguments:
                 values: "{{ var('not_lin_why_verif') }}"
                 description: "Vérifier que les motifs de non-linéarisation appartiennent à la liste attendue"
+
   - name: lin_verif_cptg_not_lin_why_geom_dept_19
     description: >
       Modèle d'identification géographique de tous les compteurs situés dans l'emprise
@@ -115,6 +117,7 @@ models:
         data_tests:
           - not_null
           - unique
+
   - name: lin_verif_tmjo_exists_tmja_19
     description: >
       Modèle de contrôle post-traitement qui vérifie que les compteurs linéarisés par OTV 
@@ -156,3 +159,23 @@ models:
         data_tests:
           - not_null
 
+  - name: lin_verif_ann_pt_2020_19
+    description: >
+      Modèle de contrôle post-traitement qui identifie les compteurs linéarisés ayant une année 
+      de mise en place (ann_pt) égale à 2020.
+      Basé sur la macro [`verifier_ann_pt_2020_lin`](/#!/macro/macro.test_otv.verifier_ann_pt_2020_lin).
+      Utilise le modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      comme source de données après traitement de linéarisation.
+      Retourne la liste distincte et triée des identifiants de compteurs concernés,
+      facilitant les analyses temporelles et le suivi de l'évolution du réseau de comptage par cohorte d'installation.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          arguments:
+            value: 0
+            description: "Vérifier qu'aucun compteur mis en place en 2020 n'est présent dans les données linéarisées (validation de cohérence temporelle)"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur mis en place en 2020 et linéarisé"
+        data_tests:
+          - not_null
+          - unique
