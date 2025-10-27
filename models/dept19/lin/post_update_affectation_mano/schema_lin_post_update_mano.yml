@@ -179,3 +179,57 @@ models:
         data_tests:
           - not_null
           - unique
+
+  - name: lin_verif_cpt_mm_section_homo_19
+    description: >
+      Modèle de vérification qui identifie les sections homogènes (id_simpli) 
+      partageant plusieurs compteurs.
+      Basé sur la macro [`verifier_cpt_mm_section_homo_lin`](/#!/macro/macro.test_otv.verifier_cpt_mm_section_homo_lin).
+      Utilise le modèle [`lin_cte_verif_cpt_mm_section_homo_19__lineaire_tot`](/#!/model/model.test_otv.lin_cte_verif_cpt_mm_section_homo_19__lineaire_tot).
+      Permet d'identifier les potentiels problèmes d'affectation : sections homogènes
+      fragmentées entre plusieurs compteurs, erreurs de géocodage, ou cas légitimes de compteurs multiples
+      sur une même section. Retourne les informations de tronçons concernés triées par id_simpli 
+      pour faciliter l'analyse groupée des sections problématiques.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: >
+              exists (select COUNT(DISTINCT id_comptag) > 1
+              FROM {{ref('lin_verif_cpt_mm_section_homo_'~var('dept'))}}
+              group by id_simpli)
+            description: "Vérifier qu'il existe plusieurs compteurs par section homogène"
+    columns:
+      - name: id_ign
+        description: "Identifiant unique IGN du tronçon BDTopo proche du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_simpli
+        description: "Identifiant de la section homogène ayant plusieurs compteurs"
+        data_tests:
+          - not_null
+      - name: id_comptag
+        description: "Identifiant du compteur affecté au tronçon (plusieurs valeurs distinctes par id_simpli)"
+        data_tests:
+          - not_null
+
+  - name: lin_verif_cpt_mm_section_homo_19__format_agreg
+    description: >
+      Variation du modèle [`lin_verif_cpt_mm_section_homo_19`](/#!/model/model.test_otv.lin_verif_cpt_mm_section_homo_19).
+      Qui propose une analyse par regroupement des id_comptag selon id_simpli.
+      les id_comptag sont présents sous forme d'array.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "array_length(list_id_cpt, 1) > 1"
+            description: "Vérifier que toutes les sections homogènes ont plus que 1 compteur affecté"
+    columns:
+      - name: id_simpli
+        description: "Identifiant de la section homogène ayant plusieurs compteurs"
+        data_tests:
+          - not_null
+          - unique
+      - name: list_id_cpt
+        description: "Array des identifiants des compteurs affectés au tronçon (plusieurs valeurs distinctes par id_simpli)"
+        data_tests:
+          - not_null

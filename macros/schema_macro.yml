@@ -383,4 +383,44 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: cte_verif_cpt_mm_section_homo_lin__cpt_proche
+    description: >
+      Identifie le tronçon BDTopo le plus proche de chaque compteur linéarisé par OTV
+      dans un rayon de distance configurable (par défaut 100 mètres).
+      Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      et le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      Retourne l'identifiant du compteur et l'identifiant IGN du tronçon BDTopo associé.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: distance
+        type: integer
+        description: "Distance maximale de recherche en mètres (par défaut: 100)"
 
+  - name: cte_verif_cpt_mm_section_homo_lin__lineaire_tot
+    description: >
+      Ajoute un attribut `id_cpt_proche` (TRUE/FALSE) à la linéarisation indiquant si une ligne peut etre affectée à un
+      compteur.
+      Utilise la CTE [`cte_verif_cpt_mm_section_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__cpt_proche)
+      pour identifier les tronçons les plus proches de chaque compteur dans un rayon configurable (par défaut 100 mètres).
+      Filtre uniquement les tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
+      Retourne toutes les colonnes du modèle de linéarisation plus l'indicateur de proximité.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: distance
+        type: integer
+        description: "Distance maximale de recherche en mètres pour considérer un compteur comme 'proche' (par défaut: 100)"
+
+  - name: verifier_cpt_mm_section_homo_lin
+    description: >
+      Identifie les sections homogènes (id_simpli) qui partagent plusieurs compteurs.
+      Utilise le modèle [`lin_cte_verif_cpt_mm_section_homo_{dept}__lineaire_tot`](/#!/model/model.test_otv.lin_cte_verif_cpt_mm_section_homo_19__lineaire_tot).
+      Retourne les informations de tronçons concernés : id_ign, id_simpli et id_comptag,
+      triées par id_simpli pour faciliter l'analyse groupée.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

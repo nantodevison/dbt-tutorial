@@ -1,0 +1,48 @@
+version: 2
+
+models:
+
+  - name: lin_cte_verif_cpt_mm_section_homo_19__cpt_proche
+    description: >
+      CTe intermediaire qui identifie le tronçon BDTopo le plus proche 
+      de chaque compteur linéarisé par OTV dans un rayon configurable (par défaut 100 mètres).
+      Basé sur la macro [`cte_verif_cpt_mm_section_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__cpt_proche).
+      Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      et le modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
+      Fais partie de la vérification plus globale qui vise à trouver les compteurs qui partageraient
+      une même section homogène.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 1
+          description: "Vérifier que le nombre de compteurs est supérieur ou égal à 1"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_ign
+        description: "Identifiant unique IGN du tronçon BDTopo le plus proche du compteur (dans le rayon de recherche)"
+        data_tests:
+          - not_null
+
+  - name: lin_cte_verif_cpt_mm_section_homo_19__lineaire_tot
+    description: >
+      Modèle intermediaire de recherche des lignes proches des compteurs.
+      Basé sur la macro [`cte_verif_cpt_mm_section_homo_lin__lineaire_tot`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__lineaire_tot).
+      Fait partie de la vérification globale visant à trouver les compteurs qui partageraient une même section homogène.
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: ref('creer_vue_19')
+          description: "Vérifier que le nombre de lignes est identique au modèle source"
+    columns:
+      - name: id_cpt_proch
+        description: "Indicateur booléen de proximité d'un compteur"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                description: "Vérifier que la valeur est strictement TRUE ou FALSE"
