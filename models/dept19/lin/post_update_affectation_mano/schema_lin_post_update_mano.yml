@@ -258,3 +258,35 @@ models:
               arguments:
                 expression: " = 0"
                 description: "Vérifier qu'il n'existe pas de comptage suspect pour l'annéee considérée"
+
+  - name: lin_verif_nb_tronc_linearise_19
+    description: >
+      Compte le nombre de tronçons linéarisés selon deux métriques complémentaires.
+      Basé sur la macro [`verifier_nb_tronc_linearise_lin`](/#!/macro/macro.test_otv.verifier_nb_tronc_linearise_lin).
+      Utilise le modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      comme source et effectue deux comptages avec filtres :
+      1) nb_cpt_lin_id_cptg : nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
+      2) nb_cpt_lin_otv : nombre de tronçons de source OTV (src_cpt='otv').
+      Retourne une seule ligne avec les deux compteurs.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "nb_cpt_lin_id_cptg = nb_cpt_lin_otv"
+            description: "Vérifier que le nombre de tronçons avec compteur affecté est égal au nombre de tronçons de source OTV"
+    columns:
+      - name: nb_cpt_lin_id_cptg
+        description: "Nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL)"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier que le nombre de tronçons avec compteur affecté est supérieur à 0"
+      - name: nb_cpt_lin_otv
+        description: "Nombre de tronçons de source OTV (src_cpt='otv')"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier que le nombre de tronçons avec compteur affecté est supérieur à 0"

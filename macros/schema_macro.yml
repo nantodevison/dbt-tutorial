@@ -445,3 +445,17 @@ macros:
       - name: suspect
         type: boolean
         description: "Indicateur pour filtrer uniquement les compteurs suspects (TRUE) ou tous les compteurs (FALSE) (par défaut: FALSE)"
+
+  - name: verifier_nb_tronc_linearise_lin
+    description: >
+      Compte le nombre de tronçons linéarisés selon deux métriques complémentaires.
+      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      comme source des tronçons linéarisés. Effectue deux comptages avec filtres :
+      1) nb_cpt_lin_id_cptg : nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
+      2) nb_cpt_lin_otv : nombre de tronçons de source OTV (src_cpt='otv').
+      Ces deux métriques peuvent différer si certains tronçons ont src_cpt='otv' mais pas encore d'id_comptag affecté,
+      ou si des compteurs ont été affectés à des tronçons provenant d'autres sources.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
