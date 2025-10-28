@@ -424,3 +424,24 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_nb_cpt_ann_n_lin
+    description: >
+      Connaitre le nombre de compteurs linéarisés
+      qui disposent de données de comptage pour l'année spécifiée.
+      Peut etre utilisée pour connaitre le nombre de compteurs suspects de l'année considérée.
+      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      comme source des compteurs linéarisés et la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)
+      filtrée sur l'année spécifiée pour vérifier la disponibilité des données de comptage.
+      Retourne un COUNT(*) représentant le nombre de compteurs linéarisés disposant effectivement 
+      de données de comptage pour l'année concernée.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année des comptages à vérifier au format YYYY (par défaut: variable projet 'annee')"
+      - name: suspect
+        type: boolean
+        description: "Indicateur pour filtrer uniquement les compteurs suspects (TRUE) ou tous les compteurs (FALSE) (par défaut: FALSE)"

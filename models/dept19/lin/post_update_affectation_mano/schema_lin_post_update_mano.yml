@@ -233,3 +233,28 @@ models:
         description: "Array des identifiants des compteurs affectés au tronçon (plusieurs valeurs distinctes par id_simpli)"
         data_tests:
           - not_null
+
+  - name: lin_verif_nb_cpt_ann_n_19
+    description: >
+      Modèle qui compte le nombre de compteurs linéarisés disposant de données 
+      de comptage pour l'année spécifiée. Basé sur la macro [`verifier_nb_cpt_ann_n_lin`](/#!/macro/macro.test_otv.verifier_nb_cpt_ann_n_lin),
+      (utilise le modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19) 
+      et la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)).
+      Retourne une seule ligne avec le nombre total de compteurs appariés.
+    columns:
+      - name: nb_cpt_tot
+        description: "Nombre de compteurs linéarisés disposant de données de comptage pour l'année considérée"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier qu'il existe au moins un compteur linéarisé avec données de comptage pour l'année"
+      - name: nb_cpt_suspect
+        description: "Nombre de compteurs linéarisés disposant de données de comptage pour l'année considérée"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " = 0"
+                description: "Vérifier qu'il n'existe pas de comptage suspect pour l'annéee considérée"
