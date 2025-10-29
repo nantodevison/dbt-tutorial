@@ -459,3 +459,32 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: update_indic_trafic_lin
+    description: >
+      Met à jour les indicateurs de trafic (TMJA, %PL, années) pour les tronçons qui référence des compteurs,
+      en utilisant les dernières données de comptage disponibles.
+      S'appuie sur le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.lin_update_vers_estimation_19)
+      et la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl).
+      Effectue un processus en trois étapes via une CTE `reset_indic` et deux UNION :
+      1) Réinitialise à NULL les indicateurs de trafic (tmja, pc_pl, ann_pt, ann_pc_pl, pl, veh_km, tmja_final, pl_final, pl_km, obs_tmja, obs_pc_pl)
+      pour tous les tronçons OTV (src_cpt='otv').
+      2) Met à jour ces indicateurs avec les dernières données de comptage disponibles
+      Force coment_cpt='linearisation', obs_tmja=NULL, obs_pc_pl='auto' si %PL manquant.
+      3) Conserve les valeurs originales pour tous les autres tronçons (src_cpt != 'otv' ou NULL)
+      et les tronçons OTV sans données de comptage disponibles.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_suspect_post_update_indic_lin
+    description: >
+      Identifie les compteurs linéarisés dont les données de trafic proviennent d'années marquées comme suspectes
+      dans la table des comptages. 
+      Basé sur le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.lin_update_indic_trafic_19)
+      et la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
