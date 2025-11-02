@@ -1,13 +1,13 @@
 {{config(
-    schema='verif',
+    schema='cte',
 )}}
 
-{{ verifier_suspect_post_update_indic_lin() }}
+{{ cte_verif_historique_trafic_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 
-        dbt run --vars '{"dept": "19"}'
+        dbt run --vars '{"annee": "19"}'
     Dans sa forme basée sur les
     variables passées manuellement :
-    {{ verifier_suspect_post_update_indic_lin(dept='19') }}
+    {{ cte_verifier_historique_trafic_lin(annee='19') }}
 #}

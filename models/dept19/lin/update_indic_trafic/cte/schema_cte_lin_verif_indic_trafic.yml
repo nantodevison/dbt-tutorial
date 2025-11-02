@@ -1,0 +1,22 @@
+version: 2
+
+models:
+    - name: lin_verif_historique_trafic
+      description: >
+        Modèle de vérification qui compare l'historique des données de trafic linéarisées
+        avec les données sources des comptages.
+        Basé sur la macro [`cte_verif_historique_trafic_lin`](/#!/macro/macro.test_otv.cte_verif_historique_trafic_lin).
+      data_tests:
+        - dbt_utils.expression_is_true:
+            arguments:
+              expression: " coalesce({% for a in range(var('annee'), 1999, -1) | list + [1900] %} tmja_{{ a }} {{ \",\" if not loop.last }} {% endfor %}) is not null "
+      columns:
+        - name: id_comptag
+          description: "Identifiant du compteur linéarisé avec historique des données de trafic"
+          data_tests:
+            - not_null
+            - unique
+            - relationships:
+                arguments:
+                  to: source('cptg', 'compteur')
+                  field: id_comptag

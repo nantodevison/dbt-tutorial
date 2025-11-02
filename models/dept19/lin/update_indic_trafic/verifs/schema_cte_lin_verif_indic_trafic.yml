@@ -1,11 +1,11 @@
 version: 2
 
 models:
-    - name: lin_verif_suspect_post_update_indic_19
+    - name: lin_verif_histo_cptg_suspect_19
       description: >
         Modèle de vérification qui identifie les compteurs linéarisés dont les données de trafic proviennent
         d'années marquées comme suspectes dans la table des comptages.
-        Basé sur la macro [`verifier_suspect_post_update_indic_lin`](/#!/macro/macro.test_otv.verifier_suspect_post_update_indic_lin).
+        Basé sur la macro [`verifier_suspect_indic_lin`](/#!/macro/macro.test_otv.verifier_suspect_indic_lin).
       data_tests:
         - dbt_utils.expression_is_true:
             arguments:
@@ -14,5 +14,7 @@ models:
       columns:
         - name: id_comptag
           description: "Identifiant du compteur linéarisé utilisant une donnée de comptage suspecte"
+          data_tests:
+            - unique
         - name: ann_pt
           description: "Année du comptage marquée comme suspecte dans la table comptage.comptage"

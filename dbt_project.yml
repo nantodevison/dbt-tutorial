@@ -114,6 +114,11 @@ models:
               type: gin
           verifs:
             +materialized: view
+          cte:
+            +materialized: table
+            +indexes:
+              - columns: ['id_comptag']
+                type: btree
 
 # Configuring Seeds
 seeds:

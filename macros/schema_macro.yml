@@ -478,12 +478,26 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_suspect_post_update_indic_lin
+  - name: cte_verif_historique_trafic_lin
+    description: >
+      Fournit le valeurs de `tmja`, `pc_pl`, `obs`, `periode` et `src` pour tout les compteurs.
+      Un attribut par année ('wide form').
+      Basé sur les sources 
+      - [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      - [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)
+      - [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_suspect_indic_lin
     description: >
       Identifie les compteurs linéarisés dont les données de trafic proviennent d'années marquées comme suspectes
-      dans la table des comptages. 
+      dans la table des comptages, puis fournit l'historique des tmja (ou tmjo), pc_pl, obs, periode et src pour ces compteurs.
       Basé sur le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.lin_update_indic_trafic_19)
-      et la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage).
+      ,la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et la cte 
+      [cte_verif_historique_trafic_lin](/#!/macro/macro.test_otv.cte_verif_historique_trafic_lin).
     arguments:
       - name: dept
         type: string
