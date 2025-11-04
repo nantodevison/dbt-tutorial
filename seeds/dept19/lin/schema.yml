@@ -7,6 +7,7 @@ seeds:
       milléisme 2024.
       les champs id_ign et id_simpli sont exclusifs : si l'un est renseigné, l'autre doit être null ; 
       si plusieurs lignes sont concernées, elles doivent etre séparées par des ';'.
+      Le champs cree_le doit être renseigné.
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -26,6 +27,8 @@ seeds:
         autor_sect: varchar(254)
         obs_vts: varchar(254)
         id_cpt1: varchar(254)
+        cree_le: date
+        modifie_le: date
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -63,6 +66,21 @@ seeds:
         description: "Observation sur les vitesses"
       - name: id_cpt1
         description: "Attributs de travail sur les compteurs (calcul sur Bdx Metropole notamment)"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
   - name: dept19_update_modif_linearisation
     description: >
@@ -81,6 +99,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
+        cree_le: date
+        modifie_le: date
     columns:
       - name: id_comptag
         description: "Identifiant du nouveau compteur de référence pour les lignes concernées"
@@ -96,6 +116,21 @@ seeds:
         description: "Nouvel identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
       - name: id_simpli
         description: "Nouvel identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
   - name: dept19_update_oubli_erreur_linearisation
     description: >
@@ -114,6 +149,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
+        cree_le: date
+        modifie_le: date
     columns:
       - name: id_comptag
         description: "Identifiant du compteur de référence pour les lignes oubliées"
@@ -129,6 +166,21 @@ seeds:
         description: "Identifiant IGN du(es) tronçon BdTopo des lignes concernées (séparation par ';' si plusieurs tronçons)"
       - name: id_simpli
         description: "Identifiant de section homogène interne OTR des lignes concernées (séparation par ';' si plusieurs tronçons)"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
   - name: dept19_update_etire_linearisation
     description: >
@@ -147,6 +199,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
+        cree_le: date
+        modifie_le: date
     columns:
       - name: id_comptag
         description: "Identifiant du compteur dont la linéarisation doit être étendue"
@@ -162,6 +216,21 @@ seeds:
         description: "Identifiant IGN du(es) tronçon BdTopo des lignes concernées (séparation par ';' si plusieurs tronçons)"
       - name: id_simpli
         description: "Identifiant de section homogène interne OTR des lignes concernées (séparation par ';' si plusieurs tronçons)"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
   - name: dept19_update_vers_estimation_linearisation
     description: >
@@ -180,6 +249,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
+        cree_le: date
+        modifie_le: date
     columns:
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo des lignes concernées (séparation par ';' si plusieurs tronçons)"
@@ -195,3 +266,18 @@ seeds:
                 description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
               config:
                 where: "id_comptag is not null"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."

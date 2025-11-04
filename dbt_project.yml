@@ -24,6 +24,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 # variables du projet
 vars:
+  'dbt_date:time_zone': 'Europe/Paris'
   nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier']
   rejected_nature_verif : ['Sentier','Chemin', 'Route empierrée']
   toute_nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier','Sentier','Chemin', 'Route empierrée']
