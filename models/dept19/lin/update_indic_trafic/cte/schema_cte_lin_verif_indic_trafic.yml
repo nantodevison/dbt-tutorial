@@ -1,22 +1,91 @@
 version: 2
 
 models:
-    - name: lin_verif_historique_trafic
-      description: >
-        Modèle de vérification qui compare l'historique des données de trafic linéarisées
-        avec les données sources des comptages.
-        Basé sur la macro [`cte_verif_historique_trafic_lin`](/#!/macro/macro.test_otv.cte_verif_historique_trafic_lin).
-      data_tests:
-        - dbt_utils.expression_is_true:
-            arguments:
-              expression: " coalesce({% for a in range(var('annee'), 1999, -1) | list + [1900] %} tmja_{{ a }} {{ \",\" if not loop.last }} {% endfor %}) is not null "
-      columns:
-        - name: id_comptag
-          description: "Identifiant du compteur linéarisé avec historique des données de trafic"
-          data_tests:
-            - not_null
-            - unique
-            - relationships:
-                arguments:
-                  to: source('cptg', 'compteur')
-                  field: id_comptag
+  - name: lin_verif_historique_trafic
+    description: >
+      Modèle de vérification qui compare l'historique des données de trafic linéarisées
+      avec les données sources des comptages.
+      Basé sur la macro [`cte_verif_historique_trafic_lin`](/#!/macro/macro.test_otv.cte_verif_historique_trafic_lin).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: " coalesce({% for a in range(var('annee'), 1999, -1) | list + [1900] %} tmja_{{ a }} {{ \",\" if not loop.last }} {% endfor %}) is not null "
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé avec historique des données de trafic"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+
+  - name: lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt
+    description: >
+      Identifie les compteurs situés géographiquement hors du département
+      étudié mais présents dans la région Nouvelle-Aquitaine.
+      Basé sur la macro [`cte_verif_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.test_otv.cte_verif_cpt_hors_dept_dans_na_lin__list_cpt).
+      Doit permettre la mise à jour des indicateurs de trafic pour ces compteurs,
+      dont certaines valeurs peuvent ne pas être disponibles (en fonction du cycle d'import de chaque département).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur situé dans la région NA mais hors du département étudié"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que les compteurs hors département existent dans la table source"
+      - name: type_poste
+        description: "Type de poste du compteur (cf enumération bdd)"
+        data_tests:
+          - not_null
+
+  - name: lin_cte_update_cpt_hors_dept_dans_na_19__auto
+    description: >
+      Modèle CTE qui enrichit les compteurs hors département (issus du modèle 
+      [`lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt`](/#!/model/model.test_otv.lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt))
+      avec leurs dernières données de trafic disponibles pour l'année spécifiée.
+      Basé sur la macro [`cte_verif_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.test_otv.cte_verif_cpt_hors_dept_dans_na_lin__auto).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: " ((pl IS NULL AND pc_pl IS NULL) OR (pc_pl IS NOT NULL AND pl IS NOT NULL))"
+            description: "Vérifier la cohérence entre pc_pl et pl (tous deux NULL ou tous deux renseignés)"  
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur d'un autre département NA avec données de trafic disponibles pour l'année"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt')
+                field: id_comptag
+                description: "Vérifier que les compteurs enrichis font partie de la liste des compteurs hors département"
+      - name: tmja
+        description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année spécifiée"
+        data_tests:
+          - not_null
+      - name: annee_tmja
+        description: "Année du TMJA (correspond à var('annee'))"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= '{{ var('annee') }}'"
+                description: "Vérifier que l'année correspond à l'année du projet"
+      - name: pc_pl
+        description: "Pourcentage Poids Lourds pour l'année spécifiée (peut être NULL)"
+      - name: pl
+        description: "Trafic PL calculé automatiquement (tmja × pc_pl / 100), NULL si pc_pl manquant"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                where: "pl is not null"
+                description: "Vérifier que le trafic PL calculé est positif et inférieur à 150000"

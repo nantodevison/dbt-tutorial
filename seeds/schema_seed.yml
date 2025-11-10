@@ -1,0 +1,21 @@
+version: 2
+
+seeds:
+  - name: depts_cpt_integre
+    description: >
+      liste manuelle des départements avec des comptages intégré pour le millésime concerné.
+      Les départements doivent faire partie de la liste des départements NA sur 2 caractères
+    config: # Config avant post-hook pour les colonnes id_ign et id_simpli (voir fichier dbt_project.yml)
+      column_types:
+        dept_integre: integer
+    columns:
+      - name: dept_integre
+        description: >
+          département avec comptage intégré 
+        data_tests:
+          - not_null
+          - unique
+          - accepted_values:
+              arguments:
+                values: "{{ var('dept_na') }}"
+                description: "doit faire partie de la liste des départements NA sur 2 caractères"

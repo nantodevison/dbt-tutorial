@@ -1,0 +1,65 @@
+version: 2
+
+seeds:
+  - name: dept19_update_cpt_existant_mano
+    description: >
+      Mise à jour manuelle des valeurs de TMJA et part de PL pour des comptages existants
+      référencés sur le territoire du 19 mais géographiquement présent dans un département limitrophe 
+      (mais en région NA). Permet de "forcer" la prise en compt ede valeur de tmja et pc_pl qui ne sont pas encore
+      dans la partie comptage de l'OTV.
+      Les champs id_comptag et tmja doivent être renseignés.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "id_comptag not in (select id_comptag from {{ ref('lin_cte_update_cpt_hors_dept_dans_na_' ~ var('dept') ~ '__auto')}})"
+            description: "les id_comptag mano ne doivent pas etre traite au préalable par la CTE lin_cte_update_cpt_hors_dept_dans_na_19__auto"
+    config:
+      column_types:
+        id_comptag: varchar(254)
+        tmja: integer
+        pc_pl: float
+        cree_le: date
+        modifie_le: date
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
+      - name: tmja
+        description: "Trafic moyen journalier annuel"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                description: "Vérifier que le tmja est positif et inférieur à 300000"
+      - name: pc_pl
+        description: "Part des poids-lourds sur le tronçon de route par rapport au tmja (en %)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                description: "Vérifier que le pourcentage de poids-lourds est compris entre 0 et 100%"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
