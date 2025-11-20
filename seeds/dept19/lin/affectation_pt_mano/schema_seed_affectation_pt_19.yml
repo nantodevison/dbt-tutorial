@@ -27,8 +27,8 @@ seeds:
         autor_sect: varchar(254)
         obs_vts: varchar(254)
         id_cpt1: varchar(254)
-        cree_le: date
-        modifie_le: date
+        cree_le: char(10)
+        modifie_le: char(10)
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -81,6 +81,7 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+                row_condition: "modifie_le is not null"
 
   - name: dept19_update_modif_linearisation
     description: >
@@ -99,8 +100,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
-        cree_le: date
-        modifie_le: date
+        cree_le: char(10)
+        modifie_le: char(10)
     columns:
       - name: id_comptag
         description: "Identifiant du nouveau compteur de référence pour les lignes concernées"
@@ -131,6 +132,7 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+                row_condition: "modifie_le is not null"
 
   - name: dept19_update_oubli_erreur_linearisation
     description: >
@@ -149,8 +151,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
-        cree_le: date
-        modifie_le: date
+        cree_le: char(10)
+        modifie_le: char(10)
     columns:
       - name: id_comptag
         description: "Identifiant du compteur de référence pour les lignes oubliées"
@@ -181,6 +183,7 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+                row_condition: "modifie_le is not null"
 
   - name: dept19_update_etire_linearisation
     description: >
@@ -199,8 +202,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
-        cree_le: date
-        modifie_le: date
+        cree_le: char(10)
+        modifie_le: char(10)
     columns:
       - name: id_comptag
         description: "Identifiant du compteur dont la linéarisation doit être étendue"
@@ -231,6 +234,7 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+                row_condition: "modifie_le is not null"
 
   - name: dept19_update_vers_estimation_linearisation
     description: >
@@ -249,8 +253,8 @@ seeds:
         id_comptag: varchar(254)
         id_ign: text
         id_simpli: text
-        cree_le: date
-        modifie_le: date
+        cree_le: char(10)
+        modifie_le: char(10)
     columns:
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo des lignes concernées (séparation par ';' si plusieurs tronçons)"
@@ -281,3 +285,4 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+                row_condition: "modifie_le is not null"

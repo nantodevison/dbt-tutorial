@@ -18,8 +18,8 @@ seeds:
         id_comptag: varchar(254)
         tmja: integer
         pc_pl: float
-        cree_le: date
-        modifie_le: date
+        cree_le: char(10)
+        modifie_le: char(10)
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"

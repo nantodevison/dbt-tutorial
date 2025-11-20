@@ -550,3 +550,16 @@ macros:
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY pour forcer ann_pt dans les mises à jour manuelles (par défaut: variable projet 'annee')"
+  
+  - name: verifier_stats_linearisation_nbpt_lgkm_annee
+    description: >
+      Calcule les statistiques de linéarisation par année de mise en place des compteurs (ann_pt) :
+      nombre de points de comptage distincts et kilométrage total linéarisé.
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19)
+      comme source finale après les mises à jour d'indicateurs de trafic (tmja et pc_pl).
+      Filtre uniquement les tronçons linéarisés par OTV (src_cpt='otv') pour exclure les estimations.
+      Premier modele de verif post-update des tmja et pc_pl
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

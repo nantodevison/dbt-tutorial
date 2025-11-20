@@ -1,13 +1,13 @@
 {{ config(
     schema='verif',
-) }}
- 
-{{verifier_suspect_indic_lin()}}
+)}}
+
+{{ verifier_stats_linearisation_nbpt_lgkm_annee() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 
-        dbt run --vars '{"dept": "19"}'
+        dbt run --vars '{"annee": "19"}'
     Dans sa forme basée sur les
     variables passées manuellement :
-    {{ verifier_suspect_indic_lin(dept='19') }}
+    {{ verifier_stats_linearisation_nbpt_lgkm_annee(dept='19') }}
 #}

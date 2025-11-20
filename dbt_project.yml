@@ -124,10 +124,12 @@ models:
 # Configuring Seeds
 seeds:
   test_otv:    # Nom du projet
+    depts_cpt_integre:
+      +schema: affectation_pt_mano
     dept19:
       lin:
         +schema: affectation_pt_mano
-        affectation_pt_mano:
+        affectation_pt_mano: # une fois les données importées, on modifie le type des colonnes id_simpli et id_ign vers du array
           +quote_columns: false
           +delimiter: ','
           +post-hook: |

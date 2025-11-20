@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: lin_verif_histo_cptg_suspect_19
+    description: >
+      Modèle de vérification qui identifie les compteurs linéarisés dont les données de trafic proviennent
+      d'années marquées comme suspectes dans la table des comptages.
+      Basé sur la macro [`verifier_suspect_indic_lin`](/#!/macro/macro.test_otv.verifier_suspect_indic_lin).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "id_comptag IS NOT NULL AND ann_pt IS NOT NULL"
+            description: "Vérifier que tous les enregistrements ont un compteur et une année valides"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé utilisant une donnée de comptage suspecte"
+        data_tests:
+          - unique
+      - name: ann_pt
+        description: "Année du comptage marquée comme suspecte dans la table comptage.comptage"
+
+  - name: lin_verif_stat_linearisation_nbpt_lgkm_annee_19
+    description: >
+      Modèle de vérification des statistiques de linéarisation par année de mise en place 
+      des compteurs (ann_pt) : nombre de points de comptage distincts et kilométrage total linéarisé.
+      Basé sur la macro [`verifier_stats_linearisation_nbpt_lgkm_annee`](/#!/macro/macro.test_otv.verifier_stats_linearisation_nbpt_lgkm_annee).
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19)
+      comme source après les mises à jour d'indicateurs de trafic (TMJA, %PL, années).
+      Filtre uniquement les tronçons linéarisés par OTV (src_cpt='otv') pour exclure les estimations
+      et autres sources de données. 
+      Premier modèle de vérification post-mise à jour des indicateurs de trafic.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "nb_pt > 0 AND sum_lg_km > 0"
+            description: "Vérifier que chaque année a au moins un compteur et un kilométrage positif"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "ann_pt IS NOT NULL"
+            description: "Vérifier qu'aucune année n'est NULL (toutes les lignes doivent avoir une année de mise en place)"
+    columns:
+      - name: nb_pt
+        description: "Nombre de compteurs distincts pour l'année de mise en place"
+        data_tests:
+          - not_null
+      - name: sum_lg_km
+        description: "Kilométrage total linéarisé pour l'année de mise en place, arrondi à 2 décimales"
+        data_tests:
+          - not_null
+      - name: ann_pt
+        description: "Année de mise en place des compteurs au format texte YYYY"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "~ '^[0-9]{4}$' AND ann_pt::integer >= 2000 AND ann_pt::integer <= {{ var('annee') }}"
+                description: "Vérifier que l'année est au format YYYY et comprise entre 2000 et l'année du projet"
