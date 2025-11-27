@@ -18,8 +18,7 @@ models:
           - unique
       - name: ann_pt
         description: "Année du comptage marquée comme suspecte dans la table comptage.comptage"
-
-  - name: lin_verif_stat_linearisation_nbpt_lgkm_annee_19
+  - name: lin_verif_stat_nbpt_lgkm_annee_19
     description: >
       Modèle de vérification des statistiques de linéarisation par année de mise en place 
       des compteurs (ann_pt) : nombre de points de comptage distincts et kilométrage total linéarisé.
@@ -55,3 +54,48 @@ models:
               arguments:
                 expression: "~ '^[0-9]{4}$' AND ann_pt::integer >= 2000 AND ann_pt::integer <= {{ var('annee') }}"
                 description: "Vérifier que l'année est au format YYYY et comprise entre 2000 et l'année du projet"
+  - name: lin_verif_stat_nbpt_gestionnaires_19
+    description: >
+      Modèle de vérification des statistiques de linéarisation par gestionnaire :
+      nombre de points de comptage distincts pour chaque gestionnaire.
+      Basé sur la macro [`verifier_stats_linearisation_nbpt_gest`](/#!/macro/macro.test_otv.verifier_stats_linearisation_nbpt_gest).
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{{dept}}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{{dept}})
+      comme source finale après toutes les mises à jour d'indicateurs de trafic, et la source 
+      [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur) pour récupérer le gestionnaire de chaque compteur.
+      Filtre uniquement les tronçons linéarisés (src_cpt='otv') pour exclure les estimations. 
+    columns:
+      - name: nb_pt
+        description: "Nombre de compteurs distincts pour le gestionnaire"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+      - name: gestionnai
+        description: "Gestionnaire du compteur (CD19, DIR, ASF, APRR, etc.)"
+        data_tests:
+          - not_null
+          - unique
+
+  - name: lin_verif_stat_nbpt_gestionnaires_annees_19
+    description: >
+      Modèle de vérification des statistiques de linéarisation par gestionnaire et par année de comptage
+       : nombre de points de comptage distincts pour chaque gestionnaire et année.
+      Basé sur la macro [`verifier_stats_linearisation_gests_annees`](/#!/macro/macro.test_otv.verifier_stats_linearisation_gests_annees).
+    columns:
+      - name: gestionnai
+        description: "Gestionnaire du compteur (CD19, DIR, ASF, APRR, etc.)"
+        data_tests:
+          - not_null
+          - unique
+      - name: ann_nb_pt
+        description: >
+          Chaîne agrégée des années de mise en place et du nombre de compteurs correspondants,
+          au format 'YYYY:nb_pt;YYYY:nb_pt;...'
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "~ '^([0-9]{4}:[0-9]+;)*([0-9]{4}:[0-9]+)$'"
+                description: >
+                  Vérifier que le format de la chaîne est correct, avec des paires 'YYYY:nb_pt' séparées par des points-virgules

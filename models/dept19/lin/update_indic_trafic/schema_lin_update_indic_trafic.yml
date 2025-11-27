@@ -654,6 +654,12 @@ models:
                 config:
                   where: "ann_pt is not null"
                 description: "Vérifier que l'année du tmja est au format 4 chiffres et comprise entre 2000 et l'année en cours"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NOT NULL"
+                config:
+                  where: "id_comptag is not null"
+                description: "Vérifier que l'année de tout les comptage linéarisé n'est pas NULL"
       - name: coment_tmj
         description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final repris du millésime N-1"
         data_tests:

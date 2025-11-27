@@ -557,8 +557,34 @@ macros:
       nombre de points de comptage distincts et kilométrage total linéarisé.
       Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19)
       comme source finale après les mises à jour d'indicateurs de trafic (tmja et pc_pl).
-      Filtre uniquement les tronçons linéarisés par OTV (src_cpt='otv') pour exclure les estimations.
+      Filtre uniquement les tronçons linéarisés (src_cpt='otv') pour exclure les estimations.
       Premier modele de verif post-update des tmja et pc_pl
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_stats_linearisation_nbpt_gest
+    description: >
+      Calcule les statistiques de linéarisation par gestionnnaire :
+      nombre de points de comptage distincts.
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept})
+      comme source finale après les mises à jour d'indicateurs de trafic (tmja et pc_pl).
+      Filtre uniquement les tronçons linéarisés (src_cpt='otv') pour exclure les estimations.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: boolean
+        description: "drapeau pour permettre ensuite l'agrégation par année (TRUE) ou non (FALSE) (par défaut: FALSE)"
+
+  - name: verifier_stats_linearisations_gest_annees
+    description: >
+      Calcule les statistiques de linéarisation par gestionnaire et par année de comptage (ann_pt) :
+      nombre de points de comptage distincts.
+      Utilise la macro [`verifier_stats_linearisation_nbpt_gest`](/#!/macro/macro.test_otv.verifier_stats_linearisation_nbpt_gest)
+      comme base.
     arguments:
       - name: dept
         type: string
