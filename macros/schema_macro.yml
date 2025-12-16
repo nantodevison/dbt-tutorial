@@ -589,3 +589,17 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: cte_verif_coherence_cpt_std_lin__cpt_lin
+    description: >
+      CTE qui extrait les informations géométriques et techniques des compteurs qui ont été linéarisés.
+      Effectue une jointure INNER entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      et le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19)
+      pour ne retenir que les compteurs référencés dans la linéarisation.
+      Retourne les informations essentielles du compteur : identifiant, type de poste, sens de comptage,
+      et géométrie ponctuelle. Utilisée comme CTE intermédiaire dans les vérifications de cohérence
+      entre les données de comptage source et les données linéarisées.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
