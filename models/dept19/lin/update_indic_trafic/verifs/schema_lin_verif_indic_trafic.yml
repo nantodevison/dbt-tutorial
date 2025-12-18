@@ -99,3 +99,32 @@ models:
                 expression: "~ '^([0-9]{4}:[0-9]+;)*([0-9]{4}:[0-9]+)$'"
                 description: >
                   Vérifier que le format de la chaîne est correct, avec des paires 'YYYY:nb_pt' séparées par des points-virgules
+
+  - name: lin_verif_coherence_cptg_stdardisation_vs_lin_19
+    description: >
+      Modèle de vérification qui identifie les incohérences spatiales entre les compteurs linéarisés 
+      et les compteurs standardisé. Détecte les cas où des lignes présentent des identifiant de comptage
+      différents du compteur géographiquement très proches (< 10m).
+      Basé sur la macro [`verifier_coherence_comptag_standardisation_vs_linearisation_lin`](/#!/macro/macro.test_otv.verifier_coherence_comptag_standardisation_vs_linearisation_lin).
+      et le modèle [`lin_update_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19).
+    columns:
+      - name: id_comptag_standardise
+        description: "Identifiant du compteur standardisé"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_comptag_linearise
+        description: "Identifiant du compteur linéarisé"
+        data_tests:
+          - not_null
+          - unique
+      - name: dist
+        description: "Distance en mètres entre la ligne et le compteur"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                max_value: 10
+                description: "Vérifier que la distance est inférieure ou égale à 10 mètres"
+      - name: geom
+        description: "Géométrie du compteur standard"

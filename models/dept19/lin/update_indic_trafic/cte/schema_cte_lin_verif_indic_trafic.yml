@@ -89,3 +89,18 @@ models:
                 max_value: 150000
                 where: "pl is not null"
                 description: "Vérifier que le trafic PL calculé est positif et inférieur à 150000"
+
+  - name: lin_cte_verif_coherence_cpt_std_lin_19__cpt_lin
+    description: >
+      Modèle CTE qui récupère les informations des compteurs (id, type, sens, géométrie)
+      présents dans la linearisation.
+      Basé sur la macro [`cte_verif_coherence_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte_verif_coherence_cpt_std_lin__cpt_lin).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur standard"
+      - name: type_poste
+        description: "Type de poste du compteur (cf enumération bdd)"
+      - name: sens_cpt
+        description: "Sens du comptage"
+      - name: geom
+        description: "Géométrie du compteur"

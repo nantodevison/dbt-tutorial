@@ -603,3 +603,18 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_coherence_comptag_standardisation_vs_linearisation_lin
+    description: >
+      Identifie les incohérences entre les compteurs linéarisés et les compteurs standardisés en détectant
+      les cas où l'identifiant du compteur linéarisé est différent du plus proche compteur standardisé.
+      Utilise la macro [`cte_verif_coherence_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte_verif_coherence_cpt_std_lin__cpt_lin).
+      Pour chaque compteur linéarisé, retourne le compteur standardisé le plus proche ayant un identifiant différent,
+      ainsi que la distance les séparant et la géométrie.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: dist
+        type: integer
+        description: "Distance maximale de recherche en mètres pour identifier un compteur standardisé proche (par défaut: 10)"
