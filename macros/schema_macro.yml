@@ -618,3 +618,16 @@ macros:
       - name: dist
         type: integer
         description: "Distance maximale de recherche en mètres pour identifier un compteur standardisé proche (par défaut: 10)"
+
+  - name: verifier_stat_importance_nature_estim_lin
+    description: >
+      Calcule des statistiques agrégées selon les attributs BdTopo "importance" et "nature" sur les tronçons estimé.
+      Retourne pour chaque combinaison importance/nature : le nombre de tronçons, la longueur cumulée en km,
+      et la liste des numéros de route distincts.
+      La liste des valeur de l'attribut "importance" est définie par la variable projet 'importance_verif'.
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+

@@ -1384,7 +1384,7 @@ id_comptag,id_comptag,dist,geom
 --ed23 : 1 pt
 id_comptag,id_comptag,dist,geom
 "19-D901-48+808"	"19-D901-50+0"	0.25687051998202404	"01010000206A080000621058F9EBB021416666661E8A9E5841"
-apres verif qgis,laisser en l'état
+apres verif qgis,laisser en l''état
 --ed22 : XX pts
 
 --verif (si besoin)

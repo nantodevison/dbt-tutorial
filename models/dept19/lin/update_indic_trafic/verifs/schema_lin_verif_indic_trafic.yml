@@ -128,3 +128,48 @@ models:
                 description: "Vérifier que la distance est inférieure ou égale à 10 mètres"
       - name: geom
         description: "Géométrie du compteur standard"
+
+  - name: lin_verif_stat_importc_nature_estimee_19
+    description: >
+      Modèle de vérification des statistiques des tronçons estimés, 
+      agrégées par importance et nature de route. 
+      Retourne pour chaque combinaison importance/nature existante dans la table (filtrée sur les importances définies par 'importance_verif') :
+      le nombre de tronçons estimés, la longueur cumulée en km, et la liste des numéros de route distincts.
+      Les combinaisons sans aucune ligne en estimation affichent 0 pour les compteurs et longueurs.
+      Basé sur la macro [`verifier_stat_importance_nature_estim_lin`](/#!/macro/macro.test_otv.verifier_stat_importance_nature_estim_lin).
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19)
+      comme source après les mises à jour d'indicateurs de trafic.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "importance NOT IN ('1', '2') OR (cnt = 0 AND sum_lg_km = 0)"
+            description: "Les routes d'importance 1 ou 2 ne devraient pas avoir de tronçons estimés"
+          config:
+            severity: warn
+    columns:
+      - name: importance
+        description: "Niveau d'importance de la route dans la BDTopo (1=Autoroutière, 2=Principale, etc.)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: "{{ var('importance_verif') }}"
+      - name: nature
+        description: "Nature de la route dans la BDTopo (Autoroute, Route à 2 chaussées, Route à 1 chaussée, etc.)"
+        data_tests:
+          - not_null
+      - name: cnt
+        description: "Nombre de tronçons en mode estimation pour cette combinaison importance/nature (0 si aucun)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: sum_lg_km
+        description: "Longueur cumulée en kilomètres des tronçons estimés, arrondie à 2 décimales (0 si aucun)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: list_num
+        description: "Liste (array) des numéros de route distincts pour les tronçons estimés (NULL si aucun)"
