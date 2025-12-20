@@ -631,3 +631,21 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: verifier_annee_rrn_pas_dispo
+    description: >
+      Identifie les compteurs du Réseau Routier National (RRN) dont la dernière année de comptage est antérieure
+      à l'année du millésime en cours, permettant de détecter les compteurs dont les données ne sont pas à jour. 
+      Filtre sur les identifiants de compteurs contenant '-N%' ou '-A%'
+      qui correspondent aux conventions de nommage des compteurs RRN (Nationale/Autoroutière).
+      Retourne les informations de trafic disponibles : TMJA, année de comptage, année du %PL et %PL.
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept})
+      après les mises à jour d'indicateurs de trafic.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: string
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+

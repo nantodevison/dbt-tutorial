@@ -173,3 +173,57 @@ models:
                 min_value: 0
       - name: list_num
         description: "Liste (array) des numéros de route distincts pour les tronçons estimés (NULL si aucun)"
+
+  - name: lin_verif_ann_rrn_indispo_19
+    description: >
+      Modèle de vérification qui identifie les compteurs du Réseau Routier National (RRN) 
+      dont l'année de comptage est antérieure à l'année du millésime en cours.
+      Basé sur la macro [`verifier_annee_rrn_pas_dispo`](/#!/macro/macro.test_otv.verifier_annee_rrn_pas_dispo).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "1 = 0"
+            description: "Alerter si des compteurs RRN avec année antérieure sont détectés"
+          config:
+            severity: warn
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur RRN (contient '-N%' ou '-A%')"
+        data_tests:
+          - not_null
+          - unique
+      - name: ann_pt
+        description: "Année de mise en place du compteur au format texte YYYY"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "::integer < {{ var('annee') }}"
+                description: "Vérifier que l'année de mise en place est bien antérieure au millésime actuel"
+      - name: tmja
+        description: "Trafic Moyen Journalier Annuel du compteur"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: false
+      - name: ann_pc_pl
+        description: "Année du pourcentage de poids lourds"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NULL OR ann_pc_pl::integer <= ann_pt::integer"
+                description: "Si ann_pc_pl est renseignée, elle doit être inférieure ou égale à ann_pt"
+      - name: pc_pl
+        description: "Pourcentage de poids lourds"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NOT NULL OR ann_pc_pl IS NULL"
+                description: "Si ann_pc_pl est renseignée, pc_pl doit aussi être renseigné"
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                inclusive: true
+                where: "pc_pl IS NOT NULL"
