@@ -227,3 +227,42 @@ models:
                 max_value: 100
                 inclusive: true
                 where: "pc_pl IS NOT NULL"
+
+  - name: lin_verif_coment_tmj_f_val_19
+    description: >
+      Modèle de vérification qui extrait la liste unique des valeurs du champ coment_tmj_f
+      présentes dans les données linéarisées pour le département 19.
+      Basé sur la macro [`verifier_coment_tmj_f_values_lin`](/#!/macro/macro.test_otv.verifier_coment_tmj_f_values_lin).
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_19)
+    columns:
+      - name: coment_tmj_f
+        description: "Commentaire sur le TMJA (Trafic Moyen Journalier Annuel), valeurs distinctes triées"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NULL OR coment_tmj_f ~ '^/\\d+'"
+                description: "Vérifier que coment_tmj_f est soit null, soit commence par / suivi de chiffres"
+
+  - name: lin_verif_coment_tmj_f_reseau_ratio_19
+    description: >
+      Modèle de vérification qui analyse la cohérence des ratios de trafic (coment_tmj_f)
+      en fonction du type de réseau routier pour le département 19.
+      Extrait le type de réseau (A=Autoroute, N=Nationale, D=Départementale) à partir du 2ème segment 
+      de l'id_comptag et le ratio numérique du champ coment_tmj_f (valeur après le slash).
+      Basé sur la macro [`verifier_coment_tmj_f_reseau_ratio_lin`](/#!/macro/macro.test_otv.verifier_coment_tmj_f_reseau_ratio_lin).
+    columns:
+      - name: reseau
+        description: "Type de réseau routier : A (Autoroute), N (Nationale), D (Départementale)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['A', 'N', 'D']
+      - name: ratio
+        description: "Ratio de division du TMJA pour le calcul du trafic sur les bretelles ou voies spécifiques"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 2
+                max_value: 30

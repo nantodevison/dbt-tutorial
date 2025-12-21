@@ -1,4 +1,4 @@
-{% macro verifier_stat_importance_nature_estim_lin(dept=var('dept')) %}
+{% macro verifier_stats_importance_nature_estim_lin(dept=var('dept')) %}
 
 WITH all_combinations AS (
     SELECT DISTINCT importance, nature

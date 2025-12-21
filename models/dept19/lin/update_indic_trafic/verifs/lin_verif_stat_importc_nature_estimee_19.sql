@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_stat_importance_nature_estim_lin() }}
+{{ verifier_stats_importance_nature_estim_lin() }}
 
 {#  documentation d'utilisation :
     appel avec spécification de variable : 

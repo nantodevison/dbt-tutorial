@@ -648,4 +648,25 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
+  - name: verifier_coment_tmj_f_values_lin
+    description: >
+      Extrait la liste unique des valeurs du champ coment_tmj_f (commentaire sur le TMJA) 
+      présentes dans les données linéarisées OTV pour un département donné.
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_coment_tmj_f_reseau_ratio_lin
+    description: >
+      Analyse des valeurs de coment_tmj_f en fonction du type de réseau routier.
+      Extrait le type de réseau depuis l'id_comptag : N/A/D
+      et le ratio numérique du champ coment_tmj_f (nombre après le slash).
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
 
