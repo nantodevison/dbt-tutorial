@@ -669,4 +669,20 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: verifier_split_id_comptag_lin
+    description: >
+      Extrait une partie spécifique de l'identifiant de comptage (id_comptag) 
+      en utilisant la fonction split_part. Permet de récupérer les différents segments 
+      de l'id_comptag (département, route, PR, etc.) selon un séparateur personnalisable.
+    arguments:
+      - name: modele
+        type: string
+        description: "Nom du modèle dbt à utiliser comme source de données (ne pas jouter 'ref()' : juste le nom du modele)"
+      - name: part
+        type: int
+        description: "Numéro de la partie à extraire (par défaut: 1 pour extraire le département)"
+      - name: separator
+        type: string
+        description: "Séparateur utilisé pour découper id_comptag (par défaut: '-')"
+
 

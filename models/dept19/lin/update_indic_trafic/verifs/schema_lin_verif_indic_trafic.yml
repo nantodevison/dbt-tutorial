@@ -266,3 +266,16 @@ models:
               arguments:
                 min_value: 2
                 max_value: 30
+
+  - name: lin_verif_id_comptag_part1_post_coment_tmj_f_19
+    description: >
+      Modèle de vérification qui extrait la liste unique des départements ou agglo présents 
+      dans les identifiants de comptage (id_comptag) après les mises à jour de coment_tmj_f.
+      Utilise la première partie de l'id_comptag (avant le premier '-').
+      Basé sur la macro [`verifier_split_id_comptag_lin`](/#!/macro/macro.test_otv.verifier_split_id_comptag_lin).
+    columns:
+      - name: split_part
+        description: "Code du département extrait de la première partie de l'id_comptag (peut être numérique ou textuel pour les communes)"
+        data_tests:
+          - not_null
+          - unique
