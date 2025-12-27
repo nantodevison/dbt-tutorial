@@ -63,3 +63,88 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+
+  - name: dept19_update_coment_tmj_f_with_coment_tmj_f
+    description: >
+      Mise à jour des coment_tmj_f pour les comptages du département 19
+      à partir des coment_tmj_f dejà existants. 
+      Exemple : remplacement des coment_tmj_f de valeur '/20' par une valeur '/30'.
+    config:
+      column_types:
+        coment_tmj_f_initial: varchar(3)
+        coment_tmj_f_updated: varchar(3)
+        cree_le: char(10)
+        modifie_le: char(10)
+    columns:
+      - name: coment_tmj_f_initial
+        description: "Valeur existante du coment_tmj_f"
+        data_tests:
+          - not_null
+          - unique
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+      - name: coment_tmj_f_updated
+        description: "Nouvelle valeur du coment_tmj_fn"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+
+  - name: dept19_update_coment_tmj_f_with_ids
+    description: >
+      Mise à jour des coment_tmj_f des tronçons à partir soit de leur champs id_ign, 
+      soit de leur champs id_simpli.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(id_ign is not null and id_simpli is null) or (id_ign is null and id_simpli is not null)"
+            description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
+    config:
+      column_types:
+        id_ign: text
+        id_simpli: text
+        coment_tmj_f: varchar(3)
+        cree_le: char(10)
+        modifie_le: char(10)
+    columns:
+      - name: id_ign
+        description: "Identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
+      - name: id_simpli
+        description: "Identifiant de section homogène interne OTR (séparation par ';' si plusieurs tronçons)"
+      - name: coment_tmj_f
+        description: "Commentaire sur le mode de calcul (i.e divise ou multiplie et le facteur) du tmja et le nombre de ligne qui représente la route"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."

@@ -1642,7 +1642,7 @@ dept='19' and coment_tmj_f='/20'
 --UPDATE 1 le 20240912
 update lineaire.traf2024_bdt19_ed24_l set coment_tmj_f='/30' where coment_tmj_f='/20';
 
--!!!modif possible d'un millesime à l'autre => changement d'importance surtout
+-- !!!modif possible d''un millesime à l'autre => changement d'importance surtout
 --verif changement imp
 --ed24 : 0 rows
 --ed23 : 0 rows

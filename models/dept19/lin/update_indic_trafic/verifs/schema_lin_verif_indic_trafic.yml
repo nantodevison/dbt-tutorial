@@ -279,3 +279,99 @@ models:
         data_tests:
           - not_null
           - unique
+
+  - name: lin_verif_coment_tmj_f_attr_modif_19
+    description: >
+      Modèle de vérification qui identifie les troncons linéarisés dont le champ `coment_tmj_f` pourrait avoir été modifié
+      à cause d'une variation dans le champs natif bdtopo "importance".
+      Filtre les troncons RRN (dont la 2e partie de l'id_comptag commence par 'A' (Autoroute) ou 'N' (Nationale))
+      et possédant un champ attr_modif renseigné.
+      Basé sur la macro [`verifier_coment_tmj_f_attr_modif`](/#!/macro/macro.test_otv.verifier_coment_tmj_f_attr_modif).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "left(split_part(id_comptag, '-', 2), 1) IN ('A', 'N')"
+            description: "Vérifier que tous les enregistrements concernent bien des routes nationales ou autoroutes"
+    columns:
+      - name: id_ign
+        description: "Identifiant IGN du tronçon routier de la BDTopo"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_comptag
+        description: "Identifiant du compteur (avec 'A' ou 'N' en début du 2ème segment)"
+        data_tests:
+          - not_null
+      - name: nature
+        description: "Nature de la route selon la BDTopo (Autoroute, Route à 2 chaussées, Route à 1 chaussée, etc.)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: '{{ var("nature_verif") }}'
+      - name: numero
+        description: "Numéro de la route (ex: A89, N89, etc.)"
+      - name: importance
+        description: "Niveau d'importance de la route dans la BDTopo (1=Autoroutière, 2=Principale, etc.)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: '{{ var("importance_verif") }}'
+
+  - name: lin_verif_coment_tmj_f_recup_19
+    description: >
+      Modèle de vérification qui identifie les tronçons du Réseau Routier National (RRN)
+      ayant un mode de récupération (champ recup) différent de 'pk_ign' ou 'ad'.
+      Filtre les compteurs dont l'id_comptag commence par 'A' (Autoroute) ou 'N' (Nationale)
+      dans le second segment de l'identifiant.
+      Basé sur la macro [`verifier_coment_tmj_f_recup`](/#!/macro/macro.test_otv.verifier_coment_tmj_f_recup).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "left(split_part(id_comptag, '-', 2), 1) IN ('A', 'N')"
+            description: "Vérifier que tous les enregistrements concernent bien des routes nationales ou autoroutes"
+    columns:
+      - name: id_ign
+        description: "Identifiant IGN du tronçon routier de la BDTopo"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_comptag
+        description: "Identifiant du compteur (avec 'A' ou 'N' en début du 2ème segment)"
+        data_tests:
+          - not_null
+      - name: numero
+        description: "Numéro de la route (ex: A89, N89, etc.) - affiche 'NULL' si non renseigné"
+        data_tests:
+          - not_null
+      - name: nature
+        description: "Nature de la route selon la BDTopo (Autoroute, Route à 2 chaussées, Route à 1 chaussée, etc.)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: '{{ var("nature_verif") }}'
+      - name: importance
+        description: "Niveau d'importance de la route dans la BDTopo (1=Autoroutière, 2=Principale, etc.)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: '{{ var("importance_verif") }}'
+      - name: sens
+        description: "Sens de circulation du tronçon routier"
+        data_tests:
+          - accepted_values:
+                arguments:
+                  values: '{{ var("sens_verif") }}'
+      - name: coment_tmj_f
+        description: "Commentaire sur le TMJA (Trafic Moyen Journalier Annuel)"
+      - name: recup
+        description: "Mode de récupération du tronçon lors de la linéarisation (valeur atypique différente de 'pk_ign' ou 'ad')"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "NOT IN ('pk_ign', 'ad')"
+                description: "Confirmer que la valeur de recup est bien atypique"

@@ -149,3 +149,24 @@ seeds:
                   ELSE NULL 
                 END
               );
+        dept19_update_coment_tmj_f_with_ids:
+          +quote_columns: false
+          +delimiter: ','
+          +post-hook: |
+              -- D'abord modifier le type des colonnes
+              ALTER TABLE {{ this }} 
+              ALTER COLUMN id_simpli TYPE integer[] USING (
+                CASE 
+                  WHEN id_simpli IS NOT NULL AND id_simpli != '' 
+                  THEN string_to_array(id_simpli, ';')::integer[] 
+                  ELSE NULL 
+                END
+              ),
+              ALTER COLUMN id_ign TYPE text[] USING (
+                CASE 
+                  WHEN id_ign IS NOT NULL AND id_ign != '' 
+                  THEN string_to_array(id_ign, ';')::text[] 
+                  ELSE NULL 
+                END
+              );
+          

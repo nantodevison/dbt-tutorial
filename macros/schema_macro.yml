@@ -685,4 +685,44 @@ macros:
         type: string
         description: "Séparateur utilisé pour découper id_comptag (par défaut: '-')"
 
+  - name: update_coment_tmj_f_itself_lin
+    description: >
+      Met à jour le champ `coment_tmj_f` en remplaçant sa valeur par une valeur fournie 
+      manuellement.
+      S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_coment_tmj_f`](/#!/seed/seed.test_otv.dept19.lin.dept19_update_coment_tmj_f_with_coment_tmj_f)..
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
+  - name: verifier_coment_tmj_f_attr_modif_lin
+    description: >
+      Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait avoir été modifié
+      à cause d'un changement d'attribut Bdtopo (en particulier le champs `importance`).
+      Utilise le modèle [`lin_update_coment_tmj_f_itself_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_itself_19)
+      comme source de données après mise à jour manuelle du champ `coment_tmj_f`.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_coment_tmj_f_recup
+    description: >
+      Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait être faux
+      puisque ce sont de nouveaux tronçons (le champs `recup` n'est pas null).
+      Utilise le modèle [`lin_update_coment_tmj_f_itself_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_itself_19)
+      comme source de données après mise à jour manuelle du champ `coment_tmj_f`.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: update_coment_tmj_f_with_ids
+    description: >
+      Met à jour le champ `coment_tmj_f` en remplaçant par une valeur fournie 
+      manuellement, avec identifiant des lignes concernees grace au champs id_ign ou id_simpli.
+      S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_ids`](/#!/seed/seed.test_otv.dept19.lin.dept19_update_coment_tmj_f_with_ids)..
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

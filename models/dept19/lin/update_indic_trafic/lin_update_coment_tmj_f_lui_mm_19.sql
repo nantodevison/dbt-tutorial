@@ -1,14 +1,14 @@
 {{ config(
     schema='update',
-    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_cpt_hors_dept_dans_na_l'
+    alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_coment_tmj_f_itself_l'
 ) }}
 
-{{update_cpt_hors_dept_dans_na_lin()}}
+{{update_coment_tmj_f_itself_lin()}}   
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 
         dbt run --vars '{"dept": "19"}'
     Dans sa forme basée sur les
     variables passées manuellement :
-    {{ lin_update_cpt_hors_dept_dans_na_19(dept='19') }}
+    {{ lin_update_coment_tmj_f_lui_mm_19(dept='19') }}
 #}
