@@ -152,7 +152,8 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: "{{ var('importance_verif') }}"
+              arguments:
+                values: "{{ var('importance_verif') }}"
       - name: nature
         description: "Nature de la route dans la BDTopo (Autoroute, Route à 2 chaussées, Route à 1 chaussée, etc.)"
         data_tests:

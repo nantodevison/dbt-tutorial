@@ -7,7 +7,7 @@ seeds:
       Les départements doivent faire partie de la liste des départements NA sur 2 caractères
     config: # Config avant post-hook pour les colonnes id_ign et id_simpli (voir fichier dbt_project.yml)
       column_types:
-        dept_integre: integer
+        dept_integre: "integer"
     columns:
       - name: dept_integre
         description: >

@@ -201,14 +201,16 @@ models:
         description: "Trafic moyen journalier annuel tous véhicules final sur le tronçon utilisé pour le calcul des véhicules-kilomètres ; Correspond au trafic du brin SIG"
         data_tests:
           - dbt_expectations.expect_column_values_to_be_null:
-              row_condition: "src_cpt = 'otv'"
-              description: "Vérifier que le tmja_final est null après le run initial de renseignement des indicateurs de trafic"
+              arguments:
+                row_condition: "src_cpt = 'otv'"
+                description: "Vérifier que le tmja_final est null après le run initial de renseignement des indicateurs de trafic"
       - name: veh_km
         description: "Nombre de véhicules.kilomètres (formule : tmja_final * long_km)"
         data_tests:
           - dbt_expectations.expect_column_values_to_be_null:
-              row_condition: "src_cpt = 'otv'"
-              description: "Vérifier que le veh_km est null après le run initial de renseignement des indicateurs de trafic"
+              arguments:
+                row_condition: "src_cpt = 'otv'"
+                description: "Vérifier que le veh_km est null après le run initial de renseignement des indicateurs de trafic"
       - name: ann_pc_pl
         description: "Année du pourcentage poids-lourds"
         data_tests:
@@ -229,9 +231,9 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                   expression: "is not null"
+                  description: "Vérifier que le pc_pl est présent src_cpt = 'otv' et obs_pc_pl est null"
               config:
                   where: "src_cpt = 'otv' and obs_pc_pl is null"
-              description: "Vérifier que le pc_pl est présent src_cpt = 'otv' et obs_pc_pl est null"
           - dbt_utils.expression_is_true:
               arguments:
                   expression: "is null"
@@ -261,12 +263,14 @@ models:
                   max_value: 75000
                   description: "Vérifier que le trafic poids-lourds final est positif et inférieur à 75000"
           - dbt_expectations.expect_column_values_to_be_null:
-              row_condition: "src_cpt = 'otv'"
-              description: "Vérifier que le pl final est null après le run initial de renseignement des indicateurs de trafic"
+              arguments:
+                row_condition: "src_cpt = 'otv'"
+                description: "Vérifier que le pl final est null après le run initial de renseignement des indicateurs de trafic"
       - name: pl_km
         description: "Nombre de PL.kilomètres (formule : pl_final * long_km)"
         data_tests:
           - dbt_expectations.expect_column_values_to_be_null:
+              arguments:
                 row_condition: "src_cpt = 'otv'"
                 description: "Vérifier que le pl_km est null après le run initial de renseignement des indicateurs de trafic"
       - name: obs_tmja
@@ -668,7 +672,7 @@ models:
                 values: "{{ var('coment_tmj_verif') }}"
       - name: coment_tmj_f
         description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
-        -data_tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
@@ -1125,7 +1129,7 @@ models:
                 values: "{{ var('coment_tmj_verif') }}"
       - name: coment_tmj_f
         description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
-        -data_tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
@@ -1579,7 +1583,7 @@ models:
                 values: "{{ var('coment_tmj_verif') }}"
       - name: coment_tmj_f
         description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
-        -data_tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
@@ -1607,9 +1611,9 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: " ~ '^[0-9]{4}$' AND ann_pc_pl::integer >= 2000 AND ann_pc_pl::integer <= {{ var('annee') }}"
-                config:
-                  where: "ann_pc_pl is not null"
                 description: "Vérifier que l'année du pourcentage poids-lourds est au format 4 chiffres et comprise entre 2000 et l'année en cours"
+              config:
+                where: "ann_pc_pl is not null"  
       - name: pc_pl
         description: "Part des poids-lourds sur le tronçon de route par rapport au tmja (en %)"
         data_tests:

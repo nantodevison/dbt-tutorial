@@ -171,7 +171,7 @@ models:
                 values: "{{ var('coment_tmj_verif') }}"
       - name: coment_tmj_f
         description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
-        -data_tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"

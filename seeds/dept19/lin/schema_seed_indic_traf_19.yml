@@ -15,11 +15,11 @@ seeds:
             description: "les id_comptag mano ne doivent pas etre traite au préalable par la CTE lin_cte_update_cpt_hors_dept_dans_na_19__auto"
     config:
       column_types:
-        id_comptag: varchar(254)
-        tmja: integer
-        pc_pl: float
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_comptag: "varchar(254)"
+        tmja: "integer"
+        pc_pl: "float"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -71,10 +71,10 @@ seeds:
       Exemple : remplacement des coment_tmj_f de valeur '/20' par une valeur '/30'.
     config:
       column_types:
-        coment_tmj_f_initial: varchar(3)
-        coment_tmj_f_updated: varchar(3)
-        cree_le: char(10)
-        modifie_le: char(10)
+        coment_tmj_f_initial: "varchar(3)"
+        coment_tmj_f_updated: "varchar(3)"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: coment_tmj_f_initial
         description: "Valeur existante du coment_tmj_f"
@@ -117,11 +117,11 @@ seeds:
             description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config:
       column_types:
-        id_ign: text
-        id_simpli: text
-        coment_tmj_f: varchar(3)
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_ign: "text"
+        id_simpli: "text"
+        coment_tmj_f: "varchar(3)"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"

@@ -15,20 +15,20 @@ seeds:
             description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config: # Config avant post-hook pour les colonnes id_ign et id_simpli (voir fichier dbt_project.yml)
       column_types:
-        id_comptag: varchar(254)
-        id_ign: text
-        id_simpli: text
-        coment_tmj_f: varchar(254)
-        obs_tmja: varchar(254)
-        obs_pc_pl: varchar(254)
-        obs_supl: varchar(254)
-        id_sect: varchar(254)
-        src_sect: varchar(254)
-        autor_sect: varchar(254)
-        obs_vts: varchar(254)
-        id_cpt1: varchar(254)
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_comptag: "varchar(254)"
+        id_ign: "text"
+        id_simpli: "text"
+        coment_tmj_f: "varchar(254)"
+        obs_tmja: "varchar(254)"
+        obs_pc_pl: "varchar(254)"
+        obs_supl: "varchar(254)"
+        id_sect: "varchar(254)"
+        src_sect: "varchar(254)"
+        autor_sect: "varchar(254)"
+        obs_vts: "varchar(254)"
+        id_cpt1: "varchar(254)"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -97,11 +97,11 @@ seeds:
             description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config:
       column_types:
-        id_comptag: varchar(254)
-        id_ign: text
-        id_simpli: text
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_comptag: "varchar(254)"
+        id_ign: "text"
+        id_simpli: "text"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_comptag
         description: "Identifiant du nouveau compteur de référence pour les lignes concernées"
@@ -148,11 +148,11 @@ seeds:
             description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config:
       column_types:
-        id_comptag: varchar(254)
-        id_ign: text
-        id_simpli: text
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_comptag: "varchar(254)"
+        id_ign: "text"
+        id_simpli: "text"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur de référence pour les lignes oubliées"
@@ -199,11 +199,11 @@ seeds:
             description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config:
       column_types:
-        id_comptag: varchar(254)
-        id_ign: text
-        id_simpli: text
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_comptag: "varchar(254)"
+        id_ign: "text"
+        id_simpli: "text"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur dont la linéarisation doit être étendue"
@@ -250,11 +250,11 @@ seeds:
             description: "Vérifier que id_ign, id_simpli et id_comptag sont mutuellement exclusifs : un seul de ces trois champs peut être non null."
     config:
       column_types:
-        id_comptag: varchar(254)
-        id_ign: text
-        id_simpli: text
-        cree_le: char(10)
-        modifie_le: char(10)
+        id_comptag: "varchar(254)"
+        id_ign: "text"
+        id_simpli: "text"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
     columns:
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo des lignes concernées (séparation par ';' si plusieurs tronçons)"
