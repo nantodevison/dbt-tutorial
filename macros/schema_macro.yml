@@ -45,9 +45,6 @@ macros:
       Calcule le nombre de points de comptage et la longueur totale linéarisée 
       pour un département donné.
     arguments:
-      - name: annee
-        type: integer
-        description: "Année des données (par défaut: variable projet 'annee'))"
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
@@ -57,9 +54,6 @@ macros:
       Identifie les tronçons dont la nature est inattendue (sentier, chemin, route empierrée) 
       et calcule leur longueur cumulée.
     arguments:
-      - name: annee
-        type: integer
-        description: "Année des données (par défaut: variable projet 'annee'))"
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
@@ -69,6 +63,9 @@ macros:
       Retourne la liste des départements limitrophes au département spécifié, hors de la région NA.
       Cette liste est utilisée pour vérifier les comptages aux frontières départementales.
     arguments:
+      - name: annee
+        type: integer
+        description: "Année des données (par défaut: variable projet 'annee'))"
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
@@ -202,6 +199,12 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: sim_seuil_bas
+        type: float
+        description: "Seuil bas de similarité textuelle pour le matching (par défaut: 0.2)"
+      - name: dist_seuil_haut
+        type: integer
+        description: "Seuil haut de distance (en mètres) pour le matching (par défaut: 20)"
 
   - name: verifier_pt_attr_dept_non_linearise_lin
     description: >
@@ -259,9 +262,6 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
-      - name: annee
-        type: integer
-        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
   - name: update_etirer_lin
     description: >
@@ -726,3 +726,69 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_numero_rrn_lin
+    description: >
+      Extrait la liste unique des numéros de routes présents dans la base linéarisée 
+      pour les routes du Réseau Routier National (RRN) d'un département donné.
+      Filtre selon les classes administratives définies dans la variable `cl_admin_rrn_verif`.
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: cte_verif_valeurs_aberrantes_tmja__ann_n_n_1
+    description: >
+      Compare les années de comptage et tmja du dferniere millésimes avec les des deux 
+      derniers comptages connus, pour les comptages linearises.
+      Utilise le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept})
+      et la source [`cptg.vue_evolutions_tmja`](/#!/source/source.test_otv.cptg.vue_evolutions_tmja).
+      CTE de la requete globale de vérification d'évolution des trafics [`verifier_valeurs_aberrantes_tmja`](/#!/macro/macro.test_otv.verifier_valeurs_aberrantes_tmja).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: cte_verif_valeurs_aberrantes_tmja__evol_ann_n_n_1
+    description: >
+      Calcule l'évolution des valeurs de TMJA entre le millésime actuel et le précédent pour détecter les valeurs aberrantes.
+      Pour chaque point de comptage, extrait la dernière année disponible et calcule la différence absolue et 
+      l'évolution en pourcentage du trafic. Retourne également le nombre total d'années disponibles 
+      par compteur et les valeurs TMJA des millésimes N, N-1 et N-2.
+      S'appuie sur la macro [cte_verif_valeurs_aberrantes_tmja__ann_n_n_1](/#!/macro/macro.test_otv.cte_verif_valeurs_aberrantes_tmja__ann_n_n_1)
+      et sur la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage).
+      CTE de la requête globale de vérification d'évolution des trafics [`verifier_valeurs_aberrantes_tmja`](/#!/macro/macro.test_otv.verifier_valeurs_aberrantes_tmja).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: verifier_valeurs_aberrantes_tmja
+    description: >
+      Identifie les valeurs aberrantes de TMJA en analysant l'évolution entre deux millésimes consécutifs.
+      Filtre les variations importantes (en pourcentage et en valeur absolue) pour détecter 
+      les incohérences ou erreurs potentielles dans les données de trafic.
+      S'appuie sur le modèle [`lin_cte_verif_vals_abertes_tmja_{dept}__evol_ann_n_n_1`](/#!/model/model.test_otv.lin_cte_verif_vals_abertes_tmja_{dept}__evol_ann_n_n_1).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: seuil_evol
+        type: integer
+        description: "Seuil d'évolution en pourcentage au-delà duquel la variation est considérée comme aberrante (par défaut: 20)"
+      - name: seuil_diff
+        type: integer
+        description: "Seuil de différence absolue de TMJA au-delà duquel la variation est considérée comme aberrante (par défaut: 300)"
+      - name: ann_n_filter
+        type: string
+        description: "Millésime de référence (Millésime N) pour le filtrage (par défaut: variable projet 'annee')"
+      - name: ann_n_1_filter
+        type: string
+        description: "Millésime de comparaison (Millésime N-1) optionnelle pour un filtrage supplémentaire (par défaut: none)"
+      - name: id_comptag_like
+        type: string
+        description: "Filtre optionnel sur l'identifiant de comptage via pattern LIKE SQL (par défaut: none)"
+      - name: percentile_value
+        type: numeric
+        description: "Valeur de percentile à calculer sur l'évolution (ex: 0.95 pour le 95e percentile) (par défaut: none)"

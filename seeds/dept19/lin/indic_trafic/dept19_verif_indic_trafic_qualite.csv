@@ -1,0 +1,72 @@
+﻿bdd_id_comptag,gest_natureintegration,bdd_tmja,bdd_proj_traf,bdd_evol_annuelle_median,bdd_variation_evolution_prec,gest_tmja,gest_pc_pl,gest_evol_annuelle,gest_suspect,gest_obs
+19-A89-181+0,MaJCptExistant,13920,14246,2.8,1.6,13930,12.1,0.07,false,
+19-A89-200+0,MaJCptExistant,12010,12460,2.59,2.53,11980,12.4,-0.25,false,
+19-A89-220+0,MaJCptExistant,12890,13181,2.56,2.13,12950,13.1,0.47,false,
+19-A89-233+0,MaJCptExistant,12850,13046,2.5,1.99,12870,12.4,0.16,false,
+19-A89-255+0,MaJCptExistant,12250,12437,2.42,2.17,12250,12.8,0,false,
+19-A89-275+0,MaJCptExistant,11650,11830,2.65,2.38,11660,13.4,0.09,false,
+19-A89-286+0,MaJCptExistant,11940,12121,2.54,2.5,11970,13.1,0.25,false,
+19-D1089E1-118+500,correspIdComptag,12519,14307,-0.5,1.57,10915,1.7,-6.63,false,traitement ok
+19-D978-44+439,correspIdComptag,2042,2599,1.13,3.75,1847,1.3,-4.89,false,traitement ok
+19-D980-7+402,correspIdComptag,2239,1365,-1.75,2.39,2242,3.9,0.13,false,traitement ok
+19-D44-15+270,correspIdComptag,2749,2824,1.65,0.82,3541,1.5,13.49,false,traitement ok
+19-D982-27+390,creationCompteurExistDevientAssoc,1896,1984,-0.42,0.45,2379,3.2,12.02,false,
+19-D1120-55+260,correspIdComptag,6910,6386,-2.3,2.8,6756,2.4,-2.23,false,
+19-D1089-98+500,MaJCptExistant,8309,9566,-0.98,13.21,9678,6.1,16.48,false,
+19-D7-27+800,correspIdComptag,923,,3.22,,908,1.5,-0.27,false,
+19-D33-5+0,correspIdComptag,813.0,,-0.12,,928,2.7,4.51,false,
+19-D39-4+0,correspIdComptag,1393.0,,-0.57,,1341,4,-1.26,false,
+19-D148E1-7+0,correspIdComptag,2777.0,,-0.43,,1961,1,-10.95,false,
+19-D17-18+480,MaJCptExistant,2805.0,,-0.74,,3387,3.5,6.49,false,
+19-D19-4+0,MaJCptExistant,1860.0,,2.55,,1552,1.3,-5.86,false,
+19-D31-15+0,MaJCptExistant,1686.0,,0.24,,1570,5,-2.35,false,
+19-D44-2+0,MaJCptExistant,7164.0,,0.19,,6156,1.7,-4.93,false,
+19-D17-14+60,MaJCptExistant,2144.0,,4,,2328,6.1,2.78,false,
+19-D148-22+0,MaJCptExistant,3039.0,,1.41,,3164,2.1,1.35,false,
+19-D921-3+760,MaJCptExistant,8643,,80.36,,8575,7.4,-0.79,false,
+19-D920-25+238,MaJCptExistant,1025.0,,2.99,,1240,3,6.55,false,
+19-D18-5+0,MaJCptExistant,972.0,,1.52,,963,4.9,-0.31,false,
+19-D16E-1+262,correspIdComptag,1770,1849,5.29,10.37,1882,22.2,6.33,false,
+19-D142E-0+600,correspIdComptag,1291,1353,-0.24,3.66,1253,15.1,-1.48,false,
+19-D1120-72+225,correspIdComptag,4623,4424,0.48,0.85,4691,8,1.47,false,
+19-D1120-62+0,correspIdComptag,6230,6181,-2.14,3.36,6737,5.7,3.99,false,
+19-D901-10+498,correspIdComptag,4063,3693,-0.49,2.27,4132,4.5,0.85,false,
+19-D921-28+0,correspIdComptag,1303.0,1565,2.22,5.38,1455,5.3,3.75,false,
+19-D1089-51+500,correspIdComptag,4639,4357,2.68,1.13,4754,8.4,2.48,false,
+19-D922-73+500,MaJCptExistant,5516,5794,-1.79,0.57,5960,4.7,3.95,false,
+19-D901-48+808,MaJCptExistant,15205,14321,1.06,2.91,12657,2.9,-16.76,false,
+19-D1089-117+470,MaJCptExistant,14799,14531,4,1.1,15558,7.1,5.13,false,
+19-D1089-124+111,MaJCptExistant,10933,10520,1.63,3.73,11025,7.2,0.84,false,
+19-D44-6+288,MaJCptExistant,5761,5653,0.08,0.22,6425,2,5.61,false,
+19-D36-12+580,MaJCptExistant,2283,2161,0.36,3.97,2521,7.6,5.08,false,
+19-D901-50+0,MaJCptExistant,16938,16344,2.53,4.47,14339,4.1,-15.34,false,
+19-D1089-22+0,MaJCptExistant,3523,3754,-0.87,5.91,3779,4.6,3.57,false,
+19-D1120-45+693,MaJCptExistant,5169,5305,3.15,11.83,5289,7.2,2.32,false,
+19-D979-20+695,MaJCptExistant,1327,1322,2.3,7.95,1414,8.3,3.23,false,
+19-D1089-15+0,MaJCptExistant,2684,2636,1.38,0.37,2736,6.3,1.94,false,
+19-D18-34+0,MaJCptExistant,1089.0,1125,3.55,1.38,1034,4.6,-1.71,false,
+19-D940-89+87,MaJCptExistant,1135,1176,-0.51,5.28,1171,7.9,1.57,false,
+19-D16-60+0,MaJCptExistant,1087.0,1176,0.88,2.11,1173,4.2,2.57,false,
+19-D1089-33+650,MaJCptExistant,6565,6467,-0.17,1.82,7687,5.5,8.21,false,
+19-D158-13+0,MaJCptExistant,3390.0,4860,0.52,9.87,3959,2,5.31,false,
+19-D36-2+130,MaJCptExistant,1799,1986,-0.33,2.67,1914,5.3,3.15,false,
+19-D902-9+14,MaJCptExistant,2331,2389,0.44,0.64,2591,8.5,5.43,false,
+19-D979-7+0,MaJCptExistant,1534,1653,-1.57,6.8,1681,8.3,4.68,false,
+19-D1089-30+0,MaJCptExistant,7074,7978,0.49,0.2,8104,4.2,7.03,false,
+19-D25-4+500,MaJCptExistant,4332.0,5518,1.28,6.85,4593,1.7,1.97,false,
+19-D1089-76+0,MaJCptExistant,7267,6899,-0.76,4.57,7371,8.5,1.43,false,
+19-D20-75+0,MaJCptExistant,716.0,802,2.73,3.6,735,5.6,0.88,false,
+19-D979-77+590,MaJCptExistant,905,875,0.63,10.55,893,1.2,-0.67,false,
+19-D1089-87+106,MaJCptExistant,9559,9803,0.58,3.83,9237,7.4,-3.37,false,
+19-D1089-43+210,MaJCptExistant,3645,3494,1,3.29,3846,9.7,2.72,false,
+19-D979-39+413,MaJCptExistant,3004,2856,0.2,2.31,3018,4.3,0.23,false,
+19-D1120-25+694,MaJCptExistant,5594,5244,0.16,2.05,5663,7.1,1.23,false,
+19-D16-32+130,creationCompteurExistDevientAssoc,262,223,1.93,4.15,442,2.6,29.89,false,volume trop faible pour impact significatif
+19-D1089-113+150,MaJCptExistant,13809,11888,3.68,40.66,14633,8.1,5.97,false,variation trafic jugee normal
+19-D1089-70+0,MaJCptExistant,5098,4464,-2.49,0.69,5532,6.9,4.17,false,variation trafic jugee normal
+19-D921-22+500,MaJCptExistant,2220.0,3196,4.24,12.08,2421,4.1,2.93,false,variation trafic jugee normal
+19-D12-5+800,MaJCptExistant,927.0,446,-9.47,5.44,1010,3.6,2.9,false,variation trafic jugee normal
+19-D18-18+883,MaJCptExistant,1012.0,333,-3.74,16.15,955,4.6,-1.91,false,variation trafic jugee normal
+19-D1089-112+0,MaJCptExistant,12116,8971,9.29,17.62,11525,10.1,-4.88,false,variation trafic jugee normal
+19-D44-10+121,MaJCptExistant,4770,4348,-0.68,4.61,5407,1.6,6.47,false,variation trafic jugee normal
+19-D170-23+0,MaJCptExistant,2710,2829,-10.33,44.75,3340,14.2,23.25,false,variation trafic juge normal

@@ -104,3 +104,151 @@ models:
         description: "Sens du comptage"
       - name: geom
         description: "Géométrie du compteur"
+
+  - name: lin_cte_verif_vals_abertes_tmja_19__ann_n_n_1
+    description: >
+      Modèle CTE de vérification qui extrait l'historique des TMJA sur le millésime 
+      actuel et les deux comptages précédents.
+      (année N, N-1, N-2) pour chaque compteur linéarisé, permettant ainsi l'analyse
+      des variations de trafic et la détection de valeurs aberrantes.
+      Basé sur la macro [`cte_verif_valeurs_aberrantes_tmja__ann_n_n_1`](/#!/macro/macro.test_otv.cte_verif_valeurs_aberrantes_tmja__ann_n_n_1).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "id_comptag IS NOT NULL AND annee_n IS NOT NULL AND tmja_n IS NOT NULL"
+            description: "Vérifier que tous les enregistrements ont un compteur, une année et un TMJA valides pour l'année N"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(annee_n_1 IS NULL AND annee_n_2 IS NULL) OR (annee_n_1 IS NOT NULL AND annee_n::integer > annee_n_1::integer AND (annee_n_2 IS NULL OR annee_n_1::integer > annee_n_2::integer))"
+            description: "Vérifier la cohérence de l'ordre chronologique des années : annee_n > annee_n_1 > annee_n_2, et si annee_n_1 est NULL alors annee_n_2 doit être NULL"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé avec historique de trafic"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+      - name: annee_n
+        description: "Année N du TMJA (année la plus récente pour ce compteur)"
+        data_tests:
+          - not_null
+      - name: tmja_n
+        description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année N"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 200000
+      - name: annee_n_1
+        description: "annee du comptage précédant le millésime actuel, peut être NULL si pas d'historique"
+      - name: annee_n_2
+        description: "annee du comptage précédant le comptage précédant le millésime actuel, peut être NULL si historique insuffisant"
+      - name: tmja_n_1
+        description: "TMJA du comptage précédant le millésime actuel (peut être NULL si pas de données disponibles)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                where: "tmja_n_1 IS NOT NULL"
+      - name: tmja_n_2
+        description: "TMJA du comptage précédant le comptage précédant le millésime actuel (peut être NULL si pas de données disponibles)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                where: "tmja_n_2 IS NOT NULL"
+
+  - name: lin_cte_verif_vals_abertes_tmja_19__evol_ann_n_n_1
+    description: >
+      Modèle CTE de vérification qui calcule l'évolution des valeurs de TMJA entre l'année N 
+      et l'année N-1 pour détecter les valeurs aberrantes.
+      Pour chaque point de comptage, extrait la dernière année disponible et calcule la différence 
+      absolue (diff_n_n_1) et l'évolution en pourcentage (evol_n_n_1) du trafic entre N et N-1.
+      Retourne également le nombre total d'années disponibles par compteur (nb_ann) et les valeurs 
+      TMJA des années N, N-1 et N-2.
+      Basé sur la macro [`cte_verif_valeurs_aberrantes_tmja__evol_ann_n_n_1`](/#!/macro/macro.test_otv.cte_verif_valeurs_aberrantes_tmja__evol_ann_n_n_1).
+      Renvoi des warnings si les différences ou évolutions sont hors des plages raisonnables.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(diff_n_n_1 IS NULL AND evol_n_n_1 IS NULL AND tmja_n_1 IS NULL) OR (diff_n_n_1 IS NOT NULL AND evol_n_n_1 IS NOT NULL AND tmja_n_1 IS NOT NULL)"
+            description: "Vérifier la cohérence entre diff_n_n_1, evol_n_n_1 et tmja_n_1 : soit tous NULL, soit tous renseignés"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé avec calcul d'évolution de trafic"
+        data_tests:
+          - not_null
+          - unique
+      - name: nb_ann
+        description: "Nombre total d'années de données de trafic disponibles pour ce compteur"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 50
+      - name: annee_n
+        description: "Année N du TMJA (année la plus récente pour ce compteur)"
+        data_tests:
+          - not_null
+      - name: annee_n_1
+        description: "Année du comptage précédant le millésime actuel (peut être NULL si pas d'historique)"
+      - name: annee_n_2
+        description: "Année du comptage précédant le comptage précédant le millésime actuel (peut être NULL si historique insuffisant)"
+      - name: tmja_n
+        description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année N"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+      - name: tmja_n_1
+        description: "TMJA du comptage précédant le millésime actuel (peut être NULL si pas de données disponibles)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                where: "tmja_n_1 IS NOT NULL"
+      - name: tmja_n_2
+        description: "TMJA du comptage précédant le comptage précédant le millésime actuel (peut être NULL si pas de données disponibles)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                where: "tmja_n_2 IS NOT NULL"
+      - name: diff_n_n_1
+        description: "Différence absolue de TMJA entre l'année N et l'année N-1 (tmja_n - tmja_n_1), NULL si pas de N-1"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -150000
+                max_value: 150000
+                where: "diff_n_n_1 IS NOT NULL"
+                description: "Vérifier que la différence de TMJA reste dans une plage raisonnable"
+              config:
+                severity: warn
+      - name: evol_n_n_1
+        description: "Évolution en pourcentage du TMJA entre N et N-1 : ((tmja_n - tmja_n_1) / tmja_n_1) × 100, arrondi à 2 décimales, NULL si pas de N-1"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -100.00
+                max_value: 200.00
+                where: "evol_n_n_1 IS NOT NULL"
+                description: "Vérifier que l'évolution en pourcentage reste dans une plage raisonnable (max ±1000%)"
+              config:
+                severity: warn
+      - name: suspect
+        description: "indicateur de suspicion de la donnée de trafic (booléen) provenant de la table source des comptages"
+        data_tests:
+          - not_null
+      - name: obs
+        description: "Observation ou commentaire associé à la donnée de trafic provenant de la table source des comptages"

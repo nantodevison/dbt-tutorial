@@ -8,18 +8,18 @@ seeds:
       (mais en région NA). Permet de "forcer" la prise en compt ede valeur de tmja et pc_pl qui ne sont pas encore
       dans la partie comptage de l'OTV.
       Les champs id_comptag et tmja doivent être renseignés.
-    data_tests:
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: "id_comptag not in (select id_comptag from {{ ref('lin_cte_update_cpt_hors_dept_dans_na_' ~ var('dept') ~ '__auto')}})"
-            description: "les id_comptag mano ne doivent pas etre traite au préalable par la CTE lin_cte_update_cpt_hors_dept_dans_na_19__auto"
     config:
       column_types:
         id_comptag: "varchar(254)"
         tmja: "integer"
         pc_pl: "float"
         cree_le: "char(10)"
-        modifie_le: "char(10)"
+        modifie_le: "char(10)"    
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "id_comptag not in (select id_comptag from {{ ref('lin_cte_update_cpt_hors_dept_dans_na_' ~ var('dept') ~ '__auto')}})"
+            description: "les id_comptag mano ne doivent pas etre traite au préalable par la CTE lin_cte_update_cpt_hors_dept_dans_na_19__auto"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -110,11 +110,6 @@ seeds:
     description: >
       Mise à jour des coment_tmj_f des tronçons à partir soit de leur champs id_ign, 
       soit de leur champs id_simpli.
-    data_tests:
-      - dbt_utils.expression_is_true:
-          arguments:
-            expression: "(id_ign is not null and id_simpli is null) or (id_ign is null and id_simpli is not null)"
-            description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     config:
       column_types:
         id_ign: "text"
@@ -122,6 +117,11 @@ seeds:
         coment_tmj_f: "varchar(3)"
         cree_le: "char(10)"
         modifie_le: "char(10)"
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "(id_ign is not null and id_simpli is null) or (id_ign is null and id_simpli is not null)"
+            description: "Vérifier que id_ign et id_simpli sont mutuellement exclusifs : si l'un est non null, l'autre doit être null."
     columns:
       - name: id_ign
         description: "Identifiant IGN du(es) tronçon BdTopo linéarisé (séparation par ';' si plusieurs tronçons)"
@@ -148,3 +148,84 @@ seeds:
               arguments:
                 regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+
+  - name: dept19_verif_indic_trafic_qualite
+    description: >
+      Fichier de vérification qualité des indicateurs de trafic pour le département 19 (Corrèze).
+      Fichier issu du processus d'intégration/standardisation des données de trafic.
+      Permet de comparer les données de trafic entre la base de données (bdd) et le gestionnaire (gest)
+      afin d'identifier les anomalies potentielles.
+    config:
+      column_types:
+        bdd_id_comptag: "varchar(254)"
+        gest_natureintegration: "varchar(100)"
+        bdd_tmja: "numeric(10,1)"
+        bdd_proj_traf: "integer"
+        bdd_evol_annuelle_median: "numeric(8,2)"
+        bdd_variation_evolution_prec: "numeric(8,2)"
+        gest_tmja: "integer"
+        gest_pc_pl: "numeric(5,2)"
+        gest_evol_annuelle: "numeric(8,2)"
+        gest_suspect: "boolean"
+        gest_obs: "text"
+    columns:
+      - name: bdd_id_comptag
+        description: Identifiant unique du point de comptage (format XX-DXXX-XX+XXX)
+        tests:
+          - not_null
+          - unique
+      - name: gest_natureintegration
+        description: >
+          Nature de l'intégration du comptage:
+          - correspIdComptag: correspondance d'identifiant de comptage
+          - MaJCptExistant: mise à jour d'un compteur existant
+          - creationCompteurExistDevientAssoc: création d'un compteur et existant devient associé
+          - MajCptAssoc : mise à jour d'un compteur associé
+          - MaJCptExistant : mise à jour d'un compteur existant
+      - name: bdd_tmja
+        description: Trafic Moyen Journalier Annuel selon la base de données (en véhicules/jour)
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> 0"
+      - name: bdd_proj_traf
+        description: Projection du trafic selon la base de données (en véhicules/jour)
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NULL OR bdd_proj_traf > 0"
+      - name: bdd_evol_annuelle_median
+        description: Médiane de l'évolution annuelle du trafic selon la base de données (en %)
+      - name: bdd_variation_evolution_prec
+        description: Variation par rapport à l'évolution précédente selon la base de données (en %)
+      - name: gest_tmja
+        description: Trafic Moyen Journalier Annuel selon le gestionnaire (en véhicules/jour)
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> 0"
+      - name: gest_pc_pl
+        description: Pourcentage de poids lourds selon le gestionnaire (en %)
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                where: "gest_pc_pl is not null"
+      - name: gest_evol_annuelle
+        description: Évolution annuelle du trafic selon le gestionnaire (en %)
+      - name: gest_suspect
+        description: Indicateur booléen signalant si la donnée est suspecte (true/false)
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: gest_obs
+        description: >
+          Observations du gestionnaire sur le traitement:
+          - "traitement ok": traitement validé sans anomalie
+          - "variation trafic jugee normal": variation importante mais considérée comme normale
+          - "volume trop faible pour impact significatif": volume faible, impact limité
+          - Vide si aucune observation particulière
