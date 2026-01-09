@@ -38,6 +38,7 @@ vars:
   gestion_verif : ["A''LIENOR", 'ASF', 'ATLANDES', 'Cantal', 'Charente', 'Charente-Maritime', 'Charente/Vienne', 'Cher', 'COFIROUTE', 'Corrèze', 'Corrèze/Puy-de-Dôme', 'Creuse', 'Creuse/Puy-de-Dôme', 'Deux-Sèvres', 'Deux-Sèvres/Vienne', 'DIR Atlantique', 'DIR Centre Ouest', 'DIR Ouest', 'DIR Sud Ouest', 'Dordogne', 'Gers', 'Gironde', 'Gironde/Dordogne', 'Gironde/Lot-et-Garonne', 'Haute-Vienne', 'Haute-Vienne/Vienne', 'Hautes-Pyrénées', 'Indre', 'Indre-et-Loire', 'Landes', 'Landes/Gers', 'Landes/Pyrénées-Atlantiques', 'Lot', 'Lot-et-Garonne', 'Lot/Dordogne', 'Maine-et-Loire', 'Pyrénées-Atlantiques', 'Pyrénées-Atlantiques/Hautes-Pyrénées', 'Pyrénées-Atlantiques/Pyrénées-Atlantiques', 'Tarn-et-Garonne', 'Tarn-et-Garonne/Lot-et-Garonne', 'Vendée', 'Vienne', 'Vienne/Deux-Sèvres']
   etat_verif : ['En construction', 'En projet', 'En service']
   src_cpteur_verif: ['bruit', 'sectionnement', 'compteur']
+  type_poste_verif: ['permanent', 'tournant', 'ponctuel']
   obs_tmja_pc_pl_verif: ['auto', 'mano']
   milieu_verif: ['u', 'r']
   vts_osm_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]

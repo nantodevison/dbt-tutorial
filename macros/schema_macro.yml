@@ -792,3 +792,52 @@ macros:
       - name: percentile_value
         type: numeric
         description: "Valeur de percentile à calculer sur l'évolution (ex: 0.95 pour le 95e percentile) (par défaut: none)"
+
+  - name: cte_verif_evol_cpt_devenu_assoc__pt_ann_n
+    description: >
+      Identifie les points de comptage de l'année N-1 qui ne sont plus présents dans la linéarisation 
+      de l'année N (points de comptage devenus associés). 
+      Retourne les id_comptag, année et TMJA 
+      de l'année N-1 pour les compteurs qui ne sont plus linéarisés en année N.
+      CTE utilisée dans le cadre de la vérification de l'évolution des points de comptage.
+      S'appuie sur la linéarisation de l'année précédente 
+      et le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: string
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: cte_verif_evol_cpt_devenu_assoc__pt_ann_n_asso
+    description: >
+      Enrichit les points de comptage de l'année N-1 devenus associés en année N avec leurs informations 
+      de comptage associé (type de poste et compteur de référence). 
+      S'appuie sur la CTE [`cte_verif_evol_cpt_devenu_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__pt_ann_n) 
+      et la table `comptage_assoc.compteur`.
+      Retourne id_cpteur_asso, ann_lin_n_1, tmja_lin_n_1, typ_post_lin_n_1 et id_cpteur_ref 
+      pour analyser l'évolution des compteurs ayant changé de statut.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: string
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: verif_evol_cpt_dev_assoc_lin
+    description: >
+      Analyse l'évolution du trafic (TMJA) entre l'année N et N-1 pour les compteurs devenus associés.
+      Compare les valeurs de trafic d'un compteur associé (via son compteur de référence) entre deux années
+      et calcule la différence absolue et l'évolution en pourcentage.
+      S'appuie sur la CTE [cte_verif_evol_cpt_dev_assoc__pt_ann_n_asso](/#!/macro/macro.test_otv.cte_verif_evol_cpt_dev_assoc__pt_ann_n_asso),
+      le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept})
+      et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: string
+        description: "Année de référence au format YYYY (par défaut: variable projet 'annee')"

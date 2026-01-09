@@ -13,11 +13,21 @@ sources:
           [troncon_de_route](https://data.geopf.fr/telechargement/download/BDTOPO/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15/BDTOPO_3-3_TOUSTHEMES_GPKG_LAMB93_R75_2024-03-15.7z)
           Attention, dans le cadre du test dbt, cette doc donne un exemlpe, mais en réalité il y a tout un traitement pour transformer le fichier IGN vers 
           la table traf_2024
+        columns:
+          - name: id_comptag
+            description: >
+              Identifiant du compteur routier associé au tronçon de route, s'il y en a un.
+              Permet de faire le lien entre la table des tronçons de route et la table des compteurs routiers.
       - name: traf2023_bdt_na_ed23_l
         description: >
           Table des tronçons de route mars ou septembre 2023 
           Attention, dans le cadre du test dbt, cette doc donne un exemlpe, mais en réalité il y a tout un traitement pour transformer le fichier IGN vers 
           la table traf_2023
+        columns:
+          - name: id_comptag
+            description: >
+              Identifiant du compteur routier associé au tronçon de route, s'il y en a un.
+              Permet de faire le lien entre la table des tronçons de route et la table des compteurs routiers.
           
   - name: admi
     description: >
@@ -76,6 +86,11 @@ sources:
     tables:
       - name: compteur
         description: "Table des compteurs routiers, contient la géolocalisation"
+        columns:
+          - name: id_cpteur_asso
+            description: "Identifiant du compteur associé"
+          - name: id_cpteur_ref
+            description: "Identifiant du compteur de référence auquel le compteur associé est lié"
       - name: comptage
         description: "Table des comptages réalisés sur les compteurs. 1 comptage par annéeet par compteur"
       - name: indic_agrege

@@ -252,3 +252,93 @@ models:
           - not_null
       - name: obs
         description: "Observation ou commentaire associé à la donnée de trafic provenant de la table source des comptages"
+
+  - name: lin_cte_verif_evol_cpt_dev_assoc_19__id_cptg_n
+    description: >
+      Modèle CTE de vérification qui identifie les points de comptage présents dans 
+      la linéarisation de l'année N (millésime actuel).
+      Basé sur la macro [`cte_verif_evol_cpt_devenu_assoc__id_cptg_n`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__id_cptg_n).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur présent dans la linéarisation de l'année N"
+        data_tests:
+          - not_null
+          - unique
+
+  - name: lin_cte_verif_evol_cpt_dev_assoc_19__id_cptg_n_1
+    description: >
+      Modèle CTE de vérification qui identifie les points de comptage présents dans 
+      la linéarisation de l'année N-1 (année précédente).
+      Basé sur la macro [`cte_verif_evol_cpt_devenu_assoc__id_cptg_n_1`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__id_cptg_n_1).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur présent dans la linéarisation de l'année N-1"
+        data_tests:
+          - not_null
+          - unique
+      - name: ann_pt
+        description: "Année du comptage dans la linéarisation N-1 (ann_pt de la table lineaire de l'année précédente)"
+      - name: tmja
+        description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année N-1"
+
+  - name: lin_cte_verif_evol_cpt_dev_assoc_19__pt_ann_n
+    description: >
+      Modèle CTE de vérification qui identifie les points de comptage présents dans 
+      la linéarisation de l'année N-1 mais absents de la linéarisation de l'année N (devenus des comptages associés).
+      Basé sur la macro [`cte_verif_evol_cpt_devenu_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__pt_ann_n).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur présent en N-1 mais absent de la linéarisation en N (devenu associé)"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg_assoc', 'compteur')
+                field: id_cpteur_asso
+                description: "Vérifier que les compteurs disparus esont dans la table source des compteurs_assoc"
+      - name: ann_pt
+        description: "Année du comptage dans la linéarisation N-1 (ann_pt de la table lineaire de l'année précédente)"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "::integer >= 1900 AND ann_pt::integer <= 2100"
+                description: "Vérifier que l'année est dans une plage cohérente"
+      - name: tmja
+        description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année N-1 (tmja de la table lineaire de l'année précédente)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                description: "Vérifier que le TMJA N-1 est dans une plage raisonnable"
+
+  - name: lin_cte_verif_evol_assoc_19__pt_ann_n_asso
+    description: >
+      Modèle CTE de vérification qui détaille les compteurs devenus associés (issus du modèle 
+      [`lin_cte_verif_evol_cpt_dev_assoc_19__pt_ann_n`](/#!/model/model.test_otv.lin_cte_verif_evol_cpt_dev_assoc_19__pt_ann_n))
+      avec leurs informations de trafic, type de poste et compteur de référence issues de la table des compteurs associés.
+      Basé sur la macro [`cte_verif_evol_cpt_devenu_assoc__pt_ann_n_asso`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__pt_ann_n_asso).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur devenu associé ; equivalent à id_cpteur_asso"
+      - name: id_cpteur_asso
+        description: "Identifiant du compteur devenu associé"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg_assoc', 'compteur')
+                field: id_cpteur_asso
+                description: "Vérifier que les compteurs enrichis font partie de la liste des compteurs devenus associés"
+      - name: ann_pt
+        description: "Année du comptage dans la linéarisation N-1"
+      - name: tmja
+        description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année N-1"
+      - name: typ_poste
+        description: "Type de poste du compteur dans la linéarisation N-1 (cf enumération bdd)"
+      - name: id_cpteur_ref
+        description: "Identifiant du compteur de référence auquel le compteur associé est lié"

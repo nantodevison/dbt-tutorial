@@ -448,3 +448,67 @@ models:
           - not_null
       - name: percentile_value
         description: "Valeur de percentile calculée sur l'évolution (optionnel, présent uniquement si le paramètre percentile_value est fourni)"
+
+  - name: lin_verif_evol_cpt_dev_assoc_19
+    description: >
+      Modèle de vérification qui analyse l'évolution du trafic (TMJA) entre l'année N et N-1 
+      pour les compteurs devenus associés. Compare les valeurs de trafic d'un compteur associé 
+      (via son compteur de référence) entre deux années et calcule la différence absolue 
+      et l'évolution en pourcentage.
+      Basé sur la macro [`verif_evol_cpt_dev_assoc_lin`](/#!/macro/macro.test_otv.verif_evol_cpt_dev_assoc_lin).
+      Renvoi un wartning si l'évolution en pourcentage dépasse le seuil défini par la variable `seuil_evol_tmja_verif`.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "abs(evol_n_n_1) <= {{ var('seuil_evol_tmja_verif') }}"
+            description: "Alerter si l'évolution du trafic des compteurs devenus associés dépasse le seuil"
+          config:
+            severity: warn
+    columns:
+      - name: id_cpteur_asso
+        description: "Identifiant du compteur associé"
+        data_tests:
+          - not_null
+          - unique
+      - name: ann_lin_n_1
+        description: "Année de comptage N-1 pour le compteur associé"
+        data_tests:
+          - not_null
+      - name: tmja_lin_n_1
+        description: "Valeur du TMJA à l'année N-1 pour le compteur associé"
+        data_tests:
+          - not_null
+      - name: typ_post_lin_n_1
+        description: "Type de poste du compteur à l'année N-1"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: '{{ var("type_poste_verif") }}'
+      - name: id_cpteur_ref
+        description: "Identifiant du compteur de référence auquel le compteur associé est rattaché"
+        data_tests:
+          - not_null
+      - name: ann_lin_n
+        description: "Année de comptage N pour le compteur de référence"
+        data_tests:
+          - not_null
+      - name: tmja_lin_n
+        description: "Valeur du TMJA à l'année N pour le compteur de référence"
+        data_tests:
+          - not_null
+      - name: typ_post_lin_n
+        description: "Type de poste du compteur de référence à l'année N"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: '{{ var("type_poste_verif") }}'
+      - name: diff_n_n_1
+        description: "Différence absolue de TMJA entre l'année N et l'année N-1 (tmja_lin_n - tmja_lin_n_1), arrondie"
+        data_tests:
+          - not_null
+      - name: evol_n_n_1
+        description: "Évolution en pourcentage du TMJA entre l'année N et l'année N-1 ((tmja_lin_n - tmja_lin_n_1) / tmja_lin_n_1 * 100), arrondie à 2 décimales"
+        data_tests:
+          - not_null

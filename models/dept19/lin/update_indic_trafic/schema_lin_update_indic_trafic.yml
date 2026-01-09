@@ -1395,6 +1395,7 @@ models:
         description: "A COMPLETER"
       - name: id_struct
         description: "A COMPLETER"
+        
   - name: lin_update_coment_tmj_f_ids_19
     description: >
       Modele de mise à jour du champ coment_tmj_f à partir d'identifiants fournis manuellement.
