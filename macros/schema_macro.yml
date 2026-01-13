@@ -826,7 +826,7 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: verif_evol_cpt_dev_assoc_lin
+  - name: verifier_evol_cpt_dev_assoc_lin
     description: >
       Analyse l'évolution du trafic (TMJA) entre l'année N et N-1 pour les compteurs devenus associés.
       Compare les valeurs de trafic d'un compteur associé (via son compteur de référence) entre deux années
@@ -841,3 +841,15 @@ macros:
       - name: annee
         type: string
         description: "Année de référence au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: verifier_periode_lin
+    description: >
+      Identifie les compteurs ponctuels ou tournant, départementaux ou d'agglo dont la période de comptage 
+      se situe en juillet ou août (période estivale).
+      Permet de détecter les comptages effectués pendant les vacances d'été, 
+      S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
+      et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

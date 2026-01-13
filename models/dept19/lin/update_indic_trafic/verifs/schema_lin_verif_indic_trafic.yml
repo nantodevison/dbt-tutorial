@@ -455,7 +455,7 @@ models:
       pour les compteurs devenus associés. Compare les valeurs de trafic d'un compteur associé 
       (via son compteur de référence) entre deux années et calcule la différence absolue 
       et l'évolution en pourcentage.
-      Basé sur la macro [`verif_evol_cpt_dev_assoc_lin`](/#!/macro/macro.test_otv.verif_evol_cpt_dev_assoc_lin).
+      Basé sur la macro [`verifier_evol_cpt_dev_assoc_lin`](/#!/macro/macro.test_otv.verifier_evol_cpt_dev_assoc_lin).
       Renvoi un wartning si l'évolution en pourcentage dépasse le seuil défini par la variable `seuil_evol_tmja_verif`.
     data_tests:
       - dbt_utils.expression_is_true:
@@ -512,3 +512,36 @@ models:
         description: "Évolution en pourcentage du TMJA entre l'année N et l'année N-1 ((tmja_lin_n - tmja_lin_n_1) / tmja_lin_n_1 * 100), arrondie à 2 décimales"
         data_tests:
           - not_null
+
+  - name: lin_verif_periode_19
+    description: >
+      Modèle de vérification qui identifie les compteurs ponctuels et tournants 
+      (départementaux et d'agglomération) dont la période de comptage se situe en juillet ou août (période estivale).
+      Basé sur la macro [`verifier_periode_lin`](/#!/macro/macro.test_otv.verifier_periode_lin).
+      S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
+      et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur ponctuel ou tournant départemental ou d'agglomération avec comptage estival"
+        data_tests:
+          - not_null
+          - unique
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "~ '^({{ var('dept') }}-D{% for agglo in var('agglo_' ~ var('dept')) %}|{{ agglo }}-{% endfor %})'"
+                description: "Vérifier que l'identifiant correspond bien à un compteur départemental du département {{ var('dept') }} ou d'agglomération ({{ var('agglo_' ~ var('dept')) | join(', ') }})"
+      - name: type_poste
+        description: "Type de poste du compteur (valeurs attendues : 'ponctuel' ou 'tournant')"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['ponctuel', 'tournant']
+      - name: periode
+        description: "Période de comptage contenant '/07/' ou '/08/' pour les mois d'été"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "~ '/(07|08)/'"
+                description: "Confirmer la présence de juillet ou août dans la période"
