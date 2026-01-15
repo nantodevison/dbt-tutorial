@@ -80,7 +80,7 @@ sources:
   - name: cptg_assoc
     description: >
       Ensemble des tables et vues décrivant les comptages associés à des comptages routiers de référence présents dans OTR.
-      Contient les tables compteur, comptage, indic_agrege.
+      Contient les tables compteur, comptage, indic_agrege et la vue vue_assoc_compteur_last_annee_know_tmja_pc_pl.
     database: test_dbt
     schema: comptage_assoc
     tables:
@@ -95,3 +95,5 @@ sources:
         description: "Table des comptages réalisés sur les compteurs. 1 comptage par annéeet par compteur"
       - name: indic_agrege
         description: "Table des indicateurs agrégés issus des comptages, 1 ligne par comptage et indicateur"
+      - name: vue_assoc_compteur_last_annee_know_tmja_pc_pl
+        description: "Vue synthétique des compteurs avec la dernière année connue pour tmja, pc_pl"

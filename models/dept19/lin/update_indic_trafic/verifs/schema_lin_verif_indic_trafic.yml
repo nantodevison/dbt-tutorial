@@ -449,7 +449,7 @@ models:
       - name: percentile_value
         description: "Valeur de percentile calculée sur l'évolution (optionnel, présent uniquement si le paramètre percentile_value est fourni)"
 
-  - name: lin_verif_evol_cpt_dev_assoc_19
+  - name: mdl_lin_verif_evol_cpt_dev_assoc_19
     description: >
       Modèle de vérification qui analyse l'évolution du trafic (TMJA) entre l'année N et N-1 
       pour les compteurs devenus associés. Compare les valeurs de trafic d'un compteur associé 
@@ -545,3 +545,31 @@ models:
               arguments:
                 expression: "~ '/(07|08)/'"
                 description: "Confirmer la présence de juillet ou août dans la période"
+
+  - name: mdl_lin_verif_ann_cptgassoc_cptgref_19
+    description: >
+      Modèle de vérification qui identifie les incohérences temporelles entre les compteurs associés 
+      et leurs compteurs de référence. Détecte les cas où un compteur associé possède des données 
+      de trafic (TMJA) plus récentes (annee_tmja) que l'année de mise en place du compteur de référence (ann_pt) 
+      utilisé dans la linéarisation.
+      Basé sur la macro [`mcr_verifier_ann_cptgassoc_cptgref_lin`](/#!/macro/macro.test_otv.mcr_verifier_ann_cptgassoc_cptgref_lin).
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "annee_tmja::int > ann_pt::int"
+            description: "Vérifier que tous les compteurs associés ont une année de TMJA postérieure à l'année du compteur de référence"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur de référence utilisé dans la linéarisation"
+      - name: type_poste
+        description: "Type de poste du compteur de référence (permanent, ponctuel, tournant)"
+      - name: tmja
+        description: "TMJA (Trafic Moyen Journalier Annuel) du compteur de référence utilisé dans la linéarisation"
+      - name: ann_pt
+        description: "Année de mise en place du compteur de référence dans la linéarisation"
+      - name: periode
+        description: "Période de comptage du compteur de référence (mois du comptage), NULL si non renseigné"
+      - name: id_cpteur_asso
+        description: "Identifiant du compteur associé ayant des données plus récentes"
+      - name: annee_tmja
+        description: "Année du TMJA du compteur associé (plus récente que ann_pt du compteur de référence)"

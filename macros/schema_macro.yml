@@ -826,7 +826,7 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: verifier_evol_cpt_dev_assoc_lin
+  - name: mcr_verifier_evol_cpt_dev_assoc_lin
     description: >
       Analyse l'évolution du trafic (TMJA) entre l'année N et N-1 pour les compteurs devenus associés.
       Compare les valeurs de trafic d'un compteur associé (via son compteur de référence) entre deux années
@@ -849,6 +849,21 @@ macros:
       Permet de détecter les comptages effectués pendant les vacances d'été, 
       S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
       et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifier_ann_cptgassoc_cptgref_lin
+    description: >
+      Vérifie la cohérence temporelle entre les années de comptage des compteurs associés 
+      et leurs compteurs de référence. Identifie les cas où un compteur associé possède 
+      des données TMJA plus récentes que celles du compteur de référence qui lui est rattaché.
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}),
+      la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
+      et la source [`cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl).
+      Retourne pour chaque compteur concerné : id_comptag, type_poste, tmja, ann_pt, période
+      ainsi que les informations du compteur associé (id_cpteur_asso, type_poste, tmja, annee_tmja, période).
     arguments:
       - name: dept
         type: string

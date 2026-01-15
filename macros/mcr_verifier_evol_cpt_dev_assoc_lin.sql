@@ -1,4 +1,4 @@
-{% macro verif_evol_cpt_dev_assoc_lin(dept=var('dept'), annee=var('annee')) %}
+{% macro mcr_verifier_evo_cptg_devient_asso_lin(dept=var('dept'), annee=var('annee')) %}
 
 select t1.id_cpteur_asso,t1.ann_pt as ann_lin_n_1,t1.tmja as tmja_lin_n_1,t1.type_poste as typ_post_lin_n_1,
 t1.id_cpteur_ref,t2.ann_pt as ann_lin_n,t2.tmja as tmja_lin_n,t3.type_poste as typ_post_lin_n,
