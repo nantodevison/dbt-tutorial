@@ -97,3 +97,104 @@ sources:
         description: "Table des indicateurs agrégés issus des comptages, 1 ligne par comptage et indicateur"
       - name: vue_assoc_compteur_last_annee_know_tmja_pc_pl
         description: "Vue synthétique des compteurs avec la dernière année connue pour tmja, pc_pl"
+
+  - name: ref
+    description: >
+      Fichiers de référentiels utilisés dans OTR
+    database: test_dbt  
+    schema: ref  
+    tables:
+      - name: bdt_na_2023_2024_l
+        description: >
+          Table de caractérisation des tronçons ayant subi des modifications de la part de l'IGN entre 2023 et 2024
+        columns:
+          - name: gid
+            description: "Identifiant séquentiel automatique (serial4) interne"
+          - name: id
+            description: "Identifiant (int4)"
+          - name: fid
+            description: "Feature ID (int4)"
+          - name: id_ign
+            description: "Identifiant IGN (varchar(50))"
+          - name: imp
+            description: "Import (varchar(2))"
+          - name: sup
+            description: "Suppression (varchar(1))"
+          - name: ad
+            description: "Ajout/Suppression (varchar(1))"
+          - name: id_propa
+            description: "Identifiant propagation (varchar(50))"
+          - name: propa
+            description: "Propagation (varchar(20))"
+          - name: pk_ign
+            description: "PK IGN (varchar(1))"
+          - name: obs
+            description: "Observations (varchar(50))"
+          - name: topo_n
+            description: "Topologie N (varchar(1))"
+          - name: o_1
+            description: "O_L (int4)"
+          - name: d_1
+            description: "D_L (int4)"
+          - name: recurs
+            description: "V (varchar(1))"
+          - name: o_2
+            description: "G_2 (int4)"
+          - name: d_2
+            description: "D_2 (int4)"
+          - name: mem_geom
+            description: "Mémoire géométrie (varchar(1))"
+
+      - name: pr_ed24_p
+        description: >
+          Table des points de repères linéaires BdTopo Thème transport
+        columns:
+          - name: fid
+            description: "Identifiant séquentiel automatique (serial4)"
+          - name: id
+            description: "Identifiant (varchar(24))"
+          - name: date_creat
+            description: "Date de création (timestamptz)"
+          - name: date_maj
+            description: "Date de mise à jour (timestamptz)"
+          - name: date_app
+            description: "Date d'application (date)"
+          - name: date_conf
+            description: "Date de confirmation (date)"
+          - name: source
+            description: "Source (varchar)"
+          - name: id_source
+            description: "Identifiant source (varchar)"
+          - name: route
+            description: "Route (varchar(18))"
+          - name: numero
+            description: "Numéro (varchar(5))"
+          - name: abscisse
+            description: "Abscisse (int4)"
+          - name: ordre
+            description: "Ordre (float8)"
+          - name: cote
+            description: "Côté (varchar)"
+          - name: statut
+            description: "Statut (varchar)"
+          - name: type_de_pr
+            description: "Type de PR (varchar)"
+          - name: libelle
+            description: "Libellé (varchar)"
+          - name: gestionnaire
+            description: "Gestionnaire (varchar)"
+          - name: insee_dep
+            description: "Code INSEE département (varchar(3))"
+          - name: id_route
+            description: "Identifiant route (varchar(24))"
+          - name: gestion
+            description: "gestionnaire de la route (varchar)"
+
+      - name: troncon_route_bdt_na_ed24_l
+        description: >
+          Table des tronçons de route BdTopo Thème transport
+        
+      - name: troncon_route_bdt_na_ed24_l_vertices_pgr
+        description: >
+          Table des sommets des tronçons de route BdTopo Thème transport pour pgRouting
+          

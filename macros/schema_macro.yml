@@ -721,8 +721,13 @@ macros:
     description: >
       Met à jour le champ `coment_tmj_f` en remplaçant par une valeur fournie 
       manuellement, avec identifiant des lignes concernees grace au champs id_ign ou id_simpli.
+      Peut etre utilisé à différent moment du processus de linéarisation, donc nécessite la saisie en paramètre 
+      d'un modèle dbt source.
       S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_ids`](/#!/seed/seed.test_otv.dept19.lin.dept19_update_coment_tmj_f_with_ids)..
     arguments:
+      - name: model_src
+        type: relation
+        description: "Modèle dbt source à utiliser (passer ref('nom_modele') ou source('nom_source', 'nom_table'))"
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
@@ -864,6 +869,89 @@ macros:
       et la source [`cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl).
       Retourne pour chaque compteur concerné : id_comptag, type_poste, tmja, ann_pt, période
       ainsi que les informations du compteur associé (id_cpteur_asso, type_poste, tmja, annee_tmja, période).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifier_cptg_sens_unique_lin
+    description: >
+      Identifie les compteurs configurés en sens unique dans la base de données
+      et présents dans les tronçons linéarisés.
+      Filtre uniquement ceux dont le sens de comptage (`sens_cpt`) 
+      correspond à la valeur de sens unique définie dans la variable `cptg_sens_uniq_verif`.
+      S'appuie sur la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+      Retourne uniquement les identifiants des compteurs (id_comptag).
+    arguments:
+      - name: model_src
+        type: relation
+        description: "Modèle dbt source à utiliser (passer ref('nom_modele') ou source('nom_source', 'nom_table'))"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifier_sens_bretelles_rrn_lin
+    description: >
+      Vérifie la cohérence entre le sens de circulation des bretelles RRN (entrées/sorties) dans la BDTopo 
+      et le sens configuré dans la table des compteurs, en contrôlant la validité du coefficient `coment_tmj_f`.
+      Retourne uniquement les lignes où la vérification échoue (incohérence détectée).
+      Les règles de cohérence vérifiées sont :
+      - Compteur sens unique + BDTopo sens unique → coment_tmj_f null (valide)
+      - Compteur sens unique + BDTopo double sens → coment_tmj_f='*2' (valide)
+      - Compteur double sens + BDTopo double sens → coment_tmj_f null (valide)
+      - Compteur double sens + BDTopo sens unique → coment_tmj_f='/2' (valide)
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept})
+      et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifier_recup_agglo_lin
+    description: >
+      Analyse le statut de récupération (champ `recup`) des tronçons linéarisés par gestionnaire d'agglomération.
+      Identifie les tronçons gérés par les agglomérations définies dans la variable projet (ex: `agglo_19`)
+      et compte leur répartition selon la présence ou non d'une valeur dans le champ `recup`.
+      Permet de suivre quels tronçons ont été récupérés ou modifiés pour chaque gestionnaire d'agglomération.
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_sens_{dept}).
+      Retourne le gestionnaire, le statut recup, et le nombre de tronçons concernés.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifier_sens_tronc_proche_cpt_lin
+    description: >
+      Vérifie la cohérence entre le sens de comptage (sens_cpt) (issu des données gestionnaires)
+      et le sens du tronçon BDTopo (sens) linéarisés le plus proches
+      Identifie les incohérences car elle ne respecte pas les règles suivantes :
+      - Compteur sens unique + BDTopo sens unique → coment_tmj_f null (valide)
+      - Compteur sens unique + BDTopo double sens → coment_tmj_f='*2' (valide)
+      - Compteur double sens + BDTopo double sens → coment_tmj_f null (valide)
+      - Compteur double sens + BDTopo sens unique → coment_tmj_f='/2' (valide)
+      S'appuie sur la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      et le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: dist_tronc_cpt
+        type: integer
+        description: "Distance maximale en mètres entre un compteur et un tronçon pour être considéré comme proche (par défaut: 50)"
+
+  - name: mcr_verifier_sens_coment_tmj_f_hors_agglo_lin
+    description: >
+      Vérifie la cohérence entre le sens des compteurs (sens_cpt) et le champ coment_tmj_f 
+      des tronçons linéarisés hors agglomération. Cette macro identifie les incohérences 
+      selon quatre cas de figure attendus : 
+      (1) compteur sens unique sur tronçon sens unique → coment_tmj_f null,
+      (2) compteur sens unique sur tronçon double sens → coment_tmj_f='*2',
+      (3) compteur double sens sur tronçon double sens → coment_tmj_f null,
+      (4) compteur double sens sur tronçon sens unique → coment_tmj_f='/2'.
+      Exclut les ratios spécifiques (/3, /4, /8) de la vérification.
+      Retourne uniquement les lignes où la vérification échoue (verif_coment_tmj_f=false).
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_{dept})
+      et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
     arguments:
       - name: dept
         type: string

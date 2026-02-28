@@ -1,13 +1,9 @@
-{% macro update_coment_tmj_f_with_ids(model_src, dept=var('dept')) %}
+{% macro mcr_update_coment_tmj_f_sens_lin(dept=var('dept')) %}
 
--- Lignes présentes dans le seed (avec jointure)
 select 
-    -- Colonnes du seed
     ctf.id_comptag,
     ctf.id_ign,
     ctf.id_simpli,
-    
-    -- Toutes les autres colonnes du modèle
     ctf.id,
     ctf.nature,
     ctf.nom_coll_g,
@@ -36,8 +32,12 @@ select
     ctf.coment_cpt,
     ctf.ann_pt,
     ctf.src_cpteur,
-    uci.coment_tmj_f as coment_tmj,
-    uci.coment_tmj_f,
+    ctf.coment_tmj,
+    case when ctf.coment_tmj_f is null and ctf.sens in ('Sens direct','Sens inverse') and uci.type_correction='null -> divise par 2'
+            then'/2' 
+         when ctf.coment_tmj_f = '/2' and ctf.sens = 'Double sens' and uci.type_correction='divise par 2 -> null'
+            then null
+         else ctf.coment_tmj_f end as coment_tmj_f,
     ctf.ann_pc_pl,
     ctf.tmja,
     ctf.pc_pl,
@@ -100,19 +100,13 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ ref('dept' ~ dept ~ '_update_coment_tmj_f_with_ids') }} uci
-join {{ model_src }} ctf
-    on (array[ctf.id_ign]::text[] && uci.id_ign) or (ctf.id_simpli && uci.id_simpli)
-
-UNION
-
--- Lignes de creer_vue_19 non présentes dans le seed
+from {{ref('mdl_lin_update_coment_tmj_f_sens_' ~ dept)}} ctf
+  join {{ref('dept' ~ dept ~ '_update_coment_tmj_f_sens') }} uci using(id_comptag)
+union
 select 
     ctf.id_comptag,
     ctf.id_ign,
     ctf.id_simpli,
-    
-    -- Toutes les autres colonnes du modèle
     ctf.id,
     ctf.nature,
     ctf.nom_coll_g,
@@ -205,11 +199,6 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ model_src }} ctf
-where not exists (
-    select 1 
-    from {{ ref('dept' ~ dept ~ '_update_coment_tmj_f_with_ids') }} uci
-    where (array[ctf.id_ign]::text[] && uci.id_ign) or (ctf.id_simpli && uci.id_simpli)
-)
-
+from {{ref('mdl_lin_update_coment_tmj_f_sens_' ~ dept)}} ctf
+where not exists (select 1 from {{ref('dept' ~ dept ~ '_update_coment_tmj_f_sens') }} uci where ctf.id_comptag=uci.id_comptag)
 {% endmacro %}

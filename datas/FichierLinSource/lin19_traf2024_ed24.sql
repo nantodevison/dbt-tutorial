@@ -2153,7 +2153,7 @@ join comptage.compteur t2 on t1.id_comptag=t2.id_comptag
 where t2.sens_cpt='sens unique'
 ),''',''')||''')' ;
 
-/*tronc proch compteur et sens*/
+/*tronc proch compteur et sens  !!!!! RQT PRIORITAIRES !!!!!*/
 --ed24 :0 rows
 --ed23 :X rows
 --ed22 :0 rows
@@ -2244,7 +2244,7 @@ id_comptag='19-D' and sens in ('Double sens') and coment_tmj_f='/2',objet fusion
 --UPDATE LE 202507
 update lineaire.traf2024_bdt19_ed24_l set coment_tmj_f=null where id_comptag='19-D' and sens in ('Double sens') and coment_tmj_f='/2';
 
-id_comptag='19-D18-18+883' and sens in ('Double sens') and coment_tmj_f='/2',laisser en l'état
+id_comptag='19-D18-18+883' and sens in ('Double sens') and coment_tmj_f='/2' -- laisser en l'état
 
 id_comptag='19-D3-53+0' and sens in ('Double sens') and coment_tmj_f='/2'
 --UPDATE 1 LE 202507
