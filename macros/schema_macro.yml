@@ -359,7 +359,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_tmjo_tmja_lin
+  - name: verifier_tmjo_exists_tmja_lin
     description: >
       Vérifie que les compteurs linéarisés par OTV qui disposent de données TMJO ont aussi du TMJA.
       Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
@@ -952,6 +952,18 @@ macros:
       Retourne uniquement les lignes où la vérification échoue (verif_coment_tmj_f=false).
       S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_{dept})
       et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifier_recup_linearisation_lin
+    description: >
+      Macro de vérification des tronçons linéarisés issue de la récupération.
+      Calcule le nombre de tronçons linéarisés groupés par valeur de `recup`.
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
+      Filtre uniquement les tronçons linéarisés (coment_cpt='linearisation') pour exclure les estimations.
+      Retourne le nombre de tronçons (cnt) et la valeur du champ recup.
     arguments:
       - name: dept
         type: string

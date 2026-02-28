@@ -808,3 +808,24 @@ models:
                 description: "Ce modèle ne retourne que les lignes avec incohérence (verif_coment_tmj_f = false)"
       - name: obs_supl
         description: "Observations supplémentaires sur le tronçon"
+
+  - name: mdl_lin_verif_recup_linear_19
+    description: >
+      Modèle de vérification qui analyse les tronçons linéarisés 
+      issus de la récupération.
+      Basé sur la macro [`mcr_verifier_recup_linearisation_lin`](/#!/macro/macro.test_otv.mcr_verifier_recup_linearisation_lin).
+    columns:
+      - name: cnt
+        description: "Nombre de tronçons linéarisés pour chaque valeur de recup"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+      - name: recup
+        description: "Mode de récupération des données entre millésimes (pk_ign, ad, topo_n, imp, recurs, etc.)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('recup_verif') }}"
