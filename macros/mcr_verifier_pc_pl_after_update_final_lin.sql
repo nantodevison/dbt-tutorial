@@ -1,0 +1,10 @@
+{% macro mcr_verifier_pc_pl_after_update_final_lin(dept=var('dept')) %}
+
+select count(*) as count, 
+       count(distinct id_comptag) as count_distinct_id_comptag, 
+       array_agg(distinct id_comptag) as list_id_comptag,
+       array_agg(distinct split_part(id_comptag,'-',1)) as list_split1_id_comptag
+    from {{ref('mdl_lin_update_pl_final_pl_km_' ~ dept)}}
+    where coment_cpt='linearisation' and pc_pl is null
+
+{% endmacro %}

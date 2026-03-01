@@ -846,3 +846,37 @@ models:
                 to: source('cptg', 'compteur')
                 field: id_comptag
                 description: "Vérifier que l'identifiant existe dans la table des compteurs"
+                
+  - name: lin_verif_coment_tmj_f_before_updt_tmja_19
+    description: >
+      Modèle de vérification qui permet de vérifier la liste unique des valeurs du champ coment_tmj_f
+      présentes dans les données linéarisées avant la mise à jour des indicateurs de trafic (TMJA, %PL).
+      Basé sur la macro [`verifier_coment_tmj_f_values_lin`](/#!/macro/macro.test_otv.verifier_coment_tmj_f_values_lin).
+      Utilise le modèle [`mdl_lin_update_coment_tmj_f_sens_19`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_19)
+      comme source.
+    columns:
+      - name: coment_tmj_f
+        description: "Valeur unique du champ coment_tmj_f (commentaire sur le TMJA final)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+                where : "coment_tmj_f IS NOT NULL"
+              description: "Vérifier que les valeurs de coment_tmj_f sont conformes aux valeurs attendues"
+
+  - name: mdl_lin_verif_pc_pl_after_update_final_19
+    description: >
+      Modèle de vérification qui identifie les tronçons linéarisés où le pourcentage de poids lourds (pc_pl)
+      est null après la mise à jour des indicateurs pl_final et pl_km.
+      Retourne le nombre total de tronçons concernés, le nombre de compteurs distincts affectés,
+      et la liste des identifiants de comptage.
+      Basé sur la macro [`mcr_verifier_pc_pl_after_update_final_lin`](/#!/macro/macro.test_otv.mcr_verifier_pc_pl_after_update_final_lin).
+    columns:
+      - name: count
+        description: "Nombre total de tronçons linéarisés où pc_pl est null"
+      - name: count_distinct_id_comptag
+        description: "Nombre de compteurs distincts concernés par pc_pl null"
+      - name: list_id_comptag
+        description: "Liste (array) des identifiants de comptage distincts où pc_pl est null"
+      - name: list_split1_id_comptag
+        description: "Liste (array) des premières parties des identifiants de comptage distincts (split_part(id_comptag, '-', 1)) où pc_pl est null"

@@ -2348,3 +2348,131 @@ models:
               arguments:
                 values: "{{ var('sens_verif') }}"
                 description: "Verifier que IGN n'a pas changé ses valeurs de *sens*"
+
+  - name: mdl_lin_update_tmja_final_19
+    description: >
+      Modèle de calcul du TMJA final (tmja_final) en appliquant les ratios définis dans le champ coment_tmj_f.
+      Basé sur la macro [`mcr_update_tmja_final_lin`](/#!/macro/macro.test_otv.mcr_update_tmja_final_lin).
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: ref('creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+    columns:
+      - name: id
+        description: "Identifiant unique interne OTR généré automatiquement"
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        description: "Identifiant unique IGN"
+        data_tests:
+          - unique
+          - not_null
+      - name: tmja
+        description: "TMJA non null pour les tronçons linéarisés (coment_cpt = 'linearisation')"
+        data_tests:
+          - not_null:
+              arguments:
+                where: "coment_cpt = 'linearisation'"
+      - name: tmja_final
+        description: "TMJA final calculé en appliquant le ratio défini dans coment_tmj_f sur le tmja brut"
+        data_tests:
+          - not_null:
+              arguments:
+                where: "coment_cpt = 'linearisation'"
+      - name: coment_tmj_f
+        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+      - name: coment_cpt
+        description: "Type de commentaire sur le comptage (linearisation ou estimation)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_cpt_verif') }}"
+      - name: long_km
+        description: "Longueur du tronçon en km"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier que la longueur du tronçon est positive"
+
+  - name: mdl_lin_update_veh_km_19
+    description: >
+      Modèle de calcul du nombre de véhicules-kilomètres (veh_km) pour les tronçons linéarisés.
+      Basé sur la macro [`mcr_update_veh_km_lin`](/#!/macro/macro.test_otv.mcr_update_veh_km_lin).
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: ref('creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+    columns:
+      - name: id
+        description: "Identifiant unique interne OTR généré automatiquement"
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        description: "Identifiant unique IGN"
+        data_tests:
+          - unique
+          - not_null
+      - name: veh_km
+        description: "Nombre de véhicules-kilomètres calculé (formule : tmja_final * long_km)"
+        data_tests:
+          - not_null:
+              where: "coment_cpt = 'linearisation'"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= tmja_final * long_km and veh_km > 0"
+                where: "coment_cpt = 'linearisation'"
+                description: "Vérifier que le nombre de véhicules-kilomètres est correctement calculé (et > 0) à partir du TMJA final et de la longueur du tronçon"
+
+  - name: mdl_lin_update_pl_final_pl_km_19
+    description: >
+      Modèle de calcul du nombre de poids lourds final (pl_final) et des poids lourds-kilomètres (pl_km).
+      Basé sur la macro [`mcr_update_pl_final_pl_km_lin`](/#!/macro/macro.test_otv.mcr_update_pl_final_pl_km_lin).
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: ref('creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+    columns:
+      - name: id
+        description: "Identifiant unique interne OTR généré automatiquement"
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        description: "Identifiant unique IGN"
+        data_tests:
+          - unique
+          - not_null
+      - name: pl_final
+        description: "Nombre de poids lourds final calculé en appliquant le ratio défini dans coment_tmj_f sur le champ pl"
+        data_tests:
+          - not_null:
+              where: "coment_cpt = 'linearisation' and pl is not null"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+                where: "coment_cpt = 'linearisation' and pl is not null"
+                description: "Vérifier que pl_final est positif ou nul"
+      - name: pl_km
+        description: "Nombre de poids lourds-kilomètres calculé (formule : pl_final * long_km)"
+        data_tests:
+          - not_null:
+              where: "coment_cpt = 'linearisation' and pl is not null"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= pl_final::numeric * long_km::numeric"
+                where: "coment_cpt = 'linearisation' and pl is not null and pl_final > 0"
+                description: "Vérifier que pl_km est correctement calculé à partir de pl_final et de la longueur du tronçon"
+      - name: pl
+        description: "Nombre de poids lourds brut issu des données de comptage"

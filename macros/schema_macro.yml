@@ -652,11 +652,11 @@ macros:
     description: >
       Extrait la liste unique des valeurs du champ coment_tmj_f (commentaire sur le TMJA) 
       présentes dans les données linéarisées OTV pour un département donné.
-      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept}).
+      est utilisé à différentes étapes du processus de linéarisation, il faut donc spécifier en argument un modèle (ou une source) dbt.
     arguments:
-      - name: dept
-        type: string
-        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: model_src
+        type: relation
+        description: "Modèle dbt source à utiliser (passer ref('nom_modele') ou source('nom_source', 'nom_table'))"
 
   - name: verifier_coment_tmj_f_reseau_ratio_lin
     description: >
@@ -982,3 +982,61 @@ macros:
       - name: annee
         type: string
         description: "Année du millésime en cours au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: mcr_update_tmja_final_lin
+    description: >
+      Macro de calcul du TMJA final (tmja_final) en appliquant les ratios définis dans le champ coment_tmj_f.
+      Calcule le TMJA ajusté selon trois cas :
+      - Si coment_tmj_f est null : arrondi du tmja brut
+      - Si coment_tmj_f = '*2' : tmja multiplié par 2 (pour sens unique avec compteur double sens)
+      - Si coment_tmj_f like '/%' : tmja divisé par le ratio (ex: '/2' pour compteur double sens sur tronçon en sens unique)
+      Filtre uniquement les tronçons linéarisés (coment_cpt='linearisation').
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
+      Retourne toutes les colonnes du modèle source plus le champ tmja_final calculé.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_update_veh_km_lin
+    description: >
+      Macro de calcul du nombre de véhicules-kilomètres (veh_km) pour les tronçons linéarisés.
+      Calcule veh_km = tmja_final * long_km pour les tronçons avec coment_cpt='linearisation'.
+      Les tronçons non linéarisés (coment_cpt != 'linearisation' ou null) conservent leur valeur veh_km d'origine.
+      S'appuie sur le modèle [`mdl_lin_update_tmja_final_{dept}`](/#!/model/model.test_otv.mdl_lin_update_tmja_final_{dept}).
+      Retourne toutes les colonnes du modèle source avec le champ veh_km recalculé pour les linéarisations.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_update_pl_final_pl_km_lin
+    description: >
+      Macro de calcul du nombre de poids lourds final (pl_final) et des poids lourds-kilomètres (pl_km) pour les tronçons linéarisés.
+      Calcule pl_final en appliquant les ratios définis dans le champ coment_tmj_f sur le champ pl selon six cas :
+      - Si coment_tmj_f est null et pl = 0 : pl_final = 0
+      - Si coment_tmj_f est null et pl <> 0 : pl_final = arrondi du pl brut
+      - Si coment_tmj_f = '*2' et pl = 0 : pl_final = 0
+      - Si coment_tmj_f = '*2' et pl <> 0 : pl_final = pl * 2
+      - Si coment_tmj_f like '/%' et pl = 0 : pl_final = 0
+      - Si coment_tmj_f like '/%' et pl <> 0 : pl_final = pl / ratio (ex: '/2')
+      Calcule ensuite pl_km = pl_final * long_km.
+      Filtre les tronçons linéarisés où pl is not null. Les autres tronçons conservent leurs valeurs d'origine.
+      S'appuie sur le modèle [`mdl_lin_update_veh_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_veh_km_{dept}).
+      Retourne toutes les colonnes du modèle source avec les champs pl_final et pl_km recalculés.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+        
+  - name: mcr_verifier_pc_pl_after_update_final_lin
+    description: >
+      Macro de vérification identifiant les tronçons linéarisés où le pourcentage de poids lourds (pc_pl) est null
+      après la mise à jour des indicateurs pl_final et pl_km.
+      Filtre uniquement les enregistrements où coment_cpt='linearisation' et pc_pl is null.
+      Retourne le nombre total d'enregistrements, le nombre de compteurs distincts concernés, et la liste des id_comptag.
+      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_pl_final_pl_km_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

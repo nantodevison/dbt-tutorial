@@ -1,7 +1,7 @@
-{% macro verifier_coment_tmj_f_values_lin(dept=var('dept')) %}
+{% macro verifier_coment_tmj_f_values_lin(model_src) %}
 
 select distinct coment_tmj_f 
-  from {{ref('lin_update_cpt_hors_dept_dans_na_' ~ dept)}} 
+  from {{model_src}} 
   where src_cpt='otv'
   order by coment_tmj_f
 

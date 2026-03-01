@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_coment_tmj_f_values_lin(ref('lin_update_cpt_hors_dept_dans_na_' ~ var('dept'))) }}
+{{ verifier_coment_tmj_f_values_lin(ref('mdl_lin_update_coment_tmj_f_sens_' ~ var('dept'))) }}
 
 {#  documentation d'utilisation :
     appel avec spécification de variables : 
