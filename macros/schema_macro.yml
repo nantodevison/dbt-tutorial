@@ -968,3 +968,17 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
+  - name: mcr_verifer_id_comptag_mill_en_cours_lin
+    description: >
+      Macro de vérification qui extrait la liste distincte des identifiants de comptage (id_comptag)
+      linéarisés pour l'année du millésime en cours.
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
+      Retourne la liste triée des id_comptag distincts.
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: string
+        description: "Année du millésime en cours au format YYYY (par défaut: variable projet 'annee')"

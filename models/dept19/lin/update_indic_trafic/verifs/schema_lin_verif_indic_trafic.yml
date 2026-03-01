@@ -829,3 +829,20 @@ models:
           - accepted_values:
               arguments:
                 values: "{{ var('recup_verif') }}"
+
+  - name: mdl_lin_verif_id_comptag_millessime_en_cours_19
+    description: >
+      Modèle de vérification qui extrait la liste distincte des identifiants de comptage (id_comptag)
+      linéarisés pour l'année du millésime en cours.
+      Basé sur la macro [`mcr_verifer_id_comptag_mill_en_cours_lin`](/#!/macro/macro.test_otv.mcr_verifer_id_comptag_mill_en_cours_lin).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du comptage OTR utilisé pour la linéarisation de l'année en cours"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que l'identifiant existe dans la table des compteurs"
