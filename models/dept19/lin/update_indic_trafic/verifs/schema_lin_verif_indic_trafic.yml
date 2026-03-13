@@ -930,7 +930,8 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: "{{ var('indic_agrege_verif') }}"
+              arguments:
+                values: "{{ var('indic_agrege_verif') }}"
       - name: valeur
         description: "Valeur numérique de l'indicateur de trafic"
         data_tests:

@@ -1069,3 +1069,14 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+  
+  - name: mcr_update_coment_cpt_lin
+    description: >
+      Met à jour le champ `coment_cpt` en fonction de la valeur du champ `src_cpt`.
+      Si `src_cpt = 'otv'`, alors `coment_cpt = 'linearisation'`, sinon `coment_cpt = 'estimation'`.
+      Retourne toutes les colonnes du modèle source avec le champ coment_cpt recalculé.
+      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_pl_final_pl_km_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

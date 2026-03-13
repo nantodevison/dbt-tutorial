@@ -2459,7 +2459,8 @@ models:
         description: "Nombre de poids lourds final calculé en appliquant le ratio défini dans coment_tmj_f sur le champ pl"
         data_tests:
           - not_null:
-              where: "coment_cpt = 'linearisation' and pl is not null"
+              arguments:
+                where: "coment_cpt = 'linearisation' and pl is not null"
           - dbt_utils.expression_is_true:
               arguments:
                 expression: ">= 0"
@@ -2476,5 +2477,46 @@ models:
                 expression: "= pl_final::numeric * long_km::numeric"
                 where: "coment_cpt = 'linearisation' and pl is not null and pl_final > 0"
                 description: "Vérifier que pl_km est correctement calculé à partir de pl_final et de la longueur du tronçon"
+      - name: pl
+        description: "Nombre de poids lourds brut issu des données de comptage"
+  
+  - name: mdl_lin_update_coment_cpt_19
+    description: >
+      Modèle de mise à jour du champ commentaire de comptage (coment_cpt).
+      Le champ coment_cpt prend la valeur 'linearisation' si src_cpt = 'otv', sinon 'estimation'.
+      Basé sur la macro [`mcr_update_coment_cpt_lin`](/#!/macro/macro.test_otv.mcr_update_coment_cpt_lin).
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: ref('creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+    columns:
+      - name: id
+        description: "Identifiant unique interne OTR généré automatiquement"
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        description: "Identifiant unique IGN"
+        data_tests:
+          - unique
+          - not_null
+      - name: coment_cpt
+        description: "Commentaire sur la source du comptage : 'linearisation' si src_cpt='otv', sinon 'estimation'"
+        data_tests:
+          - accepted_values:
+              values: "{{ var('coment_cpt_verif') }}"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= 'linearisation'"
+                where: "src_cpt = 'otv'"
+                description: "Vérifier que coment_cpt = 'linearisation' quand src_cpt = 'otv'"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= 'estimation'"
+                where: "src_cpt is null"
+                description: "Vérifier que coment_cpt = 'estimation' quand src_cpt est null"
+      - name: src_cpt
+        description: "Source du comptage"
       - name: pl
         description: "Nombre de poids lourds brut issu des données de comptage"
