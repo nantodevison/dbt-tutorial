@@ -2427,7 +2427,8 @@ models:
         description: "Nombre de véhicules-kilomètres calculé (formule : tmja_final * long_km)"
         data_tests:
           - not_null:
-              where: "coment_cpt = 'linearisation'"
+              arguments:
+                where: "coment_cpt = 'linearisation'"
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "= tmja_final * long_km and veh_km > 0"
@@ -2468,7 +2469,8 @@ models:
         description: "Nombre de poids lourds-kilomètres calculé (formule : pl_final * long_km)"
         data_tests:
           - not_null:
-              where: "coment_cpt = 'linearisation' and pl is not null"
+              arguments:
+                where: "coment_cpt = 'linearisation' and pl is not null"
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "= pl_final::numeric * long_km::numeric"

@@ -60,6 +60,7 @@ vars:
   bdtopo_sens_uniq_verif: ['Sens inverse', 'Sens direct']
   bdtopo_double_sens_verif: 'Double sens'
   recup_verif: ['ad', 'imp', 'mem_geom', 'pk_ign', 'recurs', 'topo_n']
+  indic_agrege_verif: ['tmja', 'v85', 'v50', 'vma_vl', 'vma_pl', 'vmoy_vl', 'tmjo', 'tmje', 'tmjhe', 'vma', 'vmoy_pl', 'vmoy', 'v85_vl', 'v85_pl', 'v50_vl', 'v50_pl', 'pc_pl', 'pc_pl_o', 'pc_pl_e', 'pc_pl_he']
 
 # configurations supplémentaires
 flags:

@@ -1040,3 +1040,32 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+        
+  - name: mcr_verifier_pc_pl_after_update_group_gest_lin
+    description: >
+      Macro de vérification identifiant les tronçons linéarisés où le pourcentage de poids lourds (pc_pl) est null
+      après la mise à jour des indicateurs pl_final et pl_km.
+      Filtre uniquement les enregistrements où coment_cpt='linearisation' et pc_pl is null.
+      Groupe les résultats par gestionnaire et retourne le nombre de compteurs distincts (cnt_cpt) par gestionnaire (gest).
+      Le gestionnaire est extrait de l'id_comptag via split_part sur le premier segment avant '-'.
+      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_pl_final_pl_km_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+  
+  - name: mcr_verifier_indic_agrege_after_update_lin
+    description: >
+      Macro de vérification des valeurs des indicateurs agrégés de comptage
+      pour une liste spécifique d'identifiants de comptage (id_comptag).
+      Fournit l'ensemble des données d'indicateurs agrégés (t1.*) ainsi que l'identifiant de comptage,
+      l'année de comptage et le type de poste.
+      S'appuie sur les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+    arguments:
+      - name: list_id_comptag
+        type: array
+        description: "Liste des identifiants de comptage à filtrer (par défaut: [] ; exemple: ['19-D001-2+300', '19-D002-1+800', ...])"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

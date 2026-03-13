@@ -880,3 +880,72 @@ models:
         description: "Liste (array) des identifiants de comptage distincts où pc_pl est null"
       - name: list_split1_id_comptag
         description: "Liste (array) des premières parties des identifiants de comptage distincts (split_part(id_comptag, '-', 1)) où pc_pl est null"
+        
+  - name: mdl_lin_verif_pc_pl_after_update_group_gest_19
+    description: >
+      Modèle de vérification qui identifie les tronçons linéarisés où le pourcentage de poids lourds (pc_pl)
+      est null après la mise à jour des indicateurs pl_final et pl_km, avec agrégation par gestionnaire.
+      Filtre uniquement les enregistrements où coment_cpt='linearisation' et pc_pl is null.
+      Groupe les résultats par gestionnaire et retourne le nombre de compteurs distincts pour chaque gestionnaire.
+      Le gestionnaire est extrait de l'id_comptag via split_part sur le premier segment avant '-'.
+      Basé sur la macro [`mcr_verifier_pc_pl_after_update_group_gest_lin`](/#!/macro/macro.test_otv.mcr_verifier_pc_pl_after_update_group_gest_lin).
+    columns:
+      - name: cnt_cpt
+        description: "Nombre de compteurs distincts concernés par pc_pl null pour ce gestionnaire"
+        data_tests:
+          - not_null
+      - name: gest
+        description: "Code du gestionnaire (extrait du premier segment de l'id_comptag)"
+
+  - name: mdl_lin_verif_indic_agrege_after_update_19
+    description: >
+      Modèle de vérification des indicateurs agrégés de comptage
+      pour une liste spécifique d'identifiants de comptage (id_comptag) après les mises à jour.
+      Basé sur la macro [`mcr_verifier_indic_agrege_after_update_lin`](/#!/macro/macro.test_otv.mcr_verifier_indic_agrege_after_update_lin).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - id_comptag
+            - annee
+            - indicateur
+    columns:
+      - name: id_comptag
+        description: "Identifiant du comptage"
+        data_tests:
+          - not_null
+      - name: annee
+        description: "Année du comptage"
+        data_tests:
+          - not_null
+      - name: type_poste
+        description: "Type de poste de comptage (permanent, ponctuel, tournant)"
+        data_tests:
+          - not_null
+      - name: id
+        description: "Identifiant unique de l'enregistrement dans la table indic_agrege"
+      - name: id_comptag_uniq
+        description: "Identifiant unique du comptage (clé étrangère vers comptage.comptage)"
+      - name: indicateur
+        description: "Type d'indicateur de trafic (doit correspondre à une valeur de la variable indic_agrege_verif : tmja, v85, v50, vma_vl, vma_pl, vmoy_vl, tmjo, tmje, tmjhe, vma, vmoy_pl, vmoy, v85_vl, v85_pl, v50_vl, v50_pl, pc_pl, pc_pl_o, pc_pl_e, pc_pl_he)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: "{{ var('indic_agrege_verif') }}"
+      - name: valeur
+        description: "Valeur numérique de l'indicateur de trafic"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " >= 0 AND valeur <= 100"
+                description: "Vérifier que la valeur du pc_pl est comprise entre 0 et 100"
+              config:
+                where: "indicateur = 'pc_pl'"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier que la valeur du tmja est strictement positive"
+              config:
+                where: "indicateur = 'tmja'"
+      - name: fichier
+        description: "Nom du fichier source contenant les données d'indicateur"
