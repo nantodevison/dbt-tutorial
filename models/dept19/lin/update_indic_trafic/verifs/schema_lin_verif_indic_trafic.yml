@@ -904,10 +904,11 @@ models:
       Basé sur la macro [`mcr_verifier_indic_agrege_after_update_lin`](/#!/macro/macro.test_otv.mcr_verifier_indic_agrege_after_update_lin).
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - id_comptag
-            - annee
-            - indicateur
+          arguments:
+            combination_of_columns:
+              - id_comptag
+              - annee
+              - indicateur
     columns:
       - name: id_comptag
         description: "Identifiant du comptage"
@@ -950,3 +951,60 @@ models:
                 where: "indicateur = 'tmja'"
       - name: fichier
         description: "Nom du fichier source contenant les données d'indicateur"
+
+  - name: mdl_lin_statistiques_linearisation_19
+    description: >
+      Modèle de vérification générant des statistiques synthétiques sur l'état de la linéarisation pour le département 19.
+      Retourne une seule ligne avec l'ensemble des indicateurs clés permettant de suivre l'avancement et la qualité du processus de linéarisation.
+      Basé sur la macro [`mcr_statistiques_linearisation`](/#!/macro/macro.test_otv.mcr_statistiques_linearisation).
+      Ce modèle est placé dans le schéma 'verif' pour servir d'outil de contrôle qualité final.
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_estim_19`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_estim_19).
+    columns:
+      - name: long_tot
+        description: "Longueur totale du réseau routier en km (toutes routes confondues)"
+      - name: long_lin
+        description: "Longueur totale linéarisée en km (coment_cpt='linearisation')"
+      - name: long_lin_pt_ann_n
+        description: "Longueur linéarisée avec des points de comptage de l'année N en km (src_cpt='otv' et ann_pt=année en cours)"
+      - name: long_lin_pt_inf_ann_n
+        description: "Longueur linéarisée avec des points de comptage antérieurs à l'année N en km (src_cpt='otv' et ann_pt<année en cours)"
+      - name: compteur_otv
+        description: "Nombre total de compteurs OTV distincts utilisés pour la linéarisation (src_cpt='otv')"
+      - name: compteur_otv_pt_ann_n
+        description: "Nombre de compteurs OTV avec des données de l'année N (src_cpt='otv' et ann_pt=année en cours)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 40
+                description: "Vérifier qu'au moins 40 compteurs OTV ont des données de l'année en cours"
+              config:
+                severity: warn
+      - name: compteur_otv_pt_inf_ann_n
+        description: "Nombre de compteurs OTV avec des données antérieures à l'année N (src_cpt='otv' et ann_pt<année en cours)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 100
+                description: "Vérifier qu'au moins 100 compteurs OTV ont des données d'années antérieures"
+              config:
+                severity: warn
+      - name: prc_lin_tot
+        description: "Pourcentage du réseau total qui est linéarisé (long_lin / long_tot * 100)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 30
+                description: "Vérifier qu'au moins 30% du réseau total est linéarisé"
+              config:
+                severity: warn
+      - name: prc_lin_ann_n
+        description: "Pourcentage du réseau total linéarisé avec des données de l'année N (long_lin année N / long_tot * 100)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 20
+                description: "Vérifier qu'au moins 20% du réseau total est linéarisé avec des données de l'année en cours"
+              config:
+                severity: warn
+      - name: lin_ann_n_lin_tot
+        description: "Pourcentage de la linéarisation année N par rapport à la linéarisation totale (long_lin année N / long_lin * 100)"

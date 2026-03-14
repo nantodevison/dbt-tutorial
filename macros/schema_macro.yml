@@ -1080,3 +1080,43 @@ macros:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+  
+  - name: mcr_update_coment_tmj_f_estimation_lin
+    description: >
+      Met à jour le champ `coment_tmj_f` pour les tronçons ayant un comptage par estimation (`coment_cpt = 'estimation'` et `src_cpt is null`).
+      Applique une logique de division par 2 pour les routes à sens unique :
+      si `sens` correspond à un sens unique (selon la variable `bdtopo_sens_uniq_verif`), alors `coment_tmj_f = '/2'`, 
+      sinon `coment_tmj_f = null` (pour les doubles sens selon `bdtopo_double_sens_verif`).
+      Retourne toutes les colonnes du modèle source avec le champ coment_tmj_f recalculé lorsque nécessaire.
+      S'appuie sur le modèle [`mdl_lin_update_coment_cpt_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_cpt_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+  
+  - name: mcr_statistiques_linearisation
+    description: >
+      Génère un ensemble de statistiques synthétiques sur l'état de la linéarisation pour un département donné.
+      Calcule les indicateurs suivants :
+      - Longueur totale du réseau (long_tot) et longueur linéarisée (long_lin)
+      - Longueurs linéarisées par année : année N (long_lin_pt_ann_n) et années antérieures (long_lin_pt_inf_ann_n)
+      - Nombre de compteurs OTV total (compteur_otv), pour l'année N (compteur_otv_pt_ann_n) et antérieurs (compteur_otv_pt_inf_ann_n)
+      - Pourcentages de linéarisation : % du réseau total linéarisé (prc_lin_tot), % du réseau total linéarisé pour l'année N (prc_lin_ann_n), 
+      et % de la linéarisation année N par rapport à la linéarisation totale (lin_ann_n_lin_tot)
+      Retourne une seule ligne avec l'ensemble de ces statistiques agrégées.
+      S'appuie sur le modèle source passé en argument (généralement un modèle de linéarisation finalisé).
+    arguments:
+      - name: models_src
+        type: string
+        description: "Modèle DBT source contenant les données de linéarisation (requis, généralement ref('mdl_lin_...'))"
+      - name: annee
+        type: string
+        description: "Année du millésime à analyser au format YYYY (par défaut: variable projet 'annee')"
+
+  - name: mcr_vue_lin_finale
+    description: >
+      Génère la vue finale de linéarisation, basée sur le modèle [`mdl_lin_update_coment_tmj_f_estim_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_estim_{dept}).
+    arguments:
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"

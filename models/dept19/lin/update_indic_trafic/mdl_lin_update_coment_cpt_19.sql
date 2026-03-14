@@ -1,7 +1,7 @@
 {{
     config(
         schema='update',
-        alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ 'coment_cpt_l'
+        alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_coment_cpt_l'
     )
 }}
 

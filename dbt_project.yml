@@ -77,6 +77,24 @@ flags:
 models:
   test_otv:    # Nom du projet
     dept19:
+      +materialized: materialized_view
+      +indexes:
+        - columns: ["id_simpli"]
+          type: gin
+        - columns: ["id_ign"]
+          type: btree
+        - columns: ["id_comptag"]
+          type: btree
+        - columns: ["nature"]
+          type: btree
+        - columns: ["source"]
+          type: btree
+        - columns: ["target"]
+          type: btree
+        - columns: ["gestion"]
+          type: btree
+        - columns: ["dept"]
+          type: btree
       lin:
         before_update_affectation_mano:  # Nom du sous-dossier
           cte:  # Nom du sous-dossier

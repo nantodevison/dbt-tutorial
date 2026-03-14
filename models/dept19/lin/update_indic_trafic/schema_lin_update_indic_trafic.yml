@@ -2505,7 +2505,8 @@ models:
         description: "Commentaire sur la source du comptage : 'linearisation' si src_cpt='otv', sinon 'estimation'"
         data_tests:
           - accepted_values:
-              values: "{{ var('coment_cpt_verif') }}"
+              arguments:
+                values: "{{ var('coment_cpt_verif') }}"
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "= 'linearisation'"
@@ -2520,3 +2521,573 @@ models:
         description: "Source du comptage"
       - name: pl
         description: "Nombre de poids lourds brut issu des données de comptage"
+  
+  - name: mdl_lin_update_coment_tmj_f_estim_19
+    description: >
+      Modèle final de mise à jour du champ `coment_tmj_f` pour l'ensemble des tronçons.
+      Pour les estimations (coment_cpt='estimation' et src_cpt is null), calcule coment_tmj_f selon le sens de circulation.
+      Pour les non-estimations, conserve les valeurs existantes.
+      C'est le dernier modèle de la partie linearisation - tous les tests finaux de validation doivent être implémentés ici.
+      Basé sur la macro [`mcr_update_coment_tmj_f_estimation_lin`](/#!/macro/macro.test_otv.mcr_update_coment_tmj_f_estimation_lin).
+    data_tests:
+      - dbt_utils.equal_rowcount:
+          arguments:
+            compare_model: ref('creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "((id_comptag::text ~ '[0-9]{2}-(A|N|D|B)[0-9]{1,4}.*-[0-9]{1,4}\\+[0-9]{1,4}'::text OR id_comptag::text ~ '[0-9]{2}-(VC|C).*-[0-9]{1,4}\\+[0-9]{1,4}'::text OR id_comptag::text ~ '[0-9]{2}-(PISTE|VC).*--*[0-9]\\.[0-9]{0,4};[0-9]{1,2}\\.[0-9]{0,4}'::text OR id_comptag::text ~ '[0-9]{2}-DBAC.*'::text OR id_comptag::text ~ '[a-zA-Z]*.*-[a-zA-Z]*.*--?[0-9]\\.[0-9]{0,4};[0-9]{1,2}\\.[0-9]{0,4}'::text) AND (length(id_comptag::text) - length(replace(id_comptag::text, '-'::text, ''::text))) >= 2)"
+          config:
+            where: "id_comptag is not null"
+          description: "Vérifier que l'identifiant de comptage respecte les formats OTR"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "CASE WHEN id_comptag IS NULL THEN coment_cpt = 'estimation' WHEN id_comptag IS NOT NULL THEN coment_cpt = 'linearisation' ELSE FALSE END"
+            description: "Vérifier la cohérence entre id_comptag et coment_cpt (null->estimation, non-null->linearisation)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "CASE WHEN coment_cpt = 'estimation' THEN src_cpt IS NULL WHEN coment_cpt = 'linearisation' THEN src_cpt IS NOT NULL ELSE FALSE END"
+            description: "Vérifier la cohérence entre coment_cpt et src_cpt (estimation->null, linearisation->not null)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "coment_tmj_f = '/2' OR coment_tmj_f IS NULL"
+            where: "coment_cpt = 'estimation' AND src_cpt IS NULL"
+            description: "Vérifier que pour les estimations, coment_tmj_f vaut '/2' (sens unique) ou null (double sens)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "coment_tmj_f = '/2'"
+            where: "coment_cpt = 'estimation' AND src_cpt IS NULL AND sens = ANY(ARRAY{{ var('bdtopo_sens_uniq_verif') }})"
+            description: "Vérifier que coment_tmj_f = '/2' pour les estimations en sens unique"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "coment_tmj_f IS NULL"
+            where: "coment_cpt = 'estimation' AND src_cpt IS NULL AND sens = '{{ var('bdtopo_double_sens_verif') }}'"
+            description: "Vérifier que coment_tmj_f est null pour les estimations en double sens"
+    columns:
+      - name: id
+        description: "Identifiant unique interne OTR généré automatiquement"
+        data_tests:
+          - unique
+          - not_null
+      - name: id_ign
+        description: "Identifiant unique IGN"
+        data_tests:
+          - unique
+          - not_null
+      - name: nature
+        description: "Nature de la route selon IGN"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('toute_nature_verif') }}"
+      - name: sens
+        description: "Sens de circulation du tronçon"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('sens_verif') }}"
+                description: "Vérifier que IGN n'a pas changé ses valeurs de *sens*"
+      - name: dept
+        description: "Code du département sur 2 chiffres"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('dept_na') }}"
+                description: "Vérifier que seules les routes du département concerné -ou de na- sont présentes"
+      - name: long_km
+        description: "Longueur du tronçon en km"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0.001
+                description: "Vérifier que la longueur est positive"
+      - name: numero
+        description: "Numéro de la route, hors voies communales"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "(A|D|N|P)[0-9]+[A-Z]*[0-9]*"
+                row_condition: "numero is not null"
+                description: "Vérifier que les numéros respectent un format IGN"
+      - name: importance
+        description: "Classement IGN de hiérarchie de réseau"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('importance_verif') }}"
+      - name: cl_admin
+        description: "Classement administratif IGN (Autoroute, Nationale, Départementale)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('cl_admin_verif') }}"
+              config:
+                where: "cl_admin is not null"
+      - name: gestion
+        description: "Gestionnaire selon l'IGN"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('gestion_verif') }}"
+              config:
+                where: "gestion is not null"
+      - name: fictif
+        description: "Existence réelle ou non de la voie selon l'IGN"
+        data_tests:
+          - not_null
+      - name: largeur
+        description: "Largeur de la voie en mètres"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 25
+                description: "Vérifier que la largeur est positive et inférieure à 25m"
+              config:
+                where: "largeur is not null"
+      - name: nb_voies
+        description: "Nombre de voies de circulation selon l'IGN"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 10
+                description: "Vérifier que le nombre de voies est positif et inférieur à 10"
+              config:
+                where: "nb_voies is not null"
+      - name: etat
+        description: "État de la route (projet, construction, en service) selon l'IGN"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('etat_verif') }}"
+              config:
+                where: "etat is not null"
+      - name: coment_cpt
+        description: "Commentaire sur la source du comptage : 'linearisation' ou 'estimation'"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_cpt_verif') }}"
+      - name: src_cpt
+        description: "Source du comptage : 'otv' ou 'lin_bm' pour les linearisations, null pour les estimations"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('src_cpt_verif') }}"
+              config:
+                where: "src_cpt is not null"
+      - name: id_comptag
+        description: "Identifiant du comptage"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "is not null"
+              config:
+                where: "coment_cpt = 'linearisation'"
+              description: "Vérifier que id_comptag est renseigné pour les linearisations"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "is null"
+              config:
+                where: "coment_cpt = 'estimation'"
+              description: "Vérifier que id_comptag est null pour les estimations"
+      - name: src_cpteur
+        description: "Source de la donnée de comptage"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('src_cpteur_verif') }}"
+              config:
+                where: "src_cpteur is not null"
+      - name: ann_pt
+        description: "Année du TMJA"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "~ '^[0-9]{4}$' AND ann_pt::integer >= 2000 AND ann_pt::integer <= {{ var('annee') }}"
+              config:
+                where: "ann_pt is not null"
+              description: "Vérifier que l'année du TMJA est au format 4 chiffres et comprise entre 2000 et l'année en cours"
+      - name: ann_pc_pl
+        description: "Année du pourcentage poids-lourds"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "~ '^[0-9]{4}$' AND ann_pc_pl::integer >= 2000 AND ann_pc_pl::integer <= {{ var('annee') }}"
+              config:
+                where: "ann_pc_pl is not null"
+              description: "Vérifier que l'année du %PL est au format 4 chiffres et comprise entre 2000 et l'année en cours"
+      - name: coment_tmj
+        description: "Calcul sur le TMJA pour déterminer le TMJA final (repris du millésime N-1)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+              config:
+                where: "coment_tmj is not null"
+      - name: coment_tmj_f
+        description: "Calcul sur le TMJA pour déterminer le TMJA final (validé pour le millésime en cours)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('coment_tmj_verif') }}"
+              config:
+                where: "coment_tmj_f is not null"
+      - name: tmja
+        description: "Trafic moyen journalier annuel tous véhicules"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                description: "Vérifier que le TMJA est positif et inférieur à 300000"
+              config:
+                where: "tmja is not null"
+      - name: pc_pl
+        description: "Part des poids-lourds (en %)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                description: "Vérifier que le %PL est compris entre 0 et 100%"
+              config:
+                where: "pc_pl is not null"
+      - name: pl
+        description: "Trafic moyen journalier annuel poids-lourds"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                description: "Vérifier que le trafic PL est positif et inférieur à 150000"
+              config:
+                where: "pl is not null"
+      - name: tmja_cpt1
+        description: "TMJA du compteur 1"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                description: "Vérifier que le TMJA cpt1 est positif et inférieur à 150000"
+              config:
+                where: "tmja_cpt1 is not null"
+      - name: tmja_cpt2
+        description: "TMJA du compteur 2"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                description: "Vérifier que le TMJA cpt2 est positif et inférieur à 150000"
+              config:
+                where: "tmja_cpt2 is not null"
+      - name: milieu
+        description: "Milieu du tronçon (urbain/rural)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('milieu_verif') }}"
+              config:
+                where: "milieu is not null"
+      - name: obs_tmja
+        description: "Méthode d'affectation du TMJA (auto/mano)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('obs_tmja_pc_pl_verif') }}"
+              config:
+                where: "obs_tmja is not null"
+      - name: obs_pc_pl
+        description: "Méthode d'affectation du %PL (auto/mano)"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('obs_tmja_pc_pl_verif') }}"
+              config:
+                where: "obs_pc_pl is not null"
+      - name: vts_vl_vdf
+        description: "Vitesse VL estimée (VDF)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 20
+                max_value: 140
+                description: "Vérifier que la vitesse VL estimée est comprise entre 20 et 140 km/h"
+              config:
+                where: "vts_vl_vdf is not null"
+      - name: vts_pl_vdf
+        description: "Vitesse PL estimée (VDF)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 20
+                max_value: 90
+                description: "Vérifier que la vitesse PL estimée est comprise entre 20 et 90 km/h"
+              config:
+                where: "vts_pl_vdf is not null"
+      - name: vts_gest
+        description: "Vitesse fournie par le gestionnaire"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 140
+                description: "Vérifier que la vitesse gestionnaire est comprise entre 0 et 140 km/h"
+              config:
+                where: "vts_gest is not null"
+      - name: vts_osm
+        description: "Vitesse réglementaire OSM"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vts_osm_verif') }}"
+              config:
+                where: "vts_osm is not null"
+      - name: vts_modif
+        description: "Source de correction de vitesse"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vts_modif_verif') }}"
+              config:
+                where: "vts_modif is not null"
+      - name: vts_vl_f
+        description: "Vitesse VL finale corrigée"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 20
+                max_value: 140
+                description: "Vérifier que la vitesse VL finale est comprise entre 20 et 140 km/h"
+              config:
+                where: "vts_vl_f is not null"
+      - name: vts_pl_f
+        description: "Vitesse PL finale corrigée"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 10
+                max_value: 110
+                description: "Vérifier que la vitesse PL finale est comprise entre 10 et 110 km/h"
+              config:
+                where: "vts_pl_f is not null"
+      - name: vts_type_vl
+        description: "Type de vitesse VL"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vts_type_verif') }}"
+              config:
+                where: "vts_type_vl is not null"
+      - name: vts_type_pl
+        description: "Type de vitesse PL"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vts_type_verif') }}"
+              config:
+                where: "vts_type_pl is not null"
+      - name: src_vma
+        description: "Source de la vitesse maximale autorisée"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('src_vma_verif') }}"
+              config:
+                where: "src_vma is not null"
+      - name: vma_vl
+        description: "Vitesse maximale autorisée VL"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vma_vl_verif') }}"
+              config:
+                where: "vma_vl is not null"
+      - name: vma_pl
+        description: "Vitesse maximale autorisée PL"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vma_pl_verif') }}"
+              config:
+                where: "vma_pl is not null"
+      - name: vma_type
+        description: "Type de vitesse maximale autorisée"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: "{{ var('vma_type_verif') }}"
+              config:
+                where: "vma_type is not null"
+            # Colonnes déjà testées dans d'autres modèles qu'on doit ajouter ici
+      - name: id_simpli
+        description: "Identifiant de simplification topologique des tronçons"
+      - name: nom_coll_g
+        description: "Nom de rue BdTopo côté gauche, issu de système collaboratif"
+      - name: nom_coll_d
+        description: "Nom de rue BdTopo côté droit, issu de système collaboratif"
+      - name: inseecom_g
+        description: "Code INSEE de la commune côté gauche"
+      - name: inseecom_d
+        description: "Code INSEE de la commune côté droit"
+      - name: id_voie_g
+        description: "Identifiant IGN de la voie côté gauche"
+      - name: id_voie_d
+        description: "Identifiant IGN de la voie côté droit"
+      - name: urbain
+        description: "Si la route est en zone urbaine (1) ou non (0), selon l'IGN"
+      - name: vit_moy_vl
+        description: "Vitesse moyenne pratiquée par les véhicules légers selon l'IGN"
+      - name: restr_p
+        description: "Restriction de poids lourds (en Tonnes) selon l'IGN"
+      - name: dept_2024
+        description: "Département d'appartenance du millésime 2024 (notion d'appartenance unique pour voies limitrophes)"
+      - name: dept_2023
+        description: "Département d'appartenance du millésime 2023 (notion d'appartenance unique pour voies limitrophes)"
+      - name: veh_km
+        description: "Nombre de véhicules-kilomètres (formule : tmja_final * long_km)"
+        data_tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= tmja_final * long_km"
+              config:
+                where: "coment_cpt = 'linearisation' and tmja_final is not null and long_km is not null and veh_km is not null"
+              description: "Vérifier que veh_km est correctement calculé"
+      - name: tmja_final
+        description: "TMJA final sur le tronçon utilisé pour le calcul des véhicules-kilomètres (correspond au trafic du brin SIG)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 150000
+                description: "Vérifier que le TMJA final est positif et inférieur à 150000"
+              config:
+                where: "tmja_final is not null"
+      - name: pl_final
+        description: "TMJA poids-lourds final sur le tronçon utilisé pour le calcul des PL-kilomètres (correspond au trafic PL du brin SIG)"
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 75000
+                description: "Vérifier que le PL final est positif et inférieur à 75000"
+              config:
+                where: "pl_final is not null"
+      - name: pl_km
+        description: "Nombre de PL-kilomètres (formule : pl_final * long_km)"
+        data_tests:
+          - not_null:
+              arguments:
+                where: "coment_cpt = 'linearisation' and pl is not null"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "= pl_final::numeric * long_km::numeric"
+              config:
+                where: "coment_cpt = 'linearisation' and pl_final is not null and long_km is not null and pl_km is not null and pl_final > 0"
+              description: "Vérifier que pl_km est correctement calculé"
+      - name: id_cpt1
+        description: "Identifiant d'origine du point de comptage issu de la donnée fournie par le gestionnaire"
+      - name: id_cpt2
+        description: "Identifiant d'origine du point de comptage issu de la donnée fournie par le gestionnaire (complété si autre compteur présent sur la même section et géométrie non dissociée)"
+      - name: obs_tmj1
+        description: "Calcul sur le TMJA pour déterminer le TMJA final lié aux compteurs (si complété, champ coment_tmj non utilisé)"        
+      - name: obs_tmj2
+        description: "Calcul sur le TMJA pour déterminer le TMJA final lié au sens du tronçon (si complété, champ coment_tmj non utilisé)"        
+      - name: codau_cat
+        description: "Aire urbaine traversée par le tronçon"      
+      - name: codau
+        description: "Complété si le tronçon est situé dans une aire urbaine dont la catégorie de la commune dans le zonage des aires urbaines 2010 est 111 ou 112"        
+      - name: type_vdf
+        description: "Type de voie selon la méthode développée par le Cerema"        
+      - name: id_vts
+        description: "Identifiant du point de comptage associé à la table des indicateurs de vitesses obtenus par convention"        
+      - name: obs_supl
+        description: "Observations supplémentaires"        
+      - name: id_sect
+        description: "Identifiant d'origine du sectionnement si fourni par le gestionnaire"        
+      - name: src_sect
+        description: "Source du sectionnement"
+      - name: obs_vts
+        description: "Source et année de la donnée vitesse fournie par le gestionnaire (v85, vmoyenne…)"        
+      - name: codau_cont
+        description: "Correction du codau_cat pour assurer une continuité de TMJA ou %PL quand une section de même importance traverse plusieurs aires urbaines avec des valeurs différentes"        
+      - name: id_codau_cont
+        description: "Identifiant de la correction de continuité codau"        
+      - name: tmja_cont
+        description: "Correction du codau_cat pour assurer une continuité de TMJA quand une section traverse plusieurs aires urbaines avec des valeurs différentes"  
+      - name: pc_pl_cont
+        description: "Correction du codau_cat pour assurer une continuité de %PL quand une section traverse plusieurs aires urbaines avec des valeurs différentes"
+      - name: source
+        description: "Identifiant du point de départ du tronçon, topologie créée sur la BdTopo de la région Nouvelle Aquitaine (utilisé pour opérations de routage)"    
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description : "l'identifiant de topologie doit etre positif ou =0"   
+      - name: target
+        description: "Identifiant du point d'arrivée du tronçon, topologie créée sur la BdTopo de la région Nouvelle Aquitaine (utilisé pour opérations de routage)" 
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description : "l'identifiant de topologie doit etre positif ou =0"      
+      - name: cnt_src
+        description: "Nombre de brins reliés à l'extrémité source du tronçon (utilisé pour définir des sections homogènes de trafic)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                description : "un noeud est toujours au moins relié à 1 brin"
+      - name: cnt_tgt
+        description: "Nombre de brins reliés à l'extrémité target du tronçon (utilisé pour définir des sections homogènes de trafic)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                description : "un noeud est toujours au moins relié à 1 brin"
+      - name: attr_modif
+        description: "Attributs modifiés (importance, numéro) lors du changement d'édition de la BdTopo"       
+      - name: geom
+        description: "Géométrie de type ligne 3D dans le système de projection Lambert 93 / EPSG 2154 (MultiLineStringZ, 2154)"
+        data_tests:
+          - not_null
+      - name: autor_sect
+        description: "[À PRÉCISER] Indicateur d'autorisation de sectionnement du tronçon"
+      - name: imp_sup1
+        description: "[À PRÉCISER] Importance supérieure option 1 - critère complémentaire de hiérarchisation du réseau"
+      - name: imp_sup2
+        description: "[À PRÉCISER] Importance supérieure option 2 - critère complémentaire de hiérarchisation du réseau"
+      - name: id_cnt2
+        description: "[À PRÉCISER] Identifiant de comptage alternatif ou secondaire"
+      - name: id_struct_rout
+        description: "[À PRÉCISER] Identifiant de la structure routière associée au tronçon"
+      - name: id_sect_hom
+        description: "[À PRÉCISER] Identifiant de section homogène de trafic regroupant plusieurs tronçons"
+      - name: id_bdc
+        description: "[À PRÉCISER] Identifiant BdCarto du tronçon"
+      - name: ang_orient_src_vert1
+        description: "[À PRÉCISER] Angle d'orientation entre le noeud source et le premier vertex de la géométrie (utilisé pour analyses d'orientation)"
+      - name: ang_orient_src_vert2
+        description: "[À PRÉCISER] Angle d'orientation entre le noeud source et le deuxième vertex de la géométrie (utilisé pour analyses d'orientation)"
+      - name: ang_orient_tgt_vert1
+        description: "[À PRÉCISER] Angle d'orientation entre l'avant-dernier vertex de la géométrie et le noeud target (utilisé pour analyses d'orientation)"
+      - name: ang_orient_tgt_vert2
+        description: "[À PRÉCISER] Angle d'orientation entre le dernier vertex de la géométrie et le noeud target (utilisé pour analyses d'orientation)"
+      - name: list_id_inter
+        description: "[À PRÉCISER] Liste des identifiants d'intersections traversées par le tronçon ou adjacentes"
+      - name: nb_nod_non_topo
+        description: "[À PRÉCISER] Nombre de noeuds non topologiques sur le tronçon (vertices intermédiaires sans connexion réelle)"
+      - name: id_struct
+        description: "[À PRÉCISER] Identifiant unique de structure (ponts, tunnels, ouvrages d'art) associée au tronçon"

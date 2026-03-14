@@ -437,3 +437,9 @@ models:
         description: "A COMPLETER"
       - name: id_struct
         description: "A COMPLETER"
+
+  - name: creer_vue_linearisation_19
+    description: > 
+      "vue de fin du processus de linearisation pour le département 19.
+      Pour plus d'info, voir la macro [`mcr_vue_lin_finale`](/macros/mcr_vue_lin_finale.sql)
+      et le modele ['mdl_lin_update_coment_tmj_f_estim_19'](/models/mdl_lin_update_coment_tmj_f_estim_19.sql)."
