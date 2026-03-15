@@ -1,7 +1,7 @@
 version: 2
 
 macros:
-  - name: create_vue_dept_annee
+  - name: creer_vue_dept_annee
     description: >
       Crée une vue filtrée des données BDTopo routes pour un département 
       et une année (millésime) spécifique.
@@ -120,12 +120,12 @@ macros:
       Elle remplace l'id_comptag par l'id_cpteur_ref pour les lignes concernées, modifie obs_supl pour la traçabilité, s'assure que src_cpt = 'otv' et comen_cpt='linearisation' 
       tout en conservant toutes les autres valeurs originales du fichier de linéarisation.
     arguments:
-      - name: dept
-        type: string
-        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
   - name: verifier_pt_emprise_dept_non_linearise_lin
     description: >
@@ -134,12 +134,12 @@ macros:
       S'appuie sur les sources `cptg.compteur`, `cptg.comptage`, `admi.dpt_bdt_na_ed~ (annee | string)[-2:] ~_s` 
       et la ref `lin_update_pt_linearise_devenu_assoc_{dept}`.
     arguments:
-      - name: dept
-        type: string
-        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
   - name: cte_update_auto_pt_non_linearise_lin__project_cpt
     description: >
@@ -242,12 +242,12 @@ macros:
       tout en conservant toutes les autres valeurs originales du fichier de linearisation. Les lignes non présentes dans le seed
       conservent leurs attributs originaux.
     arguments:
-      - name: dept
-        type: string
-        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
       - name: annee
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
   - name: update_oubli_erreur_lin
     description: >
@@ -443,7 +443,7 @@ macros:
         type: integer
         description: "Année des comptages à vérifier au format YYYY (par défaut: variable projet 'annee')"
       - name: suspect
-        type: boolean
+        type: bool
         description: "Indicateur pour filtrer uniquement les compteurs suspects (TRUE) ou tous les compteurs (FALSE) (par défaut: FALSE)"
 
   - name: verifier_nb_tronc_linearise_lin
@@ -487,9 +487,9 @@ macros:
       - [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)
       - [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege).
     arguments:
-      - name: dept
-        type: string
-        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+      - name: annee
+        type: integer
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
   - name: verifier_suspect_indic_lin
     description: >
@@ -576,10 +576,10 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
       - name: annee
-        type: boolean
+        type: bool
         description: "drapeau pour permettre ensuite l'agrégation par année (TRUE) ou non (FALSE) (par défaut: FALSE)"
 
-  - name: verifier_stats_linearisations_gest_annees
+  - name: verifier_stats_linearisation_gests_annees
     description: >
       Calcule les statistiques de linéarisation par gestionnaire et par année de comptage (ann_pt) :
       nombre de points de comptage distincts.
@@ -619,7 +619,7 @@ macros:
         type: integer
         description: "Distance maximale de recherche en mètres pour identifier un compteur standardisé proche (par défaut: 10)"
 
-  - name: verifier_stat_importance_nature_estim_lin
+  - name: verifier_stats_importance_nature_estim_lin
     description: >
       Calcule des statistiques agrégées selon les attributs BdTopo "importance" et "nature" sur les tronçons estimé.
       Retourne pour chaque combinaison importance/nature : le nombre de tronçons, la longueur cumulée en km,
@@ -695,7 +695,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_coment_tmj_f_attr_modif_lin
+  - name: verifier_coment_tmj_f_attr_modif
     description: >
       Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait avoir été modifié
       à cause d'un changement d'attribut Bdtopo (en particulier le champs `importance`).
@@ -795,10 +795,10 @@ macros:
         type: string
         description: "Filtre optionnel sur l'identifiant de comptage via pattern LIKE SQL (par défaut: none)"
       - name: percentile_value
-        type: numeric
+        type: float
         description: "Valeur de percentile à calculer sur l'évolution (ex: 0.95 pour le 95e percentile) (par défaut: none)"
 
-  - name: cte_verif_evol_cpt_devenu_assoc__pt_ann_n
+  - name: cte_verif_evol_cpt_dev_assoc__pt_ann_n
     description: >
       Identifie les points de comptage de l'année N-1 qui ne sont plus présents dans la linéarisation 
       de l'année N (points de comptage devenus associés). 
@@ -815,11 +815,11 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: cte_verif_evol_cpt_devenu_assoc__pt_ann_n_asso
+  - name: cte_verif_evol_cpt_dev_assoc__pt_ann_n_asso
     description: >
       Enrichit les points de comptage de l'année N-1 devenus associés en année N avec leurs informations 
       de comptage associé (type de poste et compteur de référence). 
-      S'appuie sur la CTE [`cte_verif_evol_cpt_devenu_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__pt_ann_n) 
+      S'appuie sur la CTE [`cte_verif_evol_cpt_dev_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_dev_assoc__pt_ann_n) 
       et la table `comptage_assoc.compteur`.
       Retourne id_cpteur_asso, ann_lin_n_1, tmja_lin_n_1, typ_post_lin_n_1 et id_cpteur_ref 
       pour analyser l'évolution des compteurs ayant changé de statut.
@@ -831,7 +831,7 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: mcr_verifier_evol_cpt_dev_assoc_lin
+  - name: mcr_verifier_evo_cptg_devient_asso_lin
     description: >
       Analyse l'évolution du trafic (TMJA) entre l'année N et N-1 pour les compteurs devenus associés.
       Compare les valeurs de trafic d'un compteur associé (via son compteur de référence) entre deux années
@@ -1064,7 +1064,7 @@ macros:
       [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
     arguments:
       - name: list_id_comptag
-        type: array
+        type: list
         description: "Liste des identifiants de comptage à filtrer (par défaut: [] ; exemple: ['19-D001-2+300', '19-D002-1+800', ...])"
       - name: dept
         type: string

@@ -97,6 +97,9 @@ models:
           type: btree
       lin:
         before_update_affectation_mano:  # Nom du sous-dossier
+          # Les modèles lin_verif_* à la racine de ce dossier n'ont pas les colonnes
+          # id_simpli/id_ign/nature/etc. → on annule l'héritage des indexes de dept19
+          +indexes: []
           cte:  # Nom du sous-dossier
             +materialized: table
             +indexes:
@@ -125,6 +128,9 @@ models:
             - columns: ['id_simpli']
               type: gin
         post_update_affectation_mano:
+          # Les modèles lin_verif_* à la racine de ce dossier n'ont pas les colonnes
+          # id_simpli/id_ign/nature/etc. → on annule l'héritage des indexes de dept19
+          +indexes: []
           cte:
             +materialized: table
             +indexes:

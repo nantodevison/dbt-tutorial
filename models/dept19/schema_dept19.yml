@@ -164,19 +164,19 @@ models:
                   where: "ann_pt is not null"
                 description: "Vérifier que l'année du tmja est au format 4 chiffres et comprise entre 2000 et l'année en cours"
       - name: coment_tmj
-        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final repris du millésime N-1"
+        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final repris du millésime N-1"
         data_tests:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
       - name: coment_tmj_f
-        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
+        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé"
         data_tests:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
       - name: tmja
-        description: "Trafic moyen journalier annuel tous véhicules déterminé à partir de la méthode « linéarisation » ou « estimation » ; Correspond au trafic global de l'infrastructure"
+        description: "Trafic moyen journalier annuel tous véhicules déterminé à partir de la méthode « linéarisation » ou « estimation » ; Correspond au trafic global de l'infrastructure"
         data_tests:
           - dbt_utils.accepted_range:
               arguments:
@@ -192,7 +192,7 @@ models:
                 max_value: 150000
                 description: "Vérifier que le tmja_final est positif et inférieur à 150000"
       - name: veh_km
-        description: "Nombre de véhicules.kilomètres (formule : tmja_final * long_km)"
+        description: "Nombre de véhicules.kilomètres (formule : tmja_final * long_km)"
       - name: ann_pc_pl
         description: "Année du pourcentage poids-lourds"
         data_tests:
@@ -211,7 +211,7 @@ models:
                 max_value: 100
                 description: "Vérifier que le pourcentage de poids-lourds est compris entre 0 et 100%"
       - name: pl
-        description: "Trafic moyen journalier annuel poids-lourds sur le tronçon déterminé à partir de la méthode « linéarisation » ou « estimation » ; Correspond au trafic poids-lourds de l'infrastructure"
+        description: "Trafic moyen journalier annuel poids-lourds sur le tronçon déterminé à partir de la méthode « linéarisation » ou « estimation » ; Correspond au trafic poids-lourds de l'infrastructure"
         data_tests:
           - dbt_utils.accepted_range:
               arguments:
@@ -227,12 +227,12 @@ models:
                 max_value: 75000
                 description: "Vérifier que le trafic poids-lourds final est positif et inférieur à 75000"
       - name: pl_km
-        description: "Nombre de PL.kilomètres (formule : pl_final * long_km)"
+        description: "Nombre de PL.kilomètres (formule : pl_final * long_km)"
       - name: obs_tmja
         description: >
           "Méthode utilisée pour affecter le TMJA estimée statistiquement à partir des aires urbaines
-          « auto » : affection directe resultant du croisement avec les aires urbaines
-          « mano » : valeur auto corrigée manuellement"
+          « auto » : affection directe resultant du croisement avec les aires urbaines
+          « mano » : valeur auto corrigée manuellement"
         data_tests:
           - accepted_values:
               arguments:
@@ -240,8 +240,8 @@ models:
       - name: obs_pc_pl
         description: >
           "Méthode utilisée pour affecter le pourcentage poids-lourds estimée statistiquement à partir des aires urbaines
-          « auto » : affection directe resultant du croisement avec les aires urbaines
-          « mano » : valeur auto corrigée manuellement"
+          « auto » : affection directe resultant du croisement avec les aires urbaines
+          « mano » : valeur auto corrigée manuellement"
         data_tests:
           - accepted_values:
               arguments:
@@ -279,7 +279,7 @@ models:
       - name: codau_cat
         description: "Aire urbaine traversée par le tronçon"
       - name: milieu
-        description: "Milieu du tronçon traversé déterminé à partir de Corine Land Cover (u : urbain, r : interurbain)"
+        description: "Milieu du tronçon traversé déterminé à partir de Corine Land Cover (u : urbain, r : interurbain)"
         data_tests:
           - accepted_values:
               arguments:
