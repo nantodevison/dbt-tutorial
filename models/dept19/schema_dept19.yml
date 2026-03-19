@@ -2,7 +2,10 @@ version: 2
 
 models:
   - name: creer_vue_19
-    description: "BdTopo des routes du département 19"
+    description: >
+      Vue des tronçons BDTopo des routes du département 19 pour le millésime en cours,
+      intégrant les corrections liées aux changements de millésime.
+      S'appuie sur la macro [`creer_vue_dept_annee`](/#!/macro/macro.test_otv.creer_vue_dept_annee)
     data_tests:
     - dbt_utils.expression_is_true:
           arguments:

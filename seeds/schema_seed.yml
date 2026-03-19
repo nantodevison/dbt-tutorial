@@ -19,3 +19,50 @@ seeds:
               arguments:
                 values: "{{ var('dept_na') }}"
                 description: "doit faire partie de la liste des départements NA sur 2 caractères"
+
+  - name: ad_suppr_row_new_millesime
+    description: >
+      liste des tronçons à ajouter ou supprimer pour le millésime concerné et le département concerné.
+    config: 
+      column_types:
+        id_propa: "text"
+        id_ign: "text"
+        type_modif: "text"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
+    columns:
+      - name: id_propa
+        description: "Identifiant de la ligne permettant de propager les valeur d'eattributs métier d'un millésime à l'autre"
+        data_tests:
+          - not_null:
+              arguments:
+                where: "type_modif='ad'"
+                description: "doit être renseigné pour les lignes de type 'ad' (ajout de tronçon)"
+      - name: id_ign
+        description: "Identifiant IGN du(es) tronçon BdTopo des lignes concernées (séparation par ';' si plusieurs tronçons)"
+        data_tests:
+          - not_null
+      - name: type_modif
+        description: "Type de modification à appliquer pour la(es) ligne(s) concernée(s) : 'ad' pour ajouter un tronçon, 'sup' pour supprimer un tronçon"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('type_modif_new_millesime_verif') }}"
+                description: "doit être égal à 'ad' ou 'sup'"
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+                row_condition: "modifie_le is not null"

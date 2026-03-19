@@ -61,6 +61,7 @@ vars:
   bdtopo_double_sens_verif: 'Double sens'
   recup_verif: ['ad', 'imp', 'mem_geom', 'pk_ign', 'recurs', 'topo_n']
   indic_agrege_verif: ['tmja', 'v85', 'v50', 'vma_vl', 'vma_pl', 'vmoy_vl', 'tmjo', 'tmje', 'tmjhe', 'vma', 'vmoy_pl', 'vmoy', 'v85_vl', 'v85_pl', 'v50_vl', 'v50_pl', 'pc_pl', 'pc_pl_o', 'pc_pl_e', 'pc_pl_he']
+  type_modif_new_millesime_verif: ['ad', 'sup']
 
 # configurations supplémentaires
 flags:
@@ -160,6 +161,21 @@ seeds:
   test_otv:    # Nom du projet
     depts_cpt_integre:
       +schema: affectation_pt_mano
+    ad_suppr_row_new_millesime:
+      +schema: ref
+      +post-hook: |
+              -- D'abord modifier le type des colonnes
+              ALTER TABLE {{ this }}
+              ALTER COLUMN id_ign TYPE text[] USING (
+                CASE 
+                  WHEN id_ign IS NOT NULL AND id_ign != '' 
+                  THEN string_to_array(id_ign, ';')::text[] 
+                  ELSE NULL 
+                END
+              ),
+              -- puis ajouter la colonne millesime avec la valeur de celui en cours
+              ADD COLUMN millesime integer NOT NULL DEFAULT ({{ var('annee') }});
+
     dept19:
       lin:
         +schema: affectation_pt_mano

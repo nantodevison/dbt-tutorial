@@ -1,10 +1,41 @@
 version: 2
 
 macros:
+  - name: mcr_ajouter_troncon_nouveau_millesime
+    description: >
+      Génère les lignes BDTopo à ajouter au fichier de linéarisation suite à des ajout manuel lors du changement de millésime ou du 
+      process de linéarisation.
+      Pour chaque tronçon référencé dans le seed `ad_suppr_row_new_millesime` avec `type_modif='ad'`,
+      la macro vérifie d'abord si l'id_ign est absent de la couche BDTopo du millésime courant (CTE `ad`),
+      puis récupère ses attributs géométriques et métier (trafic, indicateurs, VTS, etc.) via une double
+      jointure : la géométrie du millésime N (`troncon_route_bdt_na_ed{annee_sfx}_l`) et les attributs
+      métier de l'année N (`traf{annee}_bdt_na_ed{annee_sfx}_l`) via la colonne `id_propa`.
+      Les indicateurs dérivés (`tmja_final`, `veh_km`, `pl_final`, `pl_km`) sont recalculés en fonction
+      du sens de circulation (double sens / sens unique).
+    arguments:
+      - name: annee
+        type: int
+        description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
+      - name: dept
+        type: string
+        description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
+
   - name: creer_vue_dept_annee
     description: >
-      Crée une vue filtrée des données BDTopo routes pour un département 
-      et une année (millésime) spécifique.
+      Génère la vue des tronçons BDTopo routes pour un département et une année (millésime) spécifique,
+      en intégrant les corrections liées aux changements de millésime.
+      Effectue deux opérations combinées par UNION :
+
+      1. **Suppression** : sélectionne les tronçons de la source
+      `traf.traf{annee}_bdt_na_ed{annee_sfx}_l` filtrés sur le département,
+      en excluant via `NOT EXISTS` les `id_ign` référencés dans le seed
+      [`ad_suppr_row_new_millesime`](/#!/seed/seed.test_otv.ad_suppr_row_new_millesime)
+      avec `type_modif='sup'` (tronçons disparus du nouveau millésime à retirer).
+
+      2. **Ajout** : complète par UNION avec le modèle
+      [`mdl_ad_troncons_new_millesime`](/#!/model/model.test_otv.mdl_ad_troncons_new_millesime),
+      qui reconstruit les tronçons référencés dans le seed avec `type_modif='ad'`
+      (tronçons absents du nouveau millésime mais à conserver via propagation depuis l'année N-1).
     arguments:
       - name: annee
         type: integer
@@ -1064,7 +1095,6 @@ macros:
       [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
     arguments:
       - name: list_id_comptag
-        type: list
         description: "Liste des identifiants de comptage à filtrer (par défaut: [] ; exemple: ['19-D001-2+300', '19-D002-1+800', ...])"
       - name: dept
         type: string
