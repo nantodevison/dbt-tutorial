@@ -142,21 +142,33 @@ models:
               - columns: ['id_comptag']
                 type: btree
         update_indic_trafic:
-          +materialized: table
-          +indexes:
-            - columns: ['id_ign']
-              type: btree
-            - columns: ['id_comptag']
-              type: btree
-            - columns: ['id_simpli']
-              type: gin
-          verifs:
-            +materialized: view
-          cte:
+          commentaires_tmja_f:
             +materialized: table
             +indexes:
+              - columns: ['id_ign']
+                type: btree
               - columns: ['id_comptag']
                 type: btree
+              - columns: ['id_simpli']
+                type: gin
+            verifs:
+              +materialized: view
+            cte:
+              +materialized: table
+              +indexes:
+                - columns: ['id_comptag']
+                  type: btree
+          calculs_trafic:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+            verifs:
+              +materialized: view
 
 # Configuring Seeds
 seeds:
@@ -201,7 +213,7 @@ seeds:
                   ELSE NULL 
                 END
               );
-        indic_trafic:
+        commentaires_tmja_f:
           +schema: indic_trafic
           +quote_columns: false
           +delimiter: ','
@@ -225,4 +237,8 @@ seeds:
                     ELSE NULL 
                   END
                 );
+        verifications:
+          +schema: indic_trafic
+          +quote_columns: false
+          +delimiter: ','
           
