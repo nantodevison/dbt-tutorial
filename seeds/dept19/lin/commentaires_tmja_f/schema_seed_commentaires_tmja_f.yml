@@ -65,6 +65,55 @@ seeds:
                 where: "modifie_le is not null"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
+  - name: dept19_update_coment_tmj_f_sens
+    description: >
+      Fichier de mise à jour manuelle du `coment_tmj_f` pour les comptages du département 19 (Corrèze) 
+      en fonction de leur sens de circulation. si le sens de circulation est "Sens direct" ou "Sens inverse", 
+      alors le `coment_tmj_f` doit être mis à jour à "/2" (division du TMJA par 2). si le sens dfe circulation
+      est "Double sens", alors le `coment_tmj_f` doit être mis à null (pas de correction du TMJA).
+    config:
+      column_types:
+        id_comptag: "varchar(254)"
+        type_correction: "varchar(20)"
+        cree_le: "char(10)"
+        modifie_le: "char(10)"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur à corriger (format XX-DXXX-XX+XXX)"
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: source('cptg', 'compteur')
+                field: id_comptag
+                description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
+      - name: type_correction
+        description: >
+          Type de correction à appliquer sur le TMJA en fonction du sens de circulation :
+          - "null -> divise par 2" : si le `coment_tmj_f` est actuellement null, le mettre à "/2"
+          - "divise par 2 -> null" : si le `coment_tmj_f` est actuellement "/2", le mettre à null
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["null -> divise par 2", "divise par 2 -> null"]
+      - name: cree_le
+        description: "Date de création de la ligne"
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                description: "Vérifier que la date de création est au format YYYY-MM-DD."
+      - name: modifie_le
+        description: "Date de modification de la ligne"
+        data_tests:
+          - dbt_expectations.expect_column_values_to_match_regex:
+              arguments:
+                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
+                where: "modifie_le is not null"
+                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
+
   - name: dept19_update_coment_tmj_f_with_coment_tmj_f
     description: >
       Mise à jour des coment_tmj_f pour les comptages du département 19
@@ -135,136 +184,6 @@ seeds:
           - accepted_values:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
-      - name: cree_le
-        description: "Date de création de la ligne"
-        data_tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_match_regex:
-              arguments:
-                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
-                description: "Vérifier que la date de création est au format YYYY-MM-DD."
-      - name: modifie_le
-        description: "Date de modification de la ligne"
-        data_tests:
-          - dbt_expectations.expect_column_values_to_match_regex:
-              arguments:
-                regex: "^20[2-9][0-9]-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$"
-                where: "modifie_le is not null"
-                description: "Vérifier que la date de modification est au format YYYY-MM-DD."
-
-  - name: dept19_verif_indic_trafic_qualite
-    description: >
-      Fichier de vérification qualité des indicateurs de trafic pour le département 19 (Corrèze).
-      Fichier issu du processus d'intégration/standardisation des données de trafic.
-      Permet de comparer les données de trafic entre la base de données (bdd) et le gestionnaire (gest)
-      afin d'identifier les anomalies potentielles.
-    config:
-      column_types:
-        bdd_id_comptag: "varchar(254)"
-        gest_natureintegration: "varchar(100)"
-        bdd_tmja: "numeric(10,1)"
-        bdd_proj_traf: "integer"
-        bdd_evol_annuelle_median: "numeric(8,2)"
-        bdd_variation_evolution_prec: "numeric(8,2)"
-        gest_tmja: "integer"
-        gest_pc_pl: "numeric(5,2)"
-        gest_evol_annuelle: "numeric(8,2)"
-        gest_suspect: "boolean"
-        gest_obs: "text"
-    columns:
-      - name: bdd_id_comptag
-        description: Identifiant unique du point de comptage (format XX-DXXX-XX+XXX)
-        tests:
-          - not_null
-          - unique
-      - name: gest_natureintegration
-        description: >
-          Nature de l'intégration du comptage:
-          - correspIdComptag: correspondance d'identifiant de comptage
-          - MaJCptExistant: mise à jour d'un compteur existant
-          - creationCompteurExistDevientAssoc: création d'un compteur et existant devient associé
-          - MajCptAssoc : mise à jour d'un compteur associé
-          - MaJCptExistant : mise à jour d'un compteur existant
-      - name: bdd_tmja
-        description: Trafic Moyen Journalier Annuel selon la base de données (en véhicules/jour)
-        data_tests:
-          - not_null
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "> 0"
-      - name: bdd_proj_traf
-        description: Projection du trafic selon la base de données (en véhicules/jour)
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "IS NULL OR bdd_proj_traf > 0"
-      - name: bdd_evol_annuelle_median
-        description: Médiane de l'évolution annuelle du trafic selon la base de données (en %)
-      - name: bdd_variation_evolution_prec
-        description: Variation par rapport à l'évolution précédente selon la base de données (en %)
-      - name: gest_tmja
-        description: Trafic Moyen Journalier Annuel selon le gestionnaire (en véhicules/jour)
-        data_tests:
-          - not_null
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "> 0"
-      - name: gest_pc_pl
-        description: Pourcentage de poids lourds selon le gestionnaire (en %)
-        data_tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 100
-                where: "gest_pc_pl is not null"
-      - name: gest_evol_annuelle
-        description: Évolution annuelle du trafic selon le gestionnaire (en %)
-      - name: gest_suspect
-        description: Indicateur booléen signalant si la donnée est suspecte (true/false)
-        data_tests:
-          - accepted_values:
-              arguments:
-                values: [true, false]
-      - name: gest_obs
-        description: >
-          Observations du gestionnaire sur le traitement:
-          - "traitement ok": traitement validé sans anomalie
-          - "variation trafic jugee normal": variation importante mais considérée comme normale
-          - "volume trop faible pour impact significatif": volume faible, impact limité
-          - Vide si aucune observation particulière
-
-  - name: dept19_update_coment_tmj_f_sens
-    description: >
-      Fichier de mise à jour manuelle du `coment_tmj_f` pour les comptages du département 19 (Corrèze) 
-      en fonction de leur sens de circulation. si le sens de circulation est "Sens direct" ou "Sens inverse", 
-      alors le `coment_tmj_f` doit être mis à jour à "/2" (division du TMJA par 2). si le sens dfe circulation
-      est "Double sens", alors le `coment_tmj_f` doit être mis à null (pas de correction du TMJA).
-    config:
-      column_types:
-        id_comptag: "varchar(254)"
-        type_correction: "varchar(20)"
-        cree_le: "char(10)"
-        modifie_le: "char(10)"
-    columns:
-      - name: id_comptag
-        description: "Identifiant du compteur à corriger (format XX-DXXX-XX+XXX)"
-        data_tests:
-          - not_null
-          - unique
-          - relationships:
-              arguments:
-                to: source('cptg', 'compteur')
-                field: id_comptag
-                description: "Vérifier que chaque id_comptag dans ce fichier existe dans la table comptage.compteur."
-      - name: type_correction
-        description: >
-          Type de correction à appliquer sur le TMJA en fonction du sens de circulation :
-          - "null -> divise par 2" : si le `coment_tmj_f` est actuellement null, le mettre à "/2"
-          - "divise par 2 -> null" : si le `coment_tmj_f` est actuellement "/2", le mettre à null
-        data_tests:
-          - accepted_values:
-              arguments:
-                values: ["null -> divise par 2", "divise par 2 -> null"]
       - name: cree_le
         description: "Date de création de la ligne"
         data_tests:
