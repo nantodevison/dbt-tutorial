@@ -108,7 +108,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_veh_km_' ~ dept)}} ctf
+from {{ref('mdl19_lin_upd_veh_km_' ~ dept)}} ctf
 where ctf.coment_cpt = 'linearisation' and pl is not null
 union
 select 
@@ -207,7 +207,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_veh_km_' ~ dept)}} ctf
+from {{ref('mdl19_lin_upd_veh_km_' ~ dept)}} ctf
 where ctf.coment_cpt != 'linearisation' or ctf.coment_cpt is null or ctf.pl is null
 
 {% endmacro %}

@@ -1,13 +1,13 @@
 version: 2
 
 models:
-  - name: lin_update_nouveau_point_19
+  - name: mdl7_lin_upd_nouv_point_19
     description: >
       Ce modèle se base sur la macro [`update_nouveau_point_lin`](/#!/macro/macro.test_otv.update_nouveau_point_lin).
       Il sert à remplacer les attributs de lignes affectées ou désaffectées à des points de comptages.
       Tous les tests de validation des données sont réalisés au préalable dans le modèle 
-      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) et / ou dans le seed 
-      [`dept19_update_nouveau_pt`](/#!/seed/seed.test_otv.dept19_update_nouveau_pt).
+      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) et / ou dans le seed 
+      [`sed7_dept19_upd_nouv_pt`](/#!/seed/seed.test_otv.sed7_dept19_upd_nouv_pt).
       A terme, o, pourrait enlever les colonnes tmja, pc_pl, etc... qui font doublons avec les donnée contenues dans le schéma comptage
     data_tests:
       - dbt_utils.expression_is_true:
@@ -15,19 +15,19 @@ models:
             expression: |
               not EXISTS (
                 SELECT 1 
-                FROM {{ ref('dept19_update_nouveau_pt') }} seed
+                FROM {{ ref('sed7_dept19_upd_nouv_pt') }} seed
                 WHERE ((array[id_ign] && seed.id_ign and seed.id_ign is not null)
                       OR 
                       id_simpli = seed.id_simpli and seed.id_simpli is not null)
                 AND (src_cpt != 'otv' OR coment_cpt != 'linearisation')
               )
-            description: "Vérifier que les lignes issues du seed dept19_update_nouveau_pt ont bien src_cpt='otv' et coment_cpt='linearisation'"
+            description: "Vérifier que les lignes issues du seed sed7_dept19_upd_nouv_pt ont bien src_cpt='otv' et coment_cpt='linearisation'"
           config:
             where: "id_comptag is not null"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
       - name: id_ign
@@ -125,23 +125,23 @@ models:
       - name: nb_nod_non_topo
       - name: id_struct
 
-  - name: lin_update_modif_linearisation_19
+  - name: mdl8_lin_upd_modif_linear_19
     description: >
       Ce modèle se base sur la macro [`update_modif_linearisation_lin`](/#!/macro/macro.test_otv.update_modif_linearisation_lin).
       Il sert à modifier la linéarisation (id_comptag) de ligne affectées à un autre point de comptage.
-      Contrairement au modèle [`lin_update_nouveau_point_19`](/#!/model/model.test_otv.lin_update_nouveau_point_19) qui traite 
+      Contrairement au modèle [`mdl7_lin_upd_nouv_point_19`](/#!/model/model.test_otv.mdl7_lin_upd_nouv_point_19) qui traite 
       les nouveaux points de comptage, ce modèle modifie uniquement la linéarisation de comptages déjà présents.
       Tous les tests de validation des données sont réalisés au préalable dans le modèle 
-      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) et / ou dans le seed 
-      [`dept19_update_modif_linearisation`](/#!/seed/seed.test_otv.dept19_update_modif_linearisation) et 
-      s'appuie sur les résultats du modèle [`lin_update_nouveau_point_19`](/#!/model/model.test_otv.lin_update_nouveau_point_19).
+      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) et / ou dans le seed 
+      [`sed8_dept19_upd_modif_linear`](/#!/seed/seed.test_otv.sed8_dept19_upd_modif_linear) et 
+      s'appuie sur les résultats du modèle [`mdl7_lin_upd_nouv_point_19`](/#!/model/model.test_otv.mdl7_lin_upd_nouv_point_19).
       Seuls l'identifiants de linéarisation (id_comptag) est modifié, tous les autres attributs 
       restent inchangés par rapport au modèle source.
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
       - name: id_ign
@@ -239,16 +239,16 @@ models:
       - name: nb_nod_non_topo
       - name: id_struct
 
-  - name: lin_update_oubli_erreur_linearisation_19
+  - name: mdl9_lin_upd_oubli_erreur_linear_19
     description: >
       Ce modèle se base sur la macro [`update_oubli_erreur_lin`](/#!/macro/macro.test_otv.update_oubli_erreur_lin).
       Il sert à corriger les oublis de linéarisation : rattachement de lignes BdTopo qui auraient dû être incluses
       dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation
-      (voir modèle [`lin_update_modif_linearisation_19`](/#!/model/model.test_otv.lin_update_modif_linearisation_19)).
+      (voir modèle [`mdl8_lin_upd_modif_linear_19`](/#!/model/model.test_otv.mdl8_lin_upd_modif_linear_19)).
       Cette macro ajoute les lignes oubliées en les rattachant au bon id_comptag, avec des valeurs standardisées :
       src_cpt='otv', coment_cpt='linearisation', obs_supl=null, obs_tmja=null, obs_pc_pl=null.
       Tous les tests de validation des données sont réalisés au préalable dans le modèle 
-      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) et / ou dans le seed 
+      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) et / ou dans le seed 
       [`dept19_update_oubli_linearisation`](/#!/seed/seed.test_otv.dept19_update_oubli_linearisation).
       Les lignes non présentes dans le seed conservent leurs attributs originaux.
     data_tests:
@@ -258,8 +258,8 @@ models:
             description: "Vérifier la cohérence entre src_cpt et coment_cpt : si src_cpt='otv' alors coment_cpt='linearisation', si src_cpt=null alors coment_cpt='estimation'"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
       - name: id_ign
@@ -357,18 +357,18 @@ models:
       - name: nb_nod_non_topo
       - name: id_struct
 
-  - name: lin_update_etire_lin_19
+  - name: mdl10_lin_upd_etire_lin_19
     description: >
       Ce modèle se base sur la macro [`update_etirer_lin`](/#!/macro/macro.test_otv.update_etirer_lin).
       Il sert à étirer la linéarisation : extension de la linéarisation d'un point de comptage existant
       en y rattachant des lignes BdTopo supplémentaires (étirement de la zone couverte). S'appuie sur le résultat 
-      de la correction d'oublis de linéarisation (voir modèle [`lin_update_oubli_erreur_linearisation_19`](/#!/model/model.test_otv.lin_update_oubli_erreur_linearisation_19)).
+      de la correction d'oublis de linéarisation (voir modèle [`mdl9_lin_upd_oubli_erreur_linear_19`](/#!/model/model.test_otv.mdl9_lin_upd_oubli_erreur_linear_19)).
       Ajoute les lignes supplémentaires en les rattachant au bon id_comptag, avec des valeurs standardisées :
       src_cpt='otv', coment_cpt='linearisation', obs_supl='linearisation etiree traf{annee}', obs_tmja=null, obs_pc_pl=null.
       Les lignes non présentes dans le seed conservent leurs attributs originaux.
       Tous les tests de validation des données sont réalisés au préalable dans le modèle 
-      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) et / ou dans le seed 
-      [`dept19_update_etire_linearisation`](/#!/seed/seed.test_otv.dept19_update_etire_linearisation).
+      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) et / ou dans le seed 
+      [`sed10_dept19_upd_etire_linear`](/#!/seed/seed.test_otv.sed10_dept19_upd_etire_linear).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -376,8 +376,8 @@ models:
             description: "Vérifier la cohérence entre src_cpt et coment_cpt : si src_cpt='otv' alors coment_cpt='linearisation', si src_cpt=null alors coment_cpt='estimation'"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
       - name: id_ign
@@ -478,17 +478,17 @@ models:
       - name: nb_nod_non_topo
       - name: id_struct
 
-  - name: lin_update_vers_estimation_19
+  - name: mdl11_lin_upd_vers_estim_19
     description: >
       Ce modèle se base sur la macro [`update_vers_estimation_lin`](/#!/macro/macro.test_otv.update_vers_estimation_lin).
       Il sert à faire basculer des lignes BDTopo linéarisées vers un statut d'estimation. S'appuie sur le résultat de l'étirement de linéarisation 
-      (voir modèle [`lin_update_etire_lin_19`](/#!/model/model.test_otv.lin_update_etire_lin_19)).
+      (voir modèle [`mdl10_lin_upd_etire_lin_19`](/#!/model/model.test_otv.mdl10_lin_upd_etire_lin_19)).
       Cette macro transforme les lignes spécifiées en supprimant les références de comptage (id_comptag=null, src_cpt=null) 
       et en passant en mode estimation (coment_cpt='estimation', obs_tmja='auto', obs_pc_pl='auto').
       L'historique de transformation est conservé dans obs_supl avec l'ancien id_comptag et l'année précédente.
       Les lignes non présentes dans le seed conservent leurs attributs originaux.
       Ce modele est le dernier du cbloc de MaJ d'affectation de linearisation, les tests du modele 
-      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) sont donc réappliqués ici.
+      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) sont donc réappliqués ici.
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -502,8 +502,8 @@ models:
             description: "Vérifier la cohérence entre id_comptag et coment_cpt (null->estimation, non-null->linearisation)"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"

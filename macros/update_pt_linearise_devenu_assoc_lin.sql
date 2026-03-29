@@ -4,7 +4,7 @@
 select 
     -- Colonnes de la vérification : récup de l'id_comptag de référence
     vpl.id_cpteur_ref id_comptag,
-    -- Toutes les autres colonnes du modèle creer_vue_19
+    -- Toutes les autres colonnes du modèle mdl1_creer_vue_19
     cv.id,
     cv.id_ign,
     cv.nature,
@@ -101,11 +101,11 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ref('lin_verif_pt_linearise_absent_comptage_' ~ dept)}} vpl 
-join {{ref('creer_vue_' ~ dept)}} cv 
+from {{ref('mdl2h_lin_chk_pt_linear_absent_cptge_' ~ dept)}} vpl 
+join {{ref('mdl1_creer_vue_' ~ dept)}} cv 
     on vpl.id_comptag = cv.id_comptag
 UNION
--- Lignes de creer_vue_19 non présentes dans la verif
+-- Lignes de mdl1_creer_vue_19 non présentes dans la verif
 select 
     cv.id_comptag,
     cv.id,
@@ -202,10 +202,10 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ref('creer_vue_' ~ dept)}} cv
+from {{ref('mdl1_creer_vue_' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ref('lin_verif_pt_linearise_absent_comptage_' ~ dept)}} vpl
+    from {{ref('mdl2h_lin_chk_pt_linear_absent_cptge_' ~ dept)}} vpl
     where vpl.id_comptag = cv.id_comptag)
 
 {% endmacro %}

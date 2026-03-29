@@ -3,7 +3,7 @@
 select 
     -- Colonnes de la vérification : récup de l'id_comptag de référence
     t2.id_comptag,
-    -- Toutes les autres colonnes du modèle lin_update_pt_linearise_devenu_assoc_19
+    -- Toutes les autres colonnes du modèle mdl3b_lin_upd_pt_linear_devenu_assoc_19
     t1.id,
     t1.id_ign,
     t1.nature,
@@ -99,13 +99,13 @@ select
     t1.list_id_inter,
     t1.nb_nod_non_topo,
     t1.id_struct
-from {{ref('lin_cte_update_auto_pt_non_linearise_'~dept~'__choix_cpt_tronc')}}  t2
-join {{ref('lin_update_pt_linearise_devenu_assoc_'~dept)}} t1
+from {{ref('cte1_mdl6_lin_upd_auto_pt_non_linear_' ~ dept ~ '__choix_cpt_tronc')}}  t2
+join {{ref('mdl3b_lin_upd_pt_linear_devenu_assoc_'~dept)}} t1
     on t2.id_simpli = t1.id_simpli
 where t1.coment_cpt = 'estimation' and t2.coment_cpt = 'estimation' 
         and t2.sim > {{sim_seuil_bas}} and t2.dist < {{dist_seuil_haut}}
 UNION
--- Lignes de lin_update_pt_linearise_devenu_assoc_19 non présentes dans la maj
+-- Lignes de mdl3b_lin_upd_pt_linear_devenu_assoc_19 non présentes dans la maj
 select 
     t1.id_comptag,
     t1.id,
@@ -202,10 +202,10 @@ select
     t1.list_id_inter,
     t1.nb_nod_non_topo,
     t1.id_struct
-from {{ref('lin_update_pt_linearise_devenu_assoc_'~dept)}} t1
+from {{ref('mdl3b_lin_upd_pt_linear_devenu_assoc_'~dept)}} t1
 where not exists (
     select 1 
-    from {{ref('lin_cte_update_auto_pt_non_linearise_'~dept~'__choix_cpt_tronc')}} t2
+    from {{ref('cte1_mdl6_lin_upd_auto_pt_non_linear_' ~ dept ~ '__choix_cpt_tronc')}} t2
     where (t2.id_simpli = t1.id_simpli) and (t1.coment_cpt = 'estimation' and t2.coment_cpt = 'estimation' 
         and t2.sim > 0.2 and t2.dist < 20))
 

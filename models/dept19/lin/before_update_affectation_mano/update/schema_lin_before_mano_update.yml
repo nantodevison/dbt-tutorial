@@ -1,10 +1,10 @@
 version: 2
 
 models:
-  - name: lin_update_pt_linearise_devenu_assoc_19
+  - name: mdl3b_lin_upd_pt_linear_devenu_assoc_19
     description: >
       Ce modèle se base sur la macro [`verifier_pt_linearise_devenu_assoc_lin`](/#!/macro/macro.test_otv.verifier_pt_linearise_devenu_assoc_lin).
-      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['creer_vue_19'](/#!/model/model.test_otv.creer_vue_19)
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl1_creer_vue_19'](/#!/model/model.test_otv.mdl1_creer_vue_19)
       qui étaient linéarisés sur un point de comptage dans le millésime précédent mais qui sont devenus des compteurs associés dans le millésime actuel.
       pour les lignes concernées par ces comptages devenenus associés, le modèle récupère l'id_comptag du compteur de référence (id_cpteur_ref). Pour le reste, les valeurs de
       la vue de référence sont conservées.
@@ -14,7 +14,7 @@ models:
             expression: |
               NOT EXISTS (
                 SELECT 1 
-                FROM {{ ref('lin_verif_pt_linearise_absent_comptage_19') }} verif
+                FROM {{ ref('mdl2h_lin_chk_pt_linear_absent_cptge_19') }} verif
                 WHERE verif.id_cpteur_ref = id_comptag 
                 AND (src_cpt != 'otv' OR coment_cpt != 'linearisation')
               )
@@ -23,10 +23,10 @@ models:
             where: "id_comptag is not null"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
 
-  - name: lin_update_auto_pt_non_linearise_19
+  - name: mdl6_lin_upd_auto_pt_non_linear_19
     description: >
       Résultat final du pipeline de linéarisation automatique des points de comptage non linéarisés.
       Basé sur la macro [`update_auto_pt_non_linearise_lin`](/#!/macro/macro.test_otv.update_auto_pt_non_linearise_lin).
@@ -34,22 +34,22 @@ models:
       aux tronçons respectant les seuils de similarité et distance configurables.
       Utilise une architecture de macros imbriquées pour éviter les cycles de dépendances entre modèles.
       Conserve les lignes non modifiées du modèle source 
-      [`lin_update_pt_linearise_devenu_assoc_19`](/#!/model/model.test_otv.lin_update_pt_linearise_devenu_assoc_19).
+      [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
             expression: |
               EXISTS (
                 SELECT 1 
-                FROM {{ ref('lin_cte_update_auto_pt_non_linearise_19__choix_cpt_tronc') }} choix
+                FROM {{ ref('cte1_mdl6_lin_upd_auto_pt_non_linear_19__choix_cpt_tronc') }} choix
                 WHERE choix.id_simpli = id_simpli 
                 AND (src_cpt != 'otv' OR coment_cpt != 'linearisation' or id_comptag is null)
               )
             description: "Vérifier que les lignes provenant du modèle choix_cpt_tronc ont bien src_cpt='otv' et coment_cpt='linearisation' et un id_comptag non null"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur : nouvellement assigné pour les lignes automatiquement linéarisées, conservé pour les autres"

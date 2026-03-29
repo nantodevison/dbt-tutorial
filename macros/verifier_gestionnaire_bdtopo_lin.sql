@@ -9,7 +9,7 @@ from
             gestion gestionaire,
             '_{{annee}}' annee
         from
-            {{ref('creer_vue_' ~ dept)}}
+            {{ref('mdl1_creer_vue_' ~ dept)}}
         order by
             gestion
     ) as t

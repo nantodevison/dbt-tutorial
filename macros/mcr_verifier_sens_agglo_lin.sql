@@ -13,7 +13,7 @@ when s1.sens = ANY(ARRAY{{var('bdtopo_sens_uniq_verif')}}) and s3.sens='{{var("b
 else null end as modif_sens,
 s1.coment_tmj_f as coment_tmj_f_ed_n,s3.coment_tmj_f as coment_tmj_f_ed_n_1,
 s1.nature as nature_n,s3.nature as nature_n_1
-from {{ref('lin_update_coment_tmj_f_ids_' ~ dept)}} s1 join 
+from {{ref('mdl15a_lin_upd_cmt_tmj_f_ids_' ~ dept)}} s1 join 
 (select ss.id ,ss.id_ign,ss.id_propa,null as pk_ign,ss.ad,ss.imp,ss.topo_n,ss.recurs
 from (select distinct on (id_ign) id,id_ign,id_propa,ad,imp,topo_n,recurs from ref.bdt_na_{{ann_n_1}}_{{annee}}_l
 where sup is null and id_propa is not null and pk_ign is null order by id_ign, topo_n asc,imp asc,recurs asc) ss) s2

@@ -16,7 +16,7 @@ join {{ source('cptg', 'compteur') }} t3
 where t1.indicateur = 'tmja' 
 and exists (
     select 1 
-    from {{ ref('lin_verif_tmjo_' ~ dept) }} tmjo
+    from {{ ref('mdl12h_lin_chk_tmjo_' ~ dept) }} tmjo
     where tmjo.id_comptag = t2.id_comptag
 )
 order by t2.id_comptag, t2.annee::int desc

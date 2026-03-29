@@ -9,7 +9,7 @@ when t2.sens_cpt='{{var("cptg_double_sens_verif")}}' and t1.sens='{{var("bdtopo_
 when t2.sens_cpt='{{var("cptg_double_sens_verif")}}' and t1.sens = ANY(ARRAY{{var('bdtopo_sens_uniq_verif')}}) and t1.coment_tmj_f='/2' then true
 else false end as verif_coment_tmj_f,t1.obs_supl
 --t1.obs_tmj1,t1.obs_tmj2,
-from {{ref('mdl_lin_update_coment_tmj_f_sens_' ~ dept)}} t1
+from {{ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ dept)}} t1
 join {{ source('cptg', 'compteur') }} t2 on t1.id_comptag=t2.id_comptag
 where 
 (coment_tmj_f is null or coment_tmj_f='/2') --on ne verifie pas les ratio specifique /3,/4,/8

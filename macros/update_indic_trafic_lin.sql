@@ -99,7 +99,7 @@ ang_orient_tgt_vert1,
 list_id_inter,
 nb_nod_non_topo,
 id_struct
-from {{ref('lin_update_vers_estimation_' ~ dept)}}
+from {{ref('mdl11_lin_upd_vers_estim_' ~ dept)}}
 where src_cpt='otv'
 union
 select 
@@ -198,7 +198,7 @@ ang_orient_tgt_vert1,
 list_id_inter,
 nb_nod_non_topo,
 id_struct
-from {{ref('lin_update_vers_estimation_' ~ dept)}}
+from {{ref('mdl11_lin_upd_vers_estim_' ~ dept)}}
 where src_cpt != 'otv' or src_cpt is null
 )
 select 

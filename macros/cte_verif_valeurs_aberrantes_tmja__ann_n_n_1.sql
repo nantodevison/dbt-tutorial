@@ -9,7 +9,7 @@ select t1.id_comptag,
        LEAD(t1.tmja,2)OVER (PARTITION BY t1.id_comptag ORDER BY t1.annee::int desc) as tmja_n_2
   from {{source('cptg', 'vue_evolutions_tmja')}} t1
   join (select distinct id_comptag 
-          from {{ ref('lin_update_coment_tmj_f_lui_mm_' ~ dept)}}
+          from {{ ref('mdl14e_lin_upd_cmt_tmj_f_lui_mm_' ~ dept)}}
           where src_cpt='otv') t2 
     on t1.id_comptag=t2.id_comptag
   order by t1.id_comptag,t1.annee::int desc

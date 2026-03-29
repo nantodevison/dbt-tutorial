@@ -100,13 +100,13 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ ref('dept' ~ dept ~ '_update_coment_tmj_f_with_ids') }} uci
+from {{ ref('sed15a_dept' ~ dept ~ '_upd_cmt_tmj_f_with_ids') }} uci
 join {{ model_src }} ctf
     on (array[ctf.id_ign]::text[] && uci.id_ign) or (ctf.id_simpli && uci.id_simpli)
 
 UNION
 
--- Lignes de creer_vue_19 non présentes dans le seed
+-- Lignes de mdl1_creer_vue_19 non présentes dans le seed
 select 
     ctf.id_comptag,
     ctf.id_ign,
@@ -208,7 +208,7 @@ select
 from {{ model_src }} ctf
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_coment_tmj_f_with_ids') }} uci
+    from {{ ref('sed15a_dept' ~ dept ~ '_upd_cmt_tmj_f_with_ids') }} uci
     where (array[ctf.id_ign]::text[] && uci.id_ign) or (ctf.id_simpli && uci.id_simpli)
 )
 

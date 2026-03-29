@@ -97,7 +97,7 @@ SELECT
     lin.id_struct,
     -- Colonne id_cpt_proche
     CASE WHEN cpt_proche.id_comptag IS NOT NULL THEN TRUE ELSE FALSE END AS id_cpt_proch
-FROM {{ ref('lin_update_vers_estimation_' ~ dept) }} lin
+FROM {{ ref('mdl11_lin_upd_vers_estim_' ~ dept) }} lin
 LEFT JOIN ({{ cte_verif_cpt_mm_section_homo_lin__cpt_proche(dept=dept, distance=distance) }}) as cpt_proche 
     ON lin.id_ign = cpt_proche.id_ign 
     AND lin.id_comptag = cpt_proche.id_comptag

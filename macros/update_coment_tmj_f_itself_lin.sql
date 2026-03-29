@@ -98,8 +98,8 @@ lin.ang_orient_tgt_vert1,
 lin.list_id_inter,
 lin.nb_nod_non_topo,
 lin.id_struct
-from {{ref('lin_update_cpt_hors_dept_dans_na_' ~ dept)}} lin
-join {{ref('dept' ~ dept ~ '_update_coment_tmj_f_with_coment_tmj_f')}} ctf
+from {{ref('mdl13c_lin_upd_cpt_hors_dept_dans_na_' ~ dept)}} lin
+join {{ref('sed14e_dept' ~ dept ~ '_upd_cmt_tmj_f_with_cmt_tmj_f')}} ctf
     on lin.coment_tmj_f=ctf.coment_tmj_f_initial
 union
 -- reprise des lignes dont le coment_tmj_f n'a pas été modifié dans le seed
@@ -199,10 +199,10 @@ lin.ang_orient_tgt_vert1,
 lin.list_id_inter,
 lin.nb_nod_non_topo,
 lin.id_struct
-from {{ref('lin_update_cpt_hors_dept_dans_na_' ~ dept)}} lin
+from {{ref('mdl13c_lin_upd_cpt_hors_dept_dans_na_' ~ dept)}} lin
 where not exists (
     select 1
-    from {{ref('dept' ~ dept ~ '_update_coment_tmj_f_with_coment_tmj_f')}} ctf
+    from {{ref('sed14e_dept' ~ dept ~ '_upd_cmt_tmj_f_with_cmt_tmj_f')}} ctf
     where lin.coment_tmj_f=ctf.coment_tmj_f_initial
 )
 

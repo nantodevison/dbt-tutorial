@@ -3,7 +3,7 @@
 select count(*) nb_cpt
 from (
     select distinct id_comptag 
-    from {{ ref('lin_update_vers_estimation_' ~ dept) }} 
+    from {{ ref('mdl11_lin_upd_vers_estim_' ~ dept) }} 
     where id_comptag is not null
 ) t1
 join (

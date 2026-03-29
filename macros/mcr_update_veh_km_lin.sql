@@ -96,7 +96,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_tmja_final_' ~ dept)}} ctf
+from {{ref('mdl18a_lin_upd_tmja_final_' ~ dept)}} ctf
 where ctf.coment_cpt = 'linearisation'
 union
 select 
@@ -195,7 +195,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_tmja_final_' ~ dept)}} ctf
+from {{ref('mdl18a_lin_upd_tmja_final_' ~ dept)}} ctf
 where ctf.coment_cpt != 'linearisation' or ctf.coment_cpt is null
 
 {% endmacro %}

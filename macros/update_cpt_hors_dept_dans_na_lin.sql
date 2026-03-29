@@ -101,7 +101,7 @@ select
     ut.list_id_inter,
     ut.nb_nod_non_topo,
     ut.id_struct
-from {{ ref('lin_update_indic_trafic_' ~ dept) }} ut
+from {{ ref('mdl12i_lin_upd_indic_traf_' ~ dept) }} ut
 join auto_maj a
     on ut.id_comptag = a.id_comptag
 
@@ -204,8 +204,8 @@ select
     ut.list_id_inter,
     ut.nb_nod_non_topo,
     ut.id_struct
-from {{ ref('lin_update_indic_trafic_' ~ dept) }} ut
-join {{ ref('dept' ~ dept ~ '_update_cpt_existant_mano') }} em
+from {{ ref('mdl12i_lin_upd_indic_traf_' ~ dept) }} ut
+join {{ ref('sed13c_dept' ~ dept ~ '_upd_cpt_existant_mano') }} em
     on ut.id_comptag = em.id_comptag
 
 UNION
@@ -307,14 +307,14 @@ select
     ut.list_id_inter,
     ut.nb_nod_non_topo,
     ut.id_struct
-from {{ ref('lin_update_indic_trafic_' ~ dept) }} ut
+from {{ ref('mdl12i_lin_upd_indic_traf_' ~ dept) }} ut
 where not exists (
     select 1
     from auto_maj a
     where ut.id_comptag = a.id_comptag
 )and not exists (
     select 1
-    from {{ ref('dept' ~ dept ~ '_update_cpt_existant_mano') }} em
+    from {{ ref('sed13c_dept' ~ dept ~ '_upd_cpt_existant_mano') }} em
     where ut.id_comptag = em.id_comptag
 )
 

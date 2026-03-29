@@ -1,7 +1,7 @@
 version: 2
 
 seeds:
-  - name: dept19_update_nouveau_pt
+  - name: sed7_dept19_upd_nouv_pt
     description: >
       Affectation manuelle de nouveau comptages vers des lignes BdTopo dans le dept 19
       milléisme 2024.
@@ -83,7 +83,7 @@ seeds:
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
                 row_condition: "modifie_le is not null"
 
-  - name: dept19_update_modif_linearisation
+  - name: sed8_dept19_upd_modif_linear
     description: >
       Modification manuelle de la linéarisation de comptages existants dans le dept 19
       millésime 2024 : affectation d'une partie du sectionnement à un autre point de comptage existant.
@@ -134,7 +134,7 @@ seeds:
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
                 row_condition: "modifie_le is not null"
 
-  - name: dept19_update_oubli_erreur_linearisation
+  - name: sed9_dept19_upd_oubli_erreur_linear
     description: >
       Correction manuelle d'oublis de linéarisation de comptages existants dans le dept 19
       millésime 2024 : affectation de lignes BdTopo qui auraient dû être rattachées à un point de comptage existant
@@ -185,7 +185,7 @@ seeds:
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
                 row_condition: "modifie_le is not null"
 
-  - name: dept19_update_etire_linearisation
+  - name: sed10_dept19_upd_etire_linear
     description: >
       Étirement de la linéarisation de comptages existants dans le dept 19
       millésime 2024 : extension de la linéarisation d'un point de comptage existant
@@ -236,7 +236,7 @@ seeds:
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
                 row_condition: "modifie_le is not null"
 
-  - name: dept19_update_vers_estimation_linearisation
+  - name: sed11_dept19_upd_vers_estim_linear
     description: >
       Changement de statut de tronçon linéarisés vers estimés dans le dept 19
       millésime 2024 : des tronçons attachés à des points de comptages doivent être estimés.
