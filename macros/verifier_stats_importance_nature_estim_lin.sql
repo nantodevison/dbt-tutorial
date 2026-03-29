@@ -2,7 +2,7 @@
 
 WITH all_combinations AS (
     SELECT DISTINCT importance, nature
-    FROM {{ref('lin_update_cpt_hors_dept_dans_na_' ~ dept)}}
+    FROM {{ref('mdl13c_lin_upd_cpt_hors_dept_dans_na_' ~ dept)}}
     WHERE importance = ANY(ARRAY[{{var('importance_verif')}}])
 ),
 stats AS (
@@ -12,7 +12,7 @@ stats AS (
         count(*) as cnt,
         round(sum(long_km::numeric),2) as sum_lg_km,
         array_agg(distinct coalesce(numero,'null')) as list_num
-    FROM {{ref('lin_update_cpt_hors_dept_dans_na_' ~ dept)}} 
+    FROM {{ref('mdl13c_lin_upd_cpt_hors_dept_dans_na_' ~ dept)}} 
     WHERE coment_cpt='estimation'
     GROUP BY importance, nature
 )

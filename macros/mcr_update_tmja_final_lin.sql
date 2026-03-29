@@ -99,7 +99,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_coment_tmj_f_sens_dbl_spl_' ~ dept)}} ctf
+from {{ref('mdl17a_lin_upd_cmt_tmj_f_sens_dbl_spl_' ~ dept)}} ctf
 where ctf.coment_cpt = 'linearisation'
 union
 select 
@@ -198,7 +198,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_coment_tmj_f_sens_dbl_spl_' ~ dept)}} ctf
+from {{ref('mdl17a_lin_upd_cmt_tmj_f_sens_dbl_spl_' ~ dept)}} ctf
 where ctf.coment_cpt != 'linearisation' or ctf.coment_cpt is null
 
 {% endmacro %}

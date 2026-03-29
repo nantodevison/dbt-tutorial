@@ -1,7 +1,7 @@
 version: 2
 
 seeds:
-  - name: dept19_verif_indic_trafic_qualite
+  - name: sed0_dept19_chk_indic_traf_qualite
     description: >
       Fichier de vérification qualité des indicateurs de trafic pour le département 19 (Corrèze).
       Fichier issu du processus d'intégration/standardisation des données de trafic.

@@ -7,7 +7,7 @@ from (select * from {{source('cptg', 'vue_compteur_last_annee_know_tmja_pc_pl')}
         or id_comptag like '{{agglo}}-%'
       {% endfor %}
      ) t1
-join (select distinct id_comptag from {{ ref('lin_update_coment_tmj_f_ids_' ~ dept) }} 
+join (select distinct id_comptag from {{ ref('mdl15a_lin_upd_cmt_tmj_f_ids_' ~ dept) }} 
       where id_comptag like '{{dept}}-D%'
       {% for agglo in var('agglo_' ~ dept) %}
         or id_comptag like '{{agglo}}-%'

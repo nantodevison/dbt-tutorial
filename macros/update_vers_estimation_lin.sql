@@ -101,13 +101,13 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_update_vers_estimation_linearisation') }} vel
-join {{ ref('lin_update_etire_lin_' ~ dept)}} cv
+from {{ ref('sed11_dept' ~ dept ~ '_upd_vers_estim_linear') }} vel
+join {{ ref('mdl10_lin_upd_etire_lin_' ~ dept)}} cv
     on (array[cv.id_ign]::text[] && vel.id_ign) or (cv.id_simpli && vel.id_simpli) or (cv.id_comptag = vel.id_comptag)
 
 UNION
 
--- Lignes de lin_update_etire_lin_19 non présentes dans le seed
+-- Lignes de mdl10_lin_upd_etire_lin_19 non présentes dans le seed
 select 
     cv.id_comptag,
     cv.id_ign,
@@ -206,10 +206,10 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('lin_update_etire_lin_' ~ dept)}} cv
+from {{ ref('mdl10_lin_upd_etire_lin_' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_vers_estimation_linearisation') }} vel
+    from {{ ref('sed11_dept' ~ dept ~ '_upd_vers_estim_linear') }} vel
     where (array[cv.id_ign]::text[] && vel.id_ign) or (cv.id_simpli && vel.id_simpli) or (cv.id_comptag = vel.id_comptag)
 )
 

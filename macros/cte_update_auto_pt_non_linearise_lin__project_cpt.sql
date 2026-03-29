@@ -10,8 +10,8 @@ when t2.numero is null and t2.nom_coll_g is not null then similarity(upper(t1.ro
 else null end as sim,
 round(st_distance(t1.geom,t2.geom)::numeric,2) as dist
 --,t2.imp_sup,t2.imp_sup_src,t2.imp_sup_tgt 
-from {{source('cptg', 'compteur')}} t1 join {{ref('lin_verif_pt_non_linearise_' ~ dept)}} t3 using(id_comptag)
-                                       join {{ref('lin_update_pt_linearise_devenu_assoc_' ~ dept)}} t2 on st_dwithin(t1.geom,t2.geom,50)
+from {{source('cptg', 'compteur')}} t1 join {{ref('mdl5_lin_chk_pt_non_linear_' ~ dept)}} t3 using(id_comptag)
+                                       join {{ref('mdl3b_lin_upd_pt_linear_devenu_assoc_' ~ dept)}} t2 on st_dwithin(t1.geom,t2.geom,50)
 order by t1.id_comptag, dist ASC
 
 {% endmacro %}

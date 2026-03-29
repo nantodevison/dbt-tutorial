@@ -96,6 +96,6 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_pl_final_pl_km_' ~ dept)}} ctf
+from {{ref('mdl20_lin_upd_pl_final_pl_km_' ~ dept)}} ctf
 
 {% endmacro %}

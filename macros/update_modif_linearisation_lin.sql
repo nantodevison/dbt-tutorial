@@ -4,7 +4,7 @@
 select 
     -- Colonnes du seed : comme c'est une réaffectation c la seule colonne
     ml.id_comptag,
-    -- Toutes les autres colonnes du modèle creer_vue_19
+    -- Toutes les autres colonnes du modèle mdl1_creer_vue_19
     cv.id,
     cv.id_ign,
     cv.nature,
@@ -104,13 +104,13 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_update_modif_linearisation') }} ml
-join {{ ref('lin_update_nouveau_point_' ~ dept) }} cv
+from {{ ref('sed8_dept' ~ dept ~ '_upd_modif_linear') }} ml
+join {{ ref('mdl7_lin_upd_nouv_point_' ~ dept) }} cv
     on (array[cv.id_ign]::text[] && ml.id_ign) or (cv.id_simpli && ml.id_simpli)
 
 UNION
 
--- Lignes de creer_vue_19 non présentes dans le seed
+-- Lignes de mdl1_creer_vue_19 non présentes dans le seed
 select 
     cv.id_comptag,
     -- Toutes les autres colonnes du modèle
@@ -208,10 +208,10 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('lin_update_nouveau_point_' ~ dept) }} cv
+from {{ ref('mdl7_lin_upd_nouv_point_' ~ dept) }} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_modif_linearisation') }} ml
+    from {{ ref('sed8_dept' ~ dept ~ '_upd_modif_linear') }} ml
     where (array[cv.id_ign]::text[] && ml.id_ign) or (cv.id_simpli && ml.id_simpli)
 )
 

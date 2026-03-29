@@ -5,7 +5,7 @@ from {{ source('cptg', 'comptage') }} cpt
 where not_lin_why is not null 
 and exists (
     select 1 
-    from {{ ref('lin_update_vers_estimation_' ~ dept) }} lin
+    from {{ ref('mdl11_lin_upd_vers_estim_' ~ dept) }} lin
     where lin.id_comptag = cpt.id_comptag 
     and lin.src_cpt = 'otv'
 )

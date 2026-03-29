@@ -9,7 +9,7 @@ select
 t1.id_ign,
 t1.nature,t1.coment_cpt,t1.id_comptag,t1.numero as num_n,t2.numero as num_n_1,t1.importance as imp_n,t2.importance as imp_n_1, 
 t1.obs_supl as obs_n,t2.obs_supl as obs_n_1
-from {{ref('creer_vue_' ~ dept)}} t1
+from {{ref('mdl1_creer_vue_' ~ dept)}} t1
 left join {{source('traf', 'traf' ~ annee_n_1_str ~'_bdt_na_ed' ~ annee_n_1_sfx ~ '_l')}} t2
 on t1.id_ign=t2.id_ign
 where t1.attr_modif is not null

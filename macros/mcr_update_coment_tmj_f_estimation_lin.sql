@@ -97,7 +97,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_coment_cpt_' ~ dept)}} ctf
+from {{ref('mdl21a_lin_upd_cmt_cpt_' ~ dept)}} ctf
 where ctf.coment_cpt = 'estimation' and src_cpt is null
 UNION
 select 
@@ -196,7 +196,7 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_coment_cpt_' ~ dept)}} ctf
+from {{ref('mdl21a_lin_upd_cmt_cpt_' ~ dept)}} ctf
 where ctf.coment_cpt != 'estimation' and src_cpt is not null
 
 {% endmacro %}

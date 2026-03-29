@@ -22,7 +22,7 @@ select
     case when anp.obs_vts is not null then anp.obs_vts else cv.obs_vts end as obs_vts,
     case when anp.id_cpt1 is not null then anp.id_cpt1 else cv.id_cpt1 end as id_cpt1,
     
-    -- Colonnes de creer_vue_19 non présentes dans le seed
+    -- Colonnes de mdl1_creer_vue_19 non présentes dans le seed
     cv.id,
     cv.id_ign,
     cv.nature,
@@ -106,15 +106,15 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp 
-join {{ ref('lin_update_auto_pt_non_linearise_' ~ dept)}} cv 
+from {{ ref('sed7_dept' ~ dept ~ '_upd_nouv_pt') }} anp 
+join {{ ref('mdl6_lin_upd_auto_pt_non_linear_' ~ dept)}} cv 
     on (array[cv.id_ign]::text[] && anp.id_ign) or (cv.id_simpli && anp.id_simpli)
 
 UNION
 
--- Lignes de lin_update_auto_pt_non_linearise_19 non présentes dans le seed
+-- Lignes de mdl6_lin_upd_auto_pt_non_linear_19 non présentes dans le seed
 select 
-    -- Colonnes correspondant au seed (avec valeurs de lin_update_auto_pt_non_linearise_19)
+    -- Colonnes correspondant au seed (avec valeurs de mdl6_lin_upd_auto_pt_non_linear_19)
     cv.id_comptag,
     cv.src_cpt,
     cv.coment_cpt,
@@ -128,7 +128,7 @@ select
     cv.obs_vts,
     cv.id_cpt1,
     
-    -- Colonnes de creer_vue_19
+    -- Colonnes de mdl1_creer_vue_19
     cv.id,
     cv.id_ign,
     cv.nature,
@@ -212,10 +212,10 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('lin_update_auto_pt_non_linearise_' ~ dept)}} cv
+from {{ ref('mdl6_lin_upd_auto_pt_non_linear_' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_nouveau_pt') }} anp
+    from {{ ref('sed7_dept' ~ dept ~ '_upd_nouv_pt') }} anp
     where (array[cv.id_ign]::text[] && anp.id_ign) or (cv.id_simpli && anp.id_simpli)
 )
 

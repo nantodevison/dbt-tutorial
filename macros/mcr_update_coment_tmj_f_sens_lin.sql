@@ -100,8 +100,8 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_coment_tmj_f_sens_' ~ dept)}} ctf
-  join {{ref('dept' ~ dept ~ '_update_coment_tmj_f_sens') }} uci using(id_comptag)
+from {{ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ dept)}} ctf
+  join {{ref('sed17a_dept' ~ dept ~ '_upd_cmt_tmj_f_sens') }} uci using(id_comptag)
 union
 select 
     ctf.id_comptag,
@@ -199,6 +199,6 @@ select
     ctf.list_id_inter,
     ctf.nb_nod_non_topo,
     ctf.id_struct
-from {{ref('mdl_lin_update_coment_tmj_f_sens_' ~ dept)}} ctf
-where not exists (select 1 from {{ref('dept' ~ dept ~ '_update_coment_tmj_f_sens') }} uci where ctf.id_comptag=uci.id_comptag)
+from {{ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ dept)}} ctf
+where not exists (select 1 from {{ref('sed17a_dept' ~ dept ~ '_upd_cmt_tmj_f_sens') }} uci where ctf.id_comptag=uci.id_comptag)
 {% endmacro %}

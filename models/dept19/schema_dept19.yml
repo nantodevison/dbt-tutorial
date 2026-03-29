@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: creer_vue_19
+  - name: mdl1_creer_vue_19
     description: >
       Vue des tronçons BDTopo des routes du département 19 pour le millésime en cours,
       intégrant les corrections liées aux changements de millésime.
@@ -441,8 +441,8 @@ models:
       - name: id_struct
         description: "A COMPLETER"
 
-  - name: creer_vue_linearisation_19
+  - name: mdl23a_creer_vue_linear_19
     description: > 
       "vue de fin du processus de linearisation pour le département 19.
       Pour plus d'info, voir la macro [`mcr_vue_lin_finale`](/macros/mcr_vue_lin_finale.sql)
-      et le modele ['mdl_lin_update_coment_tmj_f_estim_19'](/models/mdl_lin_update_coment_tmj_f_estim_19.sql)."
+      et le modele ['mdl22_lin_upd_cmt_tmj_f_estim_19'](/models/mdl22_lin_upd_cmt_tmj_f_estim_19.sql)."

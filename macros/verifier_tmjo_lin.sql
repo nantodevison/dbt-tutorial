@@ -10,7 +10,7 @@ join {{ source('cptg', 'compteur') }} t3
     on t2.id_comptag = t3.id_comptag
 join (
     select distinct id_comptag 
-    from {{ ref('lin_update_vers_estimation_' ~ dept) }} 
+    from {{ ref('mdl11_lin_upd_vers_estim_' ~ dept) }} 
     where src_cpt = 'otv'
 ) t4 on t3.id_comptag = t4.id_comptag
 where t1.indicateur = 'tmjo'

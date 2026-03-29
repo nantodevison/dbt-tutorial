@@ -1,7 +1,7 @@
 version: 2
 
 seeds:
-  - name: dept19_update_cpt_existant_mano
+  - name: sed13c_dept19_upd_cpt_existant_mano
     description: >
       Mise à jour manuelle des valeurs de TMJA et part de PL pour des comptages existants
       référencés sur le territoire du 19 mais géographiquement présent dans un département limitrophe 
@@ -18,8 +18,8 @@ seeds:
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "id_comptag not in (select id_comptag from {{ ref('lin_cte_update_cpt_hors_dept_dans_na_' ~ var('dept') ~ '__auto')}})"
-            description: "les id_comptag mano ne doivent pas etre traite au préalable par la CTE lin_cte_update_cpt_hors_dept_dans_na_19__auto"
+            expression: "id_comptag not in (select id_comptag from {{ ref('cte1_mdl13c_lin_upd_cpt_hors_dept_dans_na_' ~ var('dept') ~ '__auto')}})"
+            description: "les id_comptag mano ne doivent pas etre traite au préalable par la CTE cte1_mdl13c_lin_upd_cpt_hors_dept_dans_na_19__auto"
     columns:
       - name: id_comptag
         description: "Identifiant du compteur"
@@ -65,7 +65,7 @@ seeds:
                 where: "modifie_le is not null"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
-  - name: dept19_update_coment_tmj_f_sens
+  - name: sed17a_dept19_upd_cmt_tmj_f_sens
     description: >
       Fichier de mise à jour manuelle du `coment_tmj_f` pour les comptages du département 19 (Corrèze) 
       en fonction de leur sens de circulation. si le sens de circulation est "Sens direct" ou "Sens inverse", 
@@ -114,7 +114,7 @@ seeds:
                 where: "modifie_le is not null"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
-  - name: dept19_update_coment_tmj_f_with_coment_tmj_f
+  - name: sed14e_dept19_upd_cmt_tmj_f_with_cmt_tmj_f
     description: >
       Mise à jour des coment_tmj_f pour les comptages du département 19
       à partir des coment_tmj_f dejà existants. 
@@ -157,7 +157,7 @@ seeds:
                 where: "modifie_le is not null"
                 description: "Vérifier que la date de modification est au format YYYY-MM-DD."
 
-  - name: dept19_update_coment_tmj_f_with_ids
+  - name: sed15a_dept19_upd_cmt_tmj_f_with_ids
     description: >
       Mise à jour des coment_tmj_f des tronçons à partir soit de leur champs id_ign, 
       soit de leur champs id_simpli.

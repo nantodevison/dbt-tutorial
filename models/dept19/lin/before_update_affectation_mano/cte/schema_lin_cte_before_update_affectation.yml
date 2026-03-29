@@ -1,12 +1,12 @@
 version: 2
 
 models:
-  - name: lin_cte_update_auto_pt_non_linearise_19__project_cpt
+  - name: cte2_mdl6_lin_upd_auto_pt_non_linear_19__project_cpt
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`lin_update_auto_pt_non_linearise_19`](#!/#!/model/model.test_otv.lin_update_auto_pt_non_linearise_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
-      Le modèle effectue une recherche spatiale (distance < 50m) entre les compteurs sans linéarisation [`lin_verif_pt_non_linearise_19`](/#!/model/model.test_otv.lin_verif_pt_non_linearise_19)
-      et les tronçons du modèle [`lin_update_pt_linearise_devenu_assoc_19`](/#!/model/model.test_otv.lin_update_pt_linearise_devenu_assoc_19).
+      Le modèle effectue une recherche spatiale (distance < 50m) entre les compteurs sans linéarisation [`mdl5_lin_chk_pt_non_linear_19`](/#!/model/model.test_otv.mdl5_lin_chk_pt_non_linear_19)
+      et les tronçons du modèle [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
       Pour chaque compteur, il calcule la similarité textuelle entre le nom de route du compteur et le numéro/nom du tronçon,
       ainsi que la distance géographique. Les résultats sont triés par compteur et distance croissante
       pour faciliter la sélection du meilleur candidat.
@@ -31,9 +31,9 @@ models:
                 max_value: 50
                 description: "Vérifier que la distance est positive et inférieure à 50m (contrainte du st_dwithin)"
 
-  - name: lin_cte_update_auto_pt_non_linearise_19__rang
+  - name: cte3_mdl6_lin_upd_auto_pt_non_linear_19__rang
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`lin_update_auto_pt_non_linearise_19`](#!/#!/model/model.test_otv.lin_update_auto_pt_non_linearise_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle ajoute un classement (rang) aux tronçons candidats identifiés par la macro
       [`cte_update_auto_pt_non_linearise_lin__project_cpt`](/#!/macro/macro.test_otv.cte_update_auto_pt_non_linearise_lin__project_cpt).
 
@@ -52,9 +52,9 @@ models:
                 min_value: 1
                 description: "Vérifier que le rang est positif (commence à 1)"
 
-  - name: lin_cte_update_auto_pt_non_linearise_19__choix_cpt_tronc
+  - name: cte1_mdl6_lin_upd_auto_pt_non_linear_19__choix_cpt_tronc
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`lin_update_auto_pt_non_linearise_19`](#!/#!/model/model.test_otv.lin_update_auto_pt_non_linearise_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle sélectionne le **meilleur tronçon candidat** pour chaque compteur à partir des résultats 
       classés de la macro [`cte_update_auto_pt_non_linearise_lin__rang`](/#!/macro/macro.test_otv.cte_update_auto_pt_non_linearise_lin__rang).
       Utilise `SELECT DISTINCT ON (id_comptag)` avec un tri par `id_comptag, rg` pour récupérer 

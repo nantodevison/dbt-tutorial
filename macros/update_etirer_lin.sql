@@ -100,13 +100,13 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('dept' ~ dept ~ '_update_etire_linearisation') }} uel
-join {{ ref('lin_update_oubli_erreur_linearisation_' ~ dept)}} cv
+from {{ ref('sed10_dept' ~ dept ~ '_upd_etire_linear') }} uel
+join {{ ref('mdl9_lin_upd_oubli_erreur_linear_' ~ dept)}} cv
     on (array[cv.id_ign]::text[] && uel.id_ign) or (cv.id_simpli && uel.id_simpli)
 
 UNION
 
--- Lignes de lin_update_oubli_erreur_linearisation_19 non présentes dans le seed
+-- Lignes de mdl9_lin_upd_oubli_erreur_linear_19 non présentes dans le seed
 select 
     cv.id_comptag,
     cv.id_ign,
@@ -205,10 +205,10 @@ select
     cv.list_id_inter,
     cv.nb_nod_non_topo,
     cv.id_struct
-from {{ ref('lin_update_oubli_erreur_linearisation_' ~ dept)}} cv
+from {{ ref('mdl9_lin_upd_oubli_erreur_linear_' ~ dept)}} cv
 where not exists (
     select 1 
-    from {{ ref('dept' ~ dept ~ '_update_etire_linearisation') }} uel
+    from {{ ref('sed10_dept' ~ dept ~ '_upd_etire_linear') }} uel
     where (array[cv.id_ign]::text[] && uel.id_ign) or (cv.id_simpli && uel.id_simpli)
 )
 
