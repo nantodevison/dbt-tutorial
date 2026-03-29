@@ -18,7 +18,7 @@ from __future__ import annotations
 import csv
 import os
 import re
-from collections import defaultdict
+from collections import defaultdict, deque
 from pathlib import Path
 
 # --- Configuration ---
@@ -291,6 +291,66 @@ def main() -> None:
         for n in remaining:
             assigned_level[n] = level
 
+    # ---- 5b. Reclassement par dossier des modèles sans dépendance interne ----
+    # Certains modèles n'ont aucune dépendance ref() vers un autre modèle dept19
+    # (ils lisent uniquement des sources brutes). Le DAG les place au niveau 1,
+    # mais leur dossier d'appartenance indique à quelle étape métier ils se
+    # rattachent. On utilise le niveau médian des modèles co-localisés dans le
+    # même dossier pour leur attribuer un niveau plus cohérent.
+    MODELES_RECLASSES_PAR_DOSSIER: set[str] = set()
+
+    level_1_models = [n for n, lvl in assigned_level.items() if lvl == 1]
+    # creer_vue_19 est la vraie racine → on ne la reclasse pas
+    reclassable = [n for n in level_1_models if n != 'creer_vue_' + DEPT]
+
+    if reclassable:
+        # Calculer le niveau médian par dossier (en excluant les reclassables)
+        folder_levels: dict[str, list[int]] = defaultdict(list)
+        for name, lvl in assigned_level.items():
+            if name not in reclassable:
+                folder = str(models[name]['path'].parent)
+                folder_levels[folder].append(lvl)
+
+        for name in reclassable:
+            folder = str(models[name]['path'].parent)
+            sibling_levels = folder_levels.get(folder, [])
+            if sibling_levels:
+                # Utiliser le minimum des niveaux du dossier (= première étape)
+                inferred = min(sibling_levels)
+            else:
+                # Pas de voisin : remonter au dossier parent
+                parent_folder = str(models[name]['path'].parent.parent)
+                parent_levels = folder_levels.get(parent_folder, [])
+                inferred = min(parent_levels) if parent_levels else 1
+
+            if inferred != 1:
+                assigned_level[name] = inferred
+                MODELES_RECLASSES_PAR_DOSSIER.add(name)
+
+        # Propager : si un modèle dépend d'un reclassé et que son niveau
+        # est ≤ au nouveau niveau du reclassé, on le décale.
+        if MODELES_RECLASSES_PAR_DOSSIER:
+            # Construire les arêtes directes (parent → enfants)
+            forward: dict[str, set[str]] = defaultdict(set)
+            for child, parents in effective_dag.items():
+                for p in parents:
+                    forward[p].add(child)
+            # BFS de propagation
+            queue = deque(MODELES_RECLASSES_PAR_DOSSIER)
+            while queue:
+                src = queue.popleft()
+                for child in forward.get(src, set()):
+                    if assigned_level[child] <= assigned_level[src]:
+                        assigned_level[child] = assigned_level[src] + 1
+                        queue.append(child)
+
+        if MODELES_RECLASSES_PAR_DOSSIER:
+            print(f"   {len(MODELES_RECLASSES_PAR_DOSSIER)} modèle(s) reclassé(s) "
+                  f"par dossier (sans dépendance DAG interne) :")
+            for n in sorted(MODELES_RECLASSES_PAR_DOSSIER):
+                folder = str(models[n]['path'].parent)
+                print(f"     {n} → niveau {assigned_level[n]} (dossier: {folder})")
+
     # ---- 6. Préfixes des modèles non-CTE ----
     print("6. Attribution des préfixes mdl...")
     level_groups: dict[int, list[str]] = defaultdict(list)
@@ -300,7 +360,10 @@ def main() -> None:
     new_names: dict[str, str] = {}
     prefix_tags: dict[str, str] = {}  # model → mdlN[letter] (sans le _ ni le nom)
     for lvl in sorted(level_groups):
-        names = sorted(level_groups[lvl])
+        # Tri par dossier parent puis par nom, pour regrouper les modèles
+        # d'un même dossier avec des lettres consécutives.
+        names = sorted(level_groups[lvl],
+                       key=lambda n: (str(models[n]['path'].parent), n))
         if len(names) == 1:
             tag = f"mdl{lvl}"
             new_names[names[0]] = f"{tag}_{names[0]}"
@@ -314,6 +377,22 @@ def main() -> None:
 
     # ---- 7. Préfixes des CTE ----
     print("7. Attribution des préfixes cte...")
+
+    # Surcharges manuelles : CTE dont le parent ne peut pas être déduit du DAG
+    # car la relation passe par une chaîne de macros invisible au ref().
+    CTE_PARENT_OVERRIDE: dict[str, str] = {
+        # lin_verif_historique_trafic est appelé via la macro
+        # cte_verif_historique_trafic_lin → verifier_suspect_indic_lin
+        # → lin_verif_histo_cptg_suspect_19 (niveau 13)
+        'lin_verif_historique_trafic': 'lin_verif_histo_cptg_suspect_' + DEPT,
+        # lin_cte_verif_coherence_cpt_std_lin_19__cpt_lin : sa macro fait
+        # ref('lin_update_cpt_hors_dept_dans_na_19') (niv.13) et est consommée
+        # par verifier_coherence_comptag_standardisation_vs_linearisation_lin
+        # → lin_verif_coherence_cptg_stdardisation_vs_lin_19 (niveau 14)
+        'lin_cte_verif_coherence_cpt_std_lin_' + DEPT + '__cpt_lin':
+            'lin_verif_coherence_cptg_stdardisation_vs_lin_' + DEPT,
+    }
+
     # Graphe inversé : qui dépend de qui ?
     reverse_dag: dict[str, set[str]] = defaultdict(set)
     for name, deps in dag.items():
@@ -390,9 +469,12 @@ def main() -> None:
 
     cte_parent: dict[str, str | None] = {}
     for cte in cte_set:
-        parent = find_parent(cte)
-        if parent is None:
-            parent = infer_parent_by_name(cte)
+        if cte in CTE_PARENT_OVERRIDE:
+            parent = CTE_PARENT_OVERRIDE[cte]
+        else:
+            parent = find_parent(cte)
+            if parent is None:
+                parent = infer_parent_by_name(cte)
         cte_parent[cte] = parent
 
     # Grouper les CTE par parent
@@ -439,6 +521,57 @@ def main() -> None:
 
     # ---- 9. Génération du CSV ----
     print(f"9. Écriture de {OUTPUT_CSV.name}...")
+
+    def nettoyer_nom(nouveau_nom: str) -> str:
+        """Supprime les doublons de préfixe dans le nouveau nom.
+
+        Règles :
+        - mdlXX[y]_mdl_  → mdlXX[y]_       (supprime le 2e 'mdl_')
+        - cteK_mdlXX[y]_lin_cte_  → cteK_mdlXX[y]_lin_   (supprime le 2e 'cte_')
+        - sedXX[y]_dept19_  → sedXX[y]_dept19_  (pas de doublon)
+        """
+        # Pattern 1 : mdlXX[y]_ suivi de mdl_
+        cleaned = re.sub(r'^(mdl\d+[a-z]?)_mdl_', r'\1_', nouveau_nom)
+        # Pattern 2 : cteK_mdlXX[y]_ suivi de lin_cte_
+        cleaned = re.sub(r'^(cte\d+_mdl\d+[a-z]?)_lin_cte_', r'\1_lin_', cleaned)
+        return cleaned
+
+    # Table d'abréviations : (mot_source, abréviation)
+    # L'ordre compte : les remplacements les plus longs d'abord pour éviter
+    # les remplacements partiels (ex: 'linearisation' avant 'linearise').
+    ABBREVIATIONS: list[tuple[str, str]] = [
+        ('stdardisation', 'std'),
+        ('gestionnaires', 'gest'),
+        ('statistiques', 'stats'),
+        ('linearisation', 'linear'),
+        ('millessime', 'mill'),
+        ('limitrophe', 'limitr'),
+        ('historique', 'histo'),
+        ('estimation', 'estim'),
+        ('linearise', 'linear'),
+        ('horsagglo', 'h_agglo'),
+        ('coherence', 'coher'),
+        ('bretelles', 'bret'),
+        ('lineaire', 'linear'),
+        ('nouveau', 'nouv'),
+        ('abertes', 'aberr'),
+        ('comptag', 'cptg'),
+        ('update', 'upd'),
+        ('trafic', 'traf'),
+        ('coment', 'cmt'),
+        ('bdtopo', 'bdt'),
+        ('section', 'sect'),
+        ('verif', 'chk'),
+        ('evol', 'evo'),
+    ]
+
+    def abreger_nom(nom_court: str) -> str:
+        """Applique les abréviations sur un nom_court pour produire un nom abrégé."""
+        result = nom_court
+        for mot, abrev in ABBREVIATIONS:
+            result = result.replace(mot, abrev)
+        return result
+
     rows: list[dict] = []
 
     for name in sorted(models):
@@ -446,42 +579,51 @@ def main() -> None:
         if is_cte:
             parent = cte_parent.get(name)
             lvl_display = f"cte(→{assigned_level.get(parent, '?')})" if parent else 'cte(?)'
+        elif name in MODELES_RECLASSES_PAR_DOSSIER:
+            lvl_display = f"{assigned_level[name]}*"
         else:
             lvl_display = str(assigned_level.get(name, '?'))
+        nn = new_names.get(name, f'???_{name}')
+        nc = nettoyer_nom(nn)
         rows.append({
             'type': 'model',
             'ancien_nom': name,
-            'nouveau_nom': new_names.get(name, f'???_{name}'),
+            'nouveau_nom': nn,
+            'nom_court': nc,
+            'nom_abrev': abreger_nom(nc),
             'niveau_dag': lvl_display,
             'chemin_fichier': str(models[name]['path']),
         })
 
     for name in sorted(seeds):
+        snn = seed_new_names.get(name, f'sed0_{name}')
+        snc = nettoyer_nom(snn)
         rows.append({
             'type': 'seed',
             'ancien_nom': name,
-            'nouveau_nom': seed_new_names.get(name, f'sed0_{name}'),
+            'nouveau_nom': snn,
+            'nom_court': snc,
+            'nom_abrev': abreger_nom(snc),
             'niveau_dag': '',
             'chemin_fichier': str(seeds[name]['path']),
         })
 
-    # Tri : d'abord par niveau (int), puis par nom ; seeds en fin
+    # Tri : d'abord par niveau (int), puis par nouveau nom ; seeds en fin
     def sort_key(row: dict) -> tuple:
         if row['type'] == 'model':
             lvl_str = row['niveau_dag']
-            # Extraire le nombre du niveau
             m = re.search(r'(\d+)', lvl_str)
             lvl_num = int(m.group(1)) if m else 999
             is_cte_row = lvl_str.startswith('cte')
-            return (0 if not is_cte_row else 0, lvl_num, is_cte_row, row['ancien_nom'])
-        return (1, 0, False, row['ancien_nom'])
+            return (0, lvl_num, is_cte_row, row['nouveau_nom'])
+        return (1, 0, False, row['nouveau_nom'])
 
     rows.sort(key=sort_key)
 
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(
             f,
-            fieldnames=['type', 'ancien_nom', 'nouveau_nom', 'niveau_dag', 'chemin_fichier'],
+            fieldnames=['type', 'ancien_nom', 'nouveau_nom', 'nom_court', 'nom_abrev', 'niveau_dag', 'chemin_fichier'],
             delimiter=';',
         )
         writer.writeheader()
@@ -496,8 +638,10 @@ def main() -> None:
     # ---- 10. Vérifications ----
     print("\n10. Vérifications :")
 
-    # Unicité
+    # Unicité (nouveau_nom, nom_court, nom_abrev)
     all_new = list(new_names.values()) + list(seed_new_names.values())
+    all_short = [nettoyer_nom(n) for n in all_new]
+    all_abrev = [abreger_nom(nettoyer_nom(n)) for n in all_new]
     if len(set(all_new)) == len(all_new):
         print("   OK  Tous les nouveaux noms sont uniques")
     else:
@@ -509,12 +653,41 @@ def main() -> None:
             seen.add(n)
         print(f"   ERR {len(dupes)} doublon(s) détecté(s) : {dupes}")
 
-    # Validité PostgreSQL
+    if len(set(all_short)) == len(all_short):
+        print("   OK  Tous les noms courts sont uniques")
+    else:
+        seen2: set[str] = set()
+        dupes2: list[str] = []
+        for n in all_short:
+            if n in seen2:
+                dupes2.append(n)
+            seen2.add(n)
+        print(f"   ERR {len(dupes2)} doublon(s) noms courts : {dupes2}")
+
+    if len(set(all_abrev)) == len(all_abrev):
+        print("   OK  Tous les noms abrégés sont uniques")
+    else:
+        seen3: set[str] = set()
+        dupes3: list[str] = []
+        for n in all_abrev:
+            if n in seen3:
+                dupes3.append(n)
+            seen3.add(n)
+        print(f"   ERR {len(dupes3)} doublon(s) noms abrégés : {dupes3}")
+
+    # Validité PostgreSQL (nouveau_nom, nom_court et nom_abrev)
     invalid = [n for n in set(all_new) if not re.match(r'^[a-z][a-z0-9_]*$', n)]
-    if not invalid:
+    invalid_short = [n for n in set(all_short) if not re.match(r'^[a-z][a-z0-9_]*$', n)]
+    invalid_abrev = [n for n in set(all_abrev) if not re.match(r'^[a-z][a-z0-9_]*$', n)]
+    if not invalid and not invalid_short and not invalid_abrev:
         print("   OK  Tous les noms sont des identifiants PostgreSQL valides")
     else:
-        print(f"   ERR {len(invalid)} identifiant(s) invalide(s) : {invalid}")
+        if invalid:
+            print(f"   ERR {len(invalid)} identifiant(s) invalide(s) : {invalid}")
+        if invalid_short:
+            print(f"   ERR {len(invalid_short)} nom(s) court(s) invalide(s) : {invalid_short}")
+        if invalid_abrev:
+            print(f"   ERR {len(invalid_abrev)} nom(s) abrégé(s) invalide(s) : {invalid_abrev}")
 
     # Couverture
     missing_models = [n for n in models if n not in new_names]
@@ -549,6 +722,9 @@ def main() -> None:
         print(f"   CTE      : {len(cte_set):>2} modèle(s)")
     if orphan_ctes:
         print(f"   Orphelins: {len(orphan_ctes):>2} CTE sans parent — {', '.join(sorted(orphan_ctes))}")
+    if MODELES_RECLASSES_PAR_DOSSIER:
+        print(f"\n   (*) = niveau attribué par dossier d'appartenance, pas par le DAG")
+        print(f"         ({len(MODELES_RECLASSES_PAR_DOSSIER)} modèle(s) sans dépendance ref() interne)")
 
 
 if __name__ == '__main__':
