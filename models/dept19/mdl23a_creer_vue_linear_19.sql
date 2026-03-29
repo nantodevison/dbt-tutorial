@@ -6,6 +6,6 @@
 
 {#  documentation d'utilisation :
         appel : dbt run --vars '{"dept": "19"}'
-    Dans sa forme basée sur les des variables passées manuellement :
+    Dans sa forme basée sur les variables passées manuellement :
     {{ mdl23a_creer_vue_linear_19(dept='19') }}
 #}

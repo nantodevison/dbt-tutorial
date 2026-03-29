@@ -9,7 +9,7 @@ models:
       Basé sur la macro [`cte_verif_cpt_mm_section_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__cpt_proche).
       Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
       et le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19).
-      Fais partie de la vérification plus globale qui vise à trouver les compteurs qui partageraient
+      Fait partie de la vérification plus globale qui vise à trouver les compteurs qui partageraient
       une même section homogène.
     data_tests:
       - dbt_expectations.expect_table_row_count_to_be_between:

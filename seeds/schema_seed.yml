@@ -3,7 +3,7 @@ version: 2
 seeds:
   - name: depts_cpt_integre
     description: >
-      liste manuelle des départements avec des comptages intégré pour le millésime concerné.
+      liste manuelle des départements avec des comptages intégrés pour le millésime concerné.
       Les départements doivent faire partie de la liste des départements NA sur 2 caractères
     config: # Config avant post-hook pour les colonnes id_ign et id_simpli (voir fichier dbt_project.yml)
       column_types:
@@ -11,7 +11,7 @@ seeds:
     columns:
       - name: dept_integre
         description: >
-          département avec comptage intégré 
+          département avec comptage intégrés 
         data_tests:
           - not_null
           - unique
@@ -32,7 +32,7 @@ seeds:
         modifie_le: "char(10)"
     columns:
       - name: id_propa
-        description: "Identifiant de la ligne permettant de propager les valeur d'eattributs métier d'un millésime à l'autre"
+        description: "Identifiant de la ligne permettant de propager les valeurs d'attributs métier d'un millésime à l'autre"
         data_tests:
           - not_null:
               arguments:

@@ -3,7 +3,7 @@ version: 2
 models:
   - name: cte2_mdl6_lin_upd_auto_pt_non_linear_19__project_cpt
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
       Le modèle effectue une recherche spatiale (distance < 50m) entre les compteurs sans linéarisation [`mdl5_lin_chk_pt_non_linear_19`](/#!/model/model.test_otv.mdl5_lin_chk_pt_non_linear_19)
       et les tronçons du modèle [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
