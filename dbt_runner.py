@@ -122,7 +122,7 @@ def seed_affectation_pt_mano(action: str = 'all', dept: str = DEPT) -> int:
     folder = f'seeds/dept{dept}/lin/affectation_pt_mano'
     return _run_steps(action, [
         ('seed', [folder]),
-        ('test', [folder, f'lin_update_nouveau_point_{dept}']),
+        ('test', [folder, f'mdl7_lin_upd_nouv_point_{dept}']),
     ])
 
 
