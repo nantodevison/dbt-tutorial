@@ -106,6 +106,16 @@ def extract_dag_number(model_name: str) -> str | None:
     return m.group(1) if m else None
 
 
+def extract_cte_number(model_name: str) -> str | None:
+    """Extrait le numéro CTE d'un nom de modèle renommé.
+    cte1_mdl6_... → '1'
+    cte3_mdl16e_... → '3'
+    mdl12b_... → None  (pas un CTE)
+    """
+    m = re.match(r'cte(\d+)_mdl', model_name)
+    return m.group(1) if m else None
+
+
 def abbreviate(name: str) -> str:
     """Applique les abréviations au nom."""
     for long_form, short_form in ABBREVIATIONS:
@@ -151,6 +161,7 @@ def main():
     for basename, info in macros.items():
         # Partir du nom de fichier (référence stable)
         name = basename
+        is_cte = name.startswith('cte_')
 
         # Retirer le préfixe existant
         if name.startswith('mcr_'):
@@ -161,8 +172,21 @@ def main():
         # Appliquer les abréviations
         name = abbreviate(name)
 
-        # Construire le nouveau nom : mcr_N_...
-        new_name = f"mcr_{info['dag_number']}_{name}"
+        # Déterminer le numéro CTE si macro CTE
+        cte_prefix = ''
+        if is_cte:
+            # Chercher le numéro CTE dans le modèle appelant
+            for caller in info['model_callers']:
+                cte_num = extract_cte_number(caller)
+                if cte_num:
+                    cte_prefix = f'cte{cte_num}_'
+                    break
+            if not cte_prefix:
+                # Fallback : pas de numéro trouvé, garder cte_ sans numéro
+                cte_prefix = 'cte_'
+
+        # Construire le nouveau nom : [cteN_]mcr_DAG_...
+        new_name = f"{cte_prefix}mcr_{info['dag_number']}_{name}"
 
         info['new_name'] = new_name
 
