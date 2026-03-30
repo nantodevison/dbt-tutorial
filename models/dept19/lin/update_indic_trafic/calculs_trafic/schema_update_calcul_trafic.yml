@@ -4,7 +4,7 @@ models:
   - name: mdl18a_lin_upd_tmja_final_19
     description: >
       ModÃ¨le de calcul du TMJA final (tmja_final) en appliquant les ratios dÃ©finis dans le champ coment_tmj_f.
-      BasÃ© sur la macro [`mcr_update_tmja_final_lin`](/#!/macro/macro.test_otv.mcr_update_tmja_final_lin).
+      BasÃ© sur la macro [`mcr_18a_maj_tmja_final_lin`](/#!/macro/macro.test_otv.mcr_18a_maj_tmja_final_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
@@ -58,7 +58,7 @@ models:
   - name: mdl19_lin_upd_veh_km_19
     description: >
       ModÃ¨le de calcul du nombre de vÃ©hicules-kilomÃ¨tres (veh_km) pour les tronÃ§ons linÃ©arisÃ©s.
-      BasÃ© sur la macro [`mcr_update_veh_km_lin`](/#!/macro/macro.test_otv.mcr_update_veh_km_lin).
+      BasÃ© sur la macro [`mcr_19_maj_veh_km_lin`](/#!/macro/macro.test_otv.mcr_19_maj_veh_km_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
@@ -90,7 +90,7 @@ models:
   - name: mdl20_lin_upd_pl_final_pl_km_19
     description: >
       ModÃ¨le de calcul du nombre de poids lourds final (pl_final) et des poids lourds-kilomÃ¨tres (pl_km).
-      BasÃ© sur la macro [`mcr_update_pl_final_pl_km_lin`](/#!/macro/macro.test_otv.mcr_update_pl_final_pl_km_lin).
+      BasÃ© sur la macro [`mcr_20_maj_pl_final_pl_km_lin`](/#!/macro/macro.test_otv.mcr_20_maj_pl_final_pl_km_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
@@ -136,7 +136,7 @@ models:
     description: >
       ModÃ¨le de mise Ã  jour du champ commentaire de comptage (coment_cpt).
       Le champ coment_cpt prend la valeur 'linearisation' si src_cpt = 'otv', sinon 'estimation'.
-      BasÃ© sur la macro [`mcr_update_coment_cpt_lin`](/#!/macro/macro.test_otv.mcr_update_coment_cpt_lin).
+      BasÃ© sur la macro [`mcr_21a_maj_cmt_cpt_lin`](/#!/macro/macro.test_otv.mcr_21a_maj_cmt_cpt_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
@@ -180,7 +180,7 @@ models:
       Pour les estimations (coment_cpt='estimation' et src_cpt is null), calcule coment_tmj_f selon le sens de circulation.
       Pour les non-estimations, conserve les valeurs existantes.
       C'est le dernier modÃ¨le de la partie linearisation - tous les tests finaux de validation doivent Ãªtre implÃ©mentÃ©s ici.
-      BasÃ© sur la macro [`mcr_update_coment_tmj_f_estimation_lin`](/#!/macro/macro.test_otv.mcr_update_coment_tmj_f_estimation_lin).
+      BasÃ© sur la macro [`mcr_22_maj_cmt_tmj_f_estim_lin`](/#!/macro/macro.test_otv.mcr_22_maj_cmt_tmj_f_estim_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:

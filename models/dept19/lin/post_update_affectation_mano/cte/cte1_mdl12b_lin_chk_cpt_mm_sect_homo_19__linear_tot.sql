@@ -4,7 +4,7 @@
   )
 }}
 
-{{ cte_verif_cpt_mm_section_homo_lin__lineaire_tot(dept=var('dept'), distance=100) }}
+{{ cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot(dept=var('dept'), distance=100) }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 

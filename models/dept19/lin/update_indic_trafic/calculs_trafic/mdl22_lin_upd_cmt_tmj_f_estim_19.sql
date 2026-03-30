@@ -6,7 +6,7 @@
     )
 }}
 
-{{ mcr_update_coment_tmj_f_estimation_lin() }}   
+{{ mcr_22_maj_cmt_tmj_f_estim_lin() }}   
 
 {#  
 documentation d'utilisation :

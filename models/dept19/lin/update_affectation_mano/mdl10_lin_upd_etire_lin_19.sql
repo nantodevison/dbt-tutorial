@@ -5,11 +5,11 @@
     )
 }}
 
-{{ update_etirer_lin() }}
+{{ mcr_10_maj_etirer_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 
         dbt run --vars '{"dept": "19", "annee": "2024"}'
     Dans sa forme basée sur les des variables passées manuellement :
-        {{update_etirer_lin(dept='19', annee=2024)}}
+        {{mcr_10_maj_etirer_lin(dept='19', annee=2024)}}
 #}

@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_periode_lin()}}
+{{ mcr_16b_vrf_periode_lin()}}
 
 {#  documentation d'utilisation :
     appel avec spécification de variables : 

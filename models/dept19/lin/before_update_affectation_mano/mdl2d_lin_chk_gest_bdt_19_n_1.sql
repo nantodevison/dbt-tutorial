@@ -1,4 +1,4 @@
 {% set annee = var('annee') | int - 2 %}
 {{config(schema='verif') }}
 
-{{verifier_gestionnaire_bdtopo_lin(annee=annee)}}
+{{mcr_xx_vrf_gest_bdt_lin(annee=annee)}}

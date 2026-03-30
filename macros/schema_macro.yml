@@ -1,7 +1,7 @@
 version: 2
 
 macros:
-  - name: mcr_ajouter_troncon_nouveau_millesime
+  - name: mcr_xx_aj_tronc_nouv_mill
     description: >
       Génère les lignes BDTopo à ajouter au fichier de linéarisation suite à des ajout manuel lors du changement de millésime ou du 
       process de linéarisation.
@@ -20,7 +20,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: creer_vue_dept_annee
+  - name: mcr_1_creer_vue_dept_annee
     description: >
       Génère la vue des tronçons BDTopo routes pour un département et une année (millésime) spécifique,
       en intégrant les corrections liées aux changements de millésime.
@@ -44,7 +44,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_gestionnaire_bdtopo_lin
+  - name: mcr_xx_vrf_gest_bdt_lin
     description: >
       Extrait la liste unique des gestionnaires présents dans la BDTopo 
       pour une année et un département donné.
@@ -56,7 +56,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
-  - name: comparer_gestionnaire_bdtopo_lin
+  - name: mcr_2e_cmp_gest_bdt_lin
     description: >
       Compare les gestionnaires présents dans la BDTopo entre deux années 
       pour un département donné.
@@ -71,7 +71,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_nbpt_lgkm_lin
+  - name: mcr_2g_vrf_nbpt_lgkm_lin
     description: >
       Calcule le nombre de points de comptage et la longueur totale linéarisée 
       pour un département donné.
@@ -80,7 +80,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
-  - name: verifier_nature_bdtopo_lin
+  - name: mcr_2f_vrf_nature_bdt_lin
     description: >
       Identifie les tronçons dont la nature est inattendue (sentier, chemin, route empierrée) 
       et calcule leur longueur cumulée.
@@ -89,7 +89,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_dept_limitrophe_lin
+  - name: mcr_2b_vrf_dept_limitr_lin
     description: >
       Retourne la liste des départements limitrophes au département spécifié, hors de la région NA.
       Cette liste est utilisée pour vérifier les comptages aux frontières départementales.
@@ -101,7 +101,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
-  - name: verifier_comptage_limitrophe_lin
+  - name: mcr_3a_vrf_cptg_limitr_lin
     description: >
       Extrait les données de comptage des départements limitrophes (hors NA) à partir de la vue 
       des derniers comptages connus (TMJA et %PL).
@@ -113,7 +113,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_attr_modif_bdtopo_lin
+  - name: mcr_2a_vrf_attr_modif_bdt_lin
     description: >
       Compare les attributs (importance, numero, obs_supl) des tronçons routiers d'un millésimes de la BDTopo avec le précédent
       là où des variation d'attribut ont été détectées (analyse de l'attribut attr_modif).
@@ -125,7 +125,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_pt_sans_geom_lin
+  - name: mcr_2i_vrf_pt_sans_geom_lin
     description: >
       Identifie les points de comptage dans la table des compteurs qui n'ont pas de géométries mais ont des valeurs de trafic.
       Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
@@ -134,7 +134,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
-  - name: verifier_pt_linearise_absent_comptage_lin
+  - name: mcr_2h_vrf_pt_linear_absent_cptg_lin
     description: >
       Identifie les référence à des comptages sur la table linéarisée qui n'ont sont absent de la table des compteurs et comptages.
       Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
@@ -143,11 +143,11 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
-  - name: update_pt_linearise_devenu_assoc_lin
+  - name: mcr_3b_maj_pt_linear_devenu_assoc_lin
     description: >
       Met à jour les lignes BDTopo linéarisées qui étaient associées à des points de comptage qui sont devenu des comptages associés.
       Cette macro s'appuie sur le résultat de la vérification des points de comptage absents 
-      (voir macro [verifier_pt_linearise_absent_comptage_lin](#verifier_pt_linearise_absent_comptage_lin)).
+      (voir macro [mcr_2h_vrf_pt_linear_absent_cptg_lin](#mcr_2h_vrf_pt_linear_absent_cptg_lin)).
       Elle remplace l'id_comptag par l'id_cpteur_ref pour les lignes concernées, modifie obs_supl pour la traçabilité, s'assure que src_cpt = 'otv' et comen_cpt='linearisation' 
       tout en conservant toutes les autres valeurs originales du fichier de linéarisation.
     arguments:
@@ -158,7 +158,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_pt_emprise_dept_non_linearise_lin
+  - name: mcr_4b_vrf_pt_emprise_dept_non_linear_lin
     description: >
       Identifie les points de comptage situés dans le département donné qui ne sont pas encore linéarisés.
       Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
@@ -172,7 +172,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_update_auto_pt_non_linearise_lin__project_cpt
+  - name: cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt
     description: >
       Identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
       Effectue une recherche spatiale (distance < 50m) et calcule un score de similarité textuelle 
@@ -188,12 +188,12 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"  
 
-  - name: cte_update_auto_pt_non_linearise_lin__rang
+  - name: cte3_mcr_6_maj_auto_pt_non_linear_lin__rang
     description: >
-      Classe les tronçons candidats issus de la macro [cte_update_auto_pt_non_linearise_lin__project_cpt](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__project_cpt) 
+      Classe les tronçons candidats issus de la macro [cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt](/#!/models/models.test_otv.cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt) 
       pour chaque compteur selon une logique différentielle :
       entrée/sortie sur bretelles (distance), autres compteurs (similarité puis distance).
-      Macro qui imbrique cte_update_auto_pt_non_linearise_lin__project_cpt 
+      Macro qui imbrique cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt 
       pour éviter les cycles de dépendances.
     arguments:
       - name: annee
@@ -203,12 +203,12 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"   
 
-  - name: cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc
+  - name: cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc
     description: >
       Sélectionne le meilleur tronçon candidat (rang 1) pour chaque compteur non linéarisé,
-      issus de la macro [cte_update_auto_pt_non_linearise_lin__rang](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__rang).
+      issus de la macro [cte3_mcr_6_maj_auto_pt_non_linear_lin__rang](/#!/models/models.test_otv.cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
       Utilise DISTINCT ON pour ne garder qu'une seule proposition par compteur.
-      Macro finale du processus de matching automatique (imbrique cte_update_auto_pt_non_linearise_lin__rang).
+      Macro finale du processus de matching automatique (imbrique cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
     arguments:
       - name: annee
         type: integer
@@ -217,10 +217,10 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: update_auto_pt_non_linearise_lin
+  - name: mcr_6_maj_auto_pt_non_linear_lin
     description: >
       Pipeline complet de linéarisation automatique des points de comptage non linéarisés.
-      Utilise la macro [cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc](/#!/models/models.test_otv.cte_update_auto_pt_non_linearise_lin__choix_cpt_tronc)
+      Utilise la macro [cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc](/#!/models/models.test_otv.cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc)
       et la joint aux données issues du modèle [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
       pour proposer des associations compteur-tronçon basées sur la proximité spatiale et la similarité textuelle, et compléter avec les lignes non concernées.
     arguments:
@@ -237,7 +237,7 @@ macros:
         type: integer
         description: "Seuil haut de distance (en mètres) pour le matching (par défaut: 20)"
 
-  - name: verifier_pt_attr_dept_non_linearise_lin
+  - name: mcr_4a_vrf_pt_attr_dept_non_linear_lin
     description: >
       Identifie les points de comptage avec un attribut dept correspondant au département à linéarisé, mais qui ne le sont pas.
       Sert à contrôler la qualité des données de comptage avant l'affectation des lignes.
@@ -248,7 +248,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept'))"
 
-  - name: update_nouveau_point_lin
+  - name: mcr_7_maj_nouv_point_lin
     description: >
       Met à jour les des lignes BDTopo à partir d'un relevé manuel compris dans le fichier de seed (`deptXX_update_nouveau_pt`).
       Ne concerne que les lignes affectées à de nouveaux points de comptage (`id_comptag` non présent dans le millésime précédent).
@@ -264,11 +264,11 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: update_modif_linearisation_lin
+  - name: mcr_8_maj_modif_linear_lin
     description: >
       Met à jour la linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_modif_linearisation).
       Concerne uniquement les modifications de linéarisation pour des points de comptage existants (id_comptag déjà présent dans le millésime précédent).
-      s'appuie sur le résultat de la prise en compte des nouveaux points de comptage (voir macro [update_nouveau_point_lin](#update_nouveau_point_lin)).
+      s'appuie sur le résultat de la prise en compte des nouveaux points de comptage (voir macro [mcr_7_maj_nouv_point_lin](#mcr_7_maj_nouv_point_lin)).
       Cette macro modifie uniquement les identifiants de comptage (id_comptag) pour les lignes spécifiées dans le seed,
       tout en conservant toutes les autres valeurs originales du fichier de linearisation. Les lignes non présentes dans le seed
       conservent leurs attributs originaux.
@@ -280,12 +280,12 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: update_oubli_erreur_lin
+  - name: mcr_9_maj_oubli_erreur_lin
     description: >
       Corrige les oublis de linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_oubli_erreur_linearisation).
       Concerne uniquement la correction d'oublis pour des points de comptage existants : rattachement de lignes BdTopo qui auraient dû être incluses 
       dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation 
-      (voir macro [update_modif_linearisation_lin](#update_modif_linearisation_lin)).
+      (voir macro [mcr_8_maj_modif_linear_lin](#mcr_8_maj_modif_linear_lin)).
       Cette macro ajoute les lignes oubliées en les rattachant au bon id_comptag, avec des valeurs standardisées :
       src_cpt='otv', coment_cpt='linearisation', obs_supl=null, obs_tmja=null, obs_pc_pl=null.
       Les lignes non présentes dans le seed conservent leurs attributs originaux.
@@ -294,12 +294,12 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: update_etirer_lin
+  - name: mcr_10_maj_etirer_lin
     description: >
       Étire la linéarisation des lignes BDTopo à partir de choix manuels compris dans le fichier de seed (deptXX_update_etire_linearisation).
       Concerne l'extension de la linéarisation d'un point de comptage existant en y rattachant des lignes BdTopo supplémentaires (étirement de la zone couverte).
       S'appuie sur le résultat de la correction d'oublis de linéarisation 
-      (voir macro [update_oubli_erreur_lin](#update_oubli_erreur_lin)).
+      (voir macro [mcr_9_maj_oubli_erreur_lin](#mcr_9_maj_oubli_erreur_lin)).
       Cette macro ajoute les lignes supplémentaires en les rattachant au bon id_comptag, avec des valeurs standardisées :
       src_cpt='otv', coment_cpt='linearisation', obs_supl='linearisation etiree traf{annee}', obs_tmja=null, obs_pc_pl=null.
       Les lignes non présentes dans le seed conservent leurs attributs originaux.
@@ -311,11 +311,11 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: update_vers_estimation_lin
+  - name: mcr_11_maj_vers_estim_lin
     description: >
       Fait basculer des lignes BDTopo linéarisées vers un statut d'estimation à partir de choix manuels compris dans le fichier de seed (deptXX_update_vers_estimation_linearisation).
       S'appuie sur le résultat de l'étirement de linéarisation 
-      (voir macro [update_etirer_lin](#update_etirer_lin)).
+      (voir macro [mcr_10_maj_etirer_lin](#mcr_10_maj_etirer_lin)).
       Cette macro transforme les lignes spécifiées en supprimant les références de comptage (id_comptag=null, src_cpt=null) 
       et en passant en mode estimation (coment_cpt='estimation', obs_tmja='auto', obs_pc_pl='auto').
       L'historique de transformation est conservé dans obs_supl avec l'ancien id_comptag et l'année précédente.
@@ -328,7 +328,7 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: verifier_stats_linearisation_pt_comptage_lin
+  - name: mcr_12g_vrf_stats_linear_pt_cptg_lin
     description: >
       Calcule les statistiques des nouveaux points de comptage linéarisés pour une année donnée :
       nombre de compteurs distincts et kilométrage total concerné.
@@ -340,7 +340,7 @@ macros:
         type: string
         description: "Code département"
 
-  - name: verifier_not_lin_why_lin
+  - name: mcr_12f_vrf_not_lin_why_lin
     description: >
       Identifie les lignes BdTopo avec des statuts contradictoires : affectées à des comptage,
       mais ces comptages sont marqués comme "non linéarisables" 
@@ -358,7 +358,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_cptg_not_lin_why_geom_dept_lin
+  - name: mcr_12c_vrf_cptg_not_lin_why_geom_dept_lin
     description: >
       Identifie les compteurs géographiquement situés dans l'emprise du département 
       qui ont un motif de non-linéarisation renseigné (not_lin_why IS NOT NULL).
@@ -377,7 +377,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères pour filtrer l'emprise géographique (par défaut: variable projet 'dept')"
 
-  - name: verifier_tmjo_lin
+  - name: mcr_12h_vrf_tmjo_lin
     description: >
       Identifie les compteurs linéarisés par OTV qui disposent de données TMJO (Trafic Moyen Journalier Ouvrable).
       Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
@@ -390,7 +390,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_tmjo_exists_tmja_lin
+  - name: mcr_13b_vrf_tmjo_exists_tmja_lin
     description: >
       Vérifie que les compteurs linéarisés par OTV qui disposent de données TMJO ont aussi du TMJA.
       Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
@@ -403,7 +403,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_ann_pt_2020_lin
+  - name: mcr_12a_vrf_ann_pt_2020_lin
     description: >
       Identifie les compteurs linéarisés ayant une année de mise en place (ann_pt) égale à 2020.
       Pour rappel, cette année COVID est considérée comme non représentative pour les analyses de trafic.
@@ -414,7 +414,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_cpt_mm_section_homo_lin__cpt_proche
+  - name: cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche
     description: >
       Identifie le tronçon BDTopo le plus proche de chaque compteur linéarisé par OTV
       dans un rayon de distance configurable (par défaut 100 mètres).
@@ -429,11 +429,11 @@ macros:
         type: integer
         description: "Distance maximale de recherche en mètres (par défaut: 100)"
 
-  - name: cte_verif_cpt_mm_section_homo_lin__lineaire_tot
+  - name: cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot
     description: >
       Ajoute un attribut `id_cpt_proche` (TRUE/FALSE) à la linéarisation indiquant si une ligne peut etre affectée à un
       compteur.
-      Utilise la CTE [`cte_verif_cpt_mm_section_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__cpt_proche)
+      Utilise la CTE [`cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche)
       pour identifier les tronçons les plus proches de chaque compteur dans un rayon configurable (par défaut 100 mètres).
       Filtre uniquement les tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
       Retourne toutes les colonnes du modèle de linéarisation plus l'indicateur de proximité.
@@ -445,7 +445,7 @@ macros:
         type: integer
         description: "Distance maximale de recherche en mètres pour considérer un compteur comme 'proche' (par défaut: 100)"
 
-  - name: verifier_cpt_mm_section_homo_lin
+  - name: mcr_12b_vrf_cpt_mm_sect_homo_lin
     description: >
       Identifie les sections homogènes (id_simpli) qui partagent plusieurs compteurs.
       Utilise le modèle [`lin_cte_verif_cpt_mm_section_homo_{dept}__lineaire_tot`](/#!/model/model.test_otv.cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot).
@@ -456,7 +456,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_nb_cpt_ann_n_lin
+  - name: mcr_12d_vrf_nb_cpt_ann_n_lin
     description: >
       Connaitre le nombre de compteurs linéarisés
       qui disposent de données de comptage pour l'année spécifiée.
@@ -477,7 +477,7 @@ macros:
         type: bool
         description: "Indicateur pour filtrer uniquement les compteurs suspects (TRUE) ou tous les compteurs (FALSE) (par défaut: FALSE)"
 
-  - name: verifier_nb_tronc_linearise_lin
+  - name: mcr_12e_vrf_nb_tronc_linear_lin
     description: >
       Compte le nombre de tronçons linéarisés selon deux métriques complémentaires.
       Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
@@ -491,7 +491,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: update_indic_trafic_lin
+  - name: mcr_12i_maj_indic_traf_lin
     description: >
       Met à jour les indicateurs de trafic (TMJA, %PL, années) pour les tronçons qui référence des compteurs,
       en utilisant les dernières données de comptage disponibles.
@@ -509,7 +509,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_historique_trafic_lin
+  - name: cte1_mcr_13d_vrf_histo_traf_lin
     description: >
       Fournit le valeurs de `tmja`, `pc_pl`, `obs`, `periode` et `src` pour tout les compteurs.
       Un attribut par année ('wide form').
@@ -522,19 +522,19 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: verifier_suspect_indic_lin
+  - name: mcr_13d_vrf_suspect_indic_lin
     description: >
       Identifie les compteurs linéarisés dont les données de trafic proviennent d'années marquées comme suspectes
       dans la table des comptages, puis fournit l'historique des tmja (ou tmjo), pc_pl, obs, periode et src pour ces compteurs.
       Basé sur le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.mdl12i_lin_upd_indic_traf_19)
       ,la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et la cte 
-      [cte_verif_historique_trafic_lin](/#!/macro/macro.test_otv.cte_verif_historique_trafic_lin).
+      [cte1_mcr_13d_vrf_histo_traf_lin](/#!/macro/macro.test_otv.cte1_mcr_13d_vrf_histo_traf_lin).
     arguments:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_cpt_hors_dept_dans_na_lin__list_cpt
+  - name: cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt
     description: >
       Identifie les compteurs référencés dans la linéarisation d'un département dont l'identifiant (id_comptag) 
       indique une appartenance à un autre département de la région Nouvelle-Aquitaine.
@@ -550,10 +550,10 @@ macros:
         type: string
         description: "Code du département sur 2 caractères pour lequel on effectue la vérification (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_cpt_hors_dept_dans_na_lin__auto
+  - name: cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto
     description: >
       Associe les données de trafic de l'année du millésime concerné (si disponibles)
-      aux compteurs issus de la macro [`cte_verif_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.test_otv.cte_verif_cpt_hors_dept_dans_na_lin__list_cpt)
+      aux compteurs issus de la macro [`cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.test_otv.cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt)
       . Objectif : mise à jour auto des compteurs hors dept mais dans NA.
       Possible doublon avec des processus précédents.
       Permet de vérifier la disponibilité des données de comptage pour les compteurs d'autres départements NA
@@ -562,7 +562,7 @@ macros:
         type: integer
         description: "Année des données de trafic à récupérer au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: update_cpt_hors_dept_dans_na_lin
+  - name: mcr_13c_maj_cpt_hors_dept_dans_na_lin
     description: >
       Met à jour les indicateurs de trafic des tronçons linéarisés qui référencent des compteurs hors département (mais dans NA)
       en intégrant trois sources de données 
@@ -570,7 +570,7 @@ macros:
       2) mise à jour manuelle via seed, 3) conservation des valeurs existantes.
       Utilise le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.mdl12i_lin_upd_indic_traf_19)
       comme base,  Met à jour les compteurs d'autres départements NA ayant des données disponibles
-      pour l'année spécifiée via la CTE [`cte_verif_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.test_otv.cte_verif_cpt_hors_dept_dans_na_lin__auto).
+      pour l'année spécifiée via la CTE [`cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.test_otv.cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto).
       Remplace ann_pt, tmja, pc_pl et pl par les dernières valeurs disponibles, conserve le reste.
       Applique les corrections manuelles issues du seed 
       [`dept{dept}_update_cpt_existant_mano`](/#!/seed/seed.test_otv.sed13c_dept19_upd_cpt_existant_mano).
@@ -582,7 +582,7 @@ macros:
         type: integer
         description: "Année du millésime au format YYYY pour forcer ann_pt dans les mises à jour manuelles (par défaut: variable projet 'annee')"
   
-  - name: verifier_stats_linearisation_nbpt_lgkm_annee
+  - name: mcr_14c_vrf_stats_linear_nbpt_lgkm_annee
     description: >
       Calcule les statistiques de linéarisation par année de mise en place des compteurs (ann_pt) :
       nombre de points de comptage distincts et kilométrage total linéarisé.
@@ -595,7 +595,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_stats_linearisation_nbpt_gest
+  - name: mcr_14a_vrf_stats_linear_nbpt_gest
     description: >
       Calcule les statistiques de linéarisation par gestionnnaire :
       nombre de points de comptage distincts.
@@ -610,18 +610,18 @@ macros:
         type: bool
         description: "drapeau pour permettre ensuite l'agrégation par année (TRUE) ou non (FALSE) (par défaut: FALSE)"
 
-  - name: verifier_stats_linearisation_gests_annees
+  - name: mcr_14b_vrf_stats_linear_gests_annees
     description: >
       Calcule les statistiques de linéarisation par gestionnaire et par année de comptage (ann_pt) :
       nombre de points de comptage distincts.
-      Utilise la macro [`verifier_stats_linearisation_nbpt_gest`](/#!/macro/macro.test_otv.verifier_stats_linearisation_nbpt_gest)
+      Utilise la macro [`mcr_14a_vrf_stats_linear_nbpt_gest`](/#!/macro/macro.test_otv.mcr_14a_vrf_stats_linear_nbpt_gest)
       comme base.
     arguments:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_coherence_cpt_std_lin__cpt_lin
+  - name: cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin
     description: >
       CTE qui extrait les informations géométriques et techniques des compteurs qui ont été linéarisés.
       Effectue une jointure INNER entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
@@ -635,11 +635,11 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_coherence_comptag_standardisation_vs_linearisation_lin
+  - name: mcr_14g_vrf_coher_cptg_std_vs_linear_lin
     description: >
       Identifie les incohérences entre les compteurs linéarisés et les compteurs standardisés en détectant
       les cas où l'identifiant du compteur linéarisé est différent du plus proche compteur standardisé.
-      Utilise la macro [`cte_verif_coherence_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte_verif_coherence_cpt_std_lin__cpt_lin).
+      Utilise la macro [`cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin).
       Pour chaque compteur linéarisé, retourne le compteur standardisé le plus proche ayant un identifiant différent,
       ainsi que la distance les séparant et la géométrie.
     arguments:
@@ -650,7 +650,7 @@ macros:
         type: integer
         description: "Distance maximale de recherche en mètres pour identifier un compteur standardisé proche (par défaut: 10)"
 
-  - name: verifier_stats_importance_nature_estim_lin
+  - name: mcr_14j_vrf_stats_importance_nature_estim_lin
     description: >
       Calcule des statistiques agrégées selon les attributs BdTopo "importance" et "nature" sur les tronçons estimé.
       Retourne pour chaque combinaison importance/nature : le nombre de tronçons, la longueur cumulée en km,
@@ -662,7 +662,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_annee_rrn_pas_dispo
+  - name: mcr_14f_vrf_annee_rrn_pas_dispo
     description: >
       Identifie les compteurs du Réseau Routier National (RRN) dont la dernière année de comptage est antérieure
       à l'année du millésime en cours, permettant de détecter les compteurs dont les données ne sont pas à jour. 
@@ -679,7 +679,7 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: verifier_coment_tmj_f_values_lin
+  - name: mcr_xx_vrf_cmt_tmj_f_val_lin
     description: >
       Extrait la liste unique des valeurs du champ coment_tmj_f (commentaire sur le TMJA) 
       présentes dans les données linéarisées OTV pour un département donné.
@@ -689,7 +689,7 @@ macros:
         type: relation
         description: "Modèle dbt source à utiliser (passer ref('nom_modele') ou source('nom_source', 'nom_table'))"
 
-  - name: verifier_coment_tmj_f_reseau_ratio_lin
+  - name: mcr_14h_vrf_cmt_tmj_f_reseau_ratio_lin
     description: >
       Analyse des valeurs de coment_tmj_f en fonction du type de réseau routier.
       Extrait le type de réseau depuis l'id_comptag : N/A/D
@@ -700,7 +700,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_split_id_comptag_lin
+  - name: mcr_13e_vrf_split_id_cptg_lin
     description: >
       Extrait une partie spécifique de l'identifiant de comptage (id_comptag) 
       en utilisant la fonction split_part. Permet de récupérer les différents segments 
@@ -716,7 +716,7 @@ macros:
         type: string
         description: "Séparateur utilisé pour découper id_comptag (par défaut: '-')"
 
-  - name: update_coment_tmj_f_itself_lin
+  - name: mcr_14e_maj_cmt_tmj_f_itself_lin
     description: >
       Met à jour le champ `coment_tmj_f` en remplaçant sa valeur par une valeur fournie 
       manuellement.
@@ -726,7 +726,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_coment_tmj_f_attr_modif
+  - name: mcr_15b_vrf_cmt_tmj_f_attr_modif
     description: >
       Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait avoir été modifié
       à cause d'un changement d'attribut Bdtopo (en particulier le champs `importance`).
@@ -737,7 +737,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_coment_tmj_f_recup
+  - name: mcr_15c_vrf_cmt_tmj_f_recup
     description: >
       Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait être faux
       puisque ce sont de nouveaux tronçons (le champs `recup` n'est pas null).
@@ -748,7 +748,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: update_coment_tmj_f_with_ids
+  - name: mcr_xx_maj_cmt_tmj_f_with_ids
     description: >
       Met à jour le champ `coment_tmj_f` en remplaçant par une valeur fournie 
       manuellement, avec identifiant des lignes concernees grace au champs id_ign ou id_simpli.
@@ -763,7 +763,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_numero_rrn_lin
+  - name: mcr_15d_vrf_numero_rrn_lin
     description: >
       Extrait la liste unique des numéros de routes présents dans la base linéarisée 
       pour les routes du Réseau Routier National (RRN) d'un département donné.
@@ -774,33 +774,33 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_valeurs_aberrantes_tmja__ann_n_n_1
+  - name: cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1
     description: >
       Compare les années de comptage et tmja du dferniere millésimes avec les des deux 
       derniers comptages connus, pour les comptages linearises.
       Utilise le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept})
       et la source [`cptg.vue_evolutions_tmja`](/#!/source/source.test_otv.cptg.vue_evolutions_tmja).
-      CTE de la requete globale de vérification d'évolution des trafics [`verifier_valeurs_aberrantes_tmja`](/#!/macro/macro.test_otv.verifier_valeurs_aberrantes_tmja).
+      CTE de la requete globale de vérification d'évolution des trafics [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.test_otv.mcr_15e_vrf_val_aberr_tmja).
     arguments:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: cte_verif_valeurs_aberrantes_tmja__evol_ann_n_n_1
+  - name: cte2_mcr_15e_vrf_val_aberr_tmja__evo_ann_n_n_1
     description: >
       Calcule l'évolution des valeurs de TMJA entre le millésime actuel et le précédent pour détecter les valeurs aberrantes.
       Pour chaque point de comptage, extrait la dernière année disponible et calcule la différence absolue et 
       l'évolution en pourcentage du trafic. Retourne également le nombre total d'années disponibles 
       par compteur et les valeurs TMJA des millésimes N, N-1 et N-2.
-      S'appuie sur la macro [cte_verif_valeurs_aberrantes_tmja__ann_n_n_1](/#!/macro/macro.test_otv.cte_verif_valeurs_aberrantes_tmja__ann_n_n_1)
+      S'appuie sur la macro [cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1](/#!/macro/macro.test_otv.cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1)
       et sur la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage).
-      CTE de la requête globale de vérification d'évolution des trafics [`verifier_valeurs_aberrantes_tmja`](/#!/macro/macro.test_otv.verifier_valeurs_aberrantes_tmja).
+      CTE de la requête globale de vérification d'évolution des trafics [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.test_otv.mcr_15e_vrf_val_aberr_tmja).
     arguments:
       - name: dept
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: verifier_valeurs_aberrantes_tmja
+  - name: mcr_15e_vrf_val_aberr_tmja
     description: >
       Identifie les valeurs aberrantes de TMJA en analysant l'évolution entre deux millésimes consécutifs.
       Filtre les variations importantes (en pourcentage et en valeur absolue) pour détecter 
@@ -829,7 +829,7 @@ macros:
         type: float
         description: "Valeur de percentile à calculer sur l'évolution (ex: 0.95 pour le 95e percentile) (par défaut: none)"
 
-  - name: cte_verif_evol_cpt_dev_assoc__pt_ann_n
+  - name: cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n
     description: >
       Identifie les points de comptage de l'année N-1 qui ne sont plus présents dans la linéarisation 
       de l'année N (points de comptage devenus associés). 
@@ -846,11 +846,11 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: cte_verif_evol_cpt_dev_assoc__pt_ann_n_asso
+  - name: cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso
     description: >
       Enrichit les points de comptage de l'année N-1 devenus associés en année N avec leurs informations 
       de comptage associé (type de poste et compteur de référence). 
-      S'appuie sur la CTE [`cte_verif_evol_cpt_dev_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_dev_assoc__pt_ann_n) 
+      S'appuie sur la CTE [`cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n) 
       et la table `comptage_assoc.compteur`.
       Retourne id_cpteur_asso, ann_lin_n_1, tmja_lin_n_1, typ_post_lin_n_1 et id_cpteur_ref 
       pour analyser l'évolution des compteurs ayant changé de statut.
@@ -862,12 +862,12 @@ macros:
         type: string
         description: "Année du millésime au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: mcr_verifier_evo_cptg_devient_asso_lin
+  - name: mcr_16e_vrf_evo_cpt_dev_assoc_lin
     description: >
       Analyse l'évolution du trafic (TMJA) entre l'année N et N-1 pour les compteurs devenus associés.
       Compare les valeurs de trafic d'un compteur associé (via son compteur de référence) entre deux années
       et calcule la différence absolue et l'évolution en pourcentage.
-      S'appuie sur la CTE [cte_verif_evol_cpt_dev_assoc__pt_ann_n_asso](/#!/macro/macro.test_otv.cte_verif_evol_cpt_dev_assoc__pt_ann_n_asso),
+      S'appuie sur la CTE [cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso](/#!/macro/macro.test_otv.cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso),
       le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept})
       et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
     arguments:
@@ -878,7 +878,7 @@ macros:
         type: string
         description: "Année de référence au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: verifier_periode_lin
+  - name: mcr_16b_vrf_periode_lin
     description: >
       Identifie les compteurs ponctuels ou tournant, départementaux ou d'agglo dont la période de comptage 
       se situe en juillet ou août (période estivale).
@@ -890,7 +890,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifier_ann_cptgassoc_cptgref_lin
+  - name: mcr_16c_vrf_ann_cptgassoc_cptgref_lin
     description: >
       Vérifie la cohérence temporelle entre les années de comptage des compteurs associés 
       et leurs compteurs de référence. Identifie les cas où un compteur associé possède 
@@ -905,7 +905,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifier_cptg_sens_unique_lin
+  - name: mcr_xx_vrf_cptg_sens_unique_lin
     description: >
       Identifie les compteurs configurés en sens unique dans la base de données
       et présents dans les tronçons linéarisés.
@@ -921,7 +921,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifier_sens_bretelles_rrn_lin
+  - name: mcr_16g_vrf_sens_bret_rrn_lin
     description: >
       Vérifie la cohérence entre le sens de circulation des bretelles RRN (entrées/sorties) dans la BDTopo 
       et le sens configuré dans la table des compteurs, en contrôlant la validité du coefficient `coment_tmj_f`.
@@ -938,7 +938,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifier_recup_agglo_lin
+  - name: mcr_17d_vrf_recup_agglo_lin
     description: >
       Analyse le statut de récupération (champ `recup`) des tronçons linéarisés par gestionnaire d'agglomération.
       Identifie les tronçons gérés par les agglomérations définies dans la variable projet (ex: `agglo_19`)
@@ -951,7 +951,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifier_sens_tronc_proche_cpt_lin
+  - name: mcr_17f_vrf_sens_tronc_proche_cpt_lin
     description: >
       Vérifie la cohérence entre le sens de comptage (sens_cpt) (issu des données gestionnaires)
       et le sens du tronçon BDTopo (sens) linéarisés le plus proches
@@ -970,7 +970,7 @@ macros:
         type: integer
         description: "Distance maximale en mètres entre un compteur et un tronçon pour être considéré comme proche (par défaut: 50)"
 
-  - name: mcr_verifier_sens_coment_tmj_f_hors_agglo_lin
+  - name: mcr_17e_vrf_sens_cmt_tmj_f_h_agglo_lin
     description: >
       Vérifie la cohérence entre le sens des compteurs (sens_cpt) et le champ coment_tmj_f 
       des tronçons linéarisés hors agglomération. Cette macro identifie les incohérences 
@@ -988,7 +988,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifier_recup_linearisation_lin
+  - name: mcr_18c_vrf_recup_linear_lin
     description: >
       Macro de vérification des tronçons linéarisés issue de la récupération.
       Calcule le nombre de tronçons linéarisés groupés par valeur de `recup`.
@@ -1000,7 +1000,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_verifer_id_comptag_mill_en_cours_lin
+  - name: mcr_18b_vrf_id_cptg_mill_en_cours_lin
     description: >
       Macro de vérification qui extrait la liste distincte des identifiants de comptage (id_comptag)
       linéarisés pour l'année du millésime en cours.
@@ -1014,7 +1014,7 @@ macros:
         type: string
         description: "Année du millésime en cours au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: mcr_update_tmja_final_lin
+  - name: mcr_18a_maj_tmja_final_lin
     description: >
       Macro de calcul du TMJA final (tmja_final) en appliquant les ratios définis dans le champ coment_tmj_f.
       Calcule le TMJA ajusté selon trois cas :
@@ -1029,7 +1029,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_update_veh_km_lin
+  - name: mcr_19_maj_veh_km_lin
     description: >
       Macro de calcul du nombre de véhicules-kilomètres (veh_km) pour les tronçons linéarisés.
       Calcule veh_km = tmja_final * long_km pour les tronçons avec coment_cpt='linearisation'.
@@ -1041,7 +1041,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
 
-  - name: mcr_update_pl_final_pl_km_lin
+  - name: mcr_20_maj_pl_final_pl_km_lin
     description: >
       Macro de calcul du nombre de poids lourds final (pl_final) et des poids lourds-kilomètres (pl_km) pour les tronçons linéarisés.
       Calcule pl_final en appliquant les ratios définis dans le champ coment_tmj_f sur le champ pl selon six cas :
@@ -1060,7 +1060,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
         
-  - name: mcr_verifier_pc_pl_after_update_final_lin
+  - name: mcr_21b_vrf_pc_pl_after_maj_final_lin
     description: >
       Macro de vérification identifiant les tronçons linéarisés où le pourcentage de poids lourds (pc_pl) est null
       après la mise à jour des indicateurs pl_final et pl_km.
@@ -1072,7 +1072,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
         
-  - name: mcr_verifier_pc_pl_after_update_group_gest_lin
+  - name: mcr_21c_vrf_pc_pl_after_maj_group_gest_lin
     description: >
       Macro de vérification identifiant les tronçons linéarisés où le pourcentage de poids lourds (pc_pl) est null
       après la mise à jour des indicateurs pl_final et pl_km.
@@ -1085,7 +1085,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
   
-  - name: mcr_verifier_indic_agrege_after_update_lin
+  - name: mcr_14d_vrf_indic_agrege_after_maj_lin
     description: >
       Macro de vérification des valeurs des indicateurs agrégés de comptage
       pour une liste spécifique d'identifiants de comptage (id_comptag).
@@ -1100,7 +1100,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
   
-  - name: mcr_update_coment_cpt_lin
+  - name: mcr_21a_maj_cmt_cpt_lin
     description: >
       Met à jour le champ `coment_cpt` en fonction de la valeur du champ `src_cpt`.
       Si `src_cpt = 'otv'`, alors `coment_cpt = 'linearisation'`, sinon `coment_cpt = 'estimation'`.
@@ -1111,7 +1111,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
   
-  - name: mcr_update_coment_tmj_f_estimation_lin
+  - name: mcr_22_maj_cmt_tmj_f_estim_lin
     description: >
       Met à jour le champ `coment_tmj_f` pour les tronçons ayant un comptage par estimation (`coment_cpt = 'estimation'` et `src_cpt is null`).
       Applique une logique de division par 2 pour les routes à sens unique :
@@ -1124,7 +1124,7 @@ macros:
         type: string
         description: "Code du département sur 2 caractères (par défaut: variable projet 'dept')"
   
-  - name: mcr_statistiques_linearisation
+  - name: mcr_23b_stats_linear
     description: >
       Génère un ensemble de statistiques synthétiques sur l'état de la linéarisation pour un département donné.
       Calcule les indicateurs suivants :
@@ -1143,7 +1143,7 @@ macros:
         type: string
         description: "Année du millésime à analyser au format YYYY (par défaut: variable projet 'annee')"
 
-  - name: mcr_vue_lin_finale
+  - name: mcr_23a_vue_lin_finale
     description: >
       Génère la vue finale de linéarisation, basée sur le modèle [`mdl_lin_update_coment_tmj_f_estim_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_estim_{dept}).
     arguments:

@@ -2,7 +2,7 @@
     schema='verif',
 )}}
 
-{{ verifier_tmjo_exists_tmja_lin() }}
+{{ mcr_13b_vrf_tmjo_exists_tmja_lin() }}
 
 {#  documentation d'utilisation :
     appel avec spécification de variable : 

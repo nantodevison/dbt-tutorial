@@ -4,7 +4,7 @@
         alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_coment_tmj_f_ids_l'
 )}}
 
-{{ update_coment_tmj_f_with_ids(ref('mdl14e_lin_upd_cmt_tmj_f_lui_mm_' ~ var('dept'))) }}   
+{{ mcr_xx_maj_cmt_tmj_f_with_ids(ref('mdl14e_lin_upd_cmt_tmj_f_lui_mm_' ~ var('dept'))) }}   
 
 {# documentation d'utilisation :
     ne pas oublier le referencement du modèle source en paramètre, ne pas oublier que la macro a aussi le

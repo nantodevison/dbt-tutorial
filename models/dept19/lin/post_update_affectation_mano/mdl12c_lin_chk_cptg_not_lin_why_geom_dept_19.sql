@@ -2,7 +2,7 @@
     schema='verif',
 )}}
 
-{{ verifier_cptg_not_lin_why_geom_dept_lin() }}
+{{ mcr_12c_vrf_cptg_not_lin_why_geom_dept_lin() }}
 
 {#  documentation d'utilisation :
     appel avec spécification de variable : 

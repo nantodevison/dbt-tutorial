@@ -3,7 +3,7 @@ version: 2
 models:
   - name: mdl7_lin_upd_nouv_point_19
     description: >
-      Ce modèle se base sur la macro [`update_nouveau_point_lin`](/#!/macro/macro.test_otv.update_nouveau_point_lin).
+      Ce modèle se base sur la macro [`mcr_7_maj_nouv_point_lin`](/#!/macro/macro.test_otv.mcr_7_maj_nouv_point_lin).
       Il sert à remplacer les attributs de lignes affectées ou désaffectées à des points de comptages.
       Tous les tests de validation des données sont réalisés au préalable dans le modèle 
       [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) et / ou dans le seed 
@@ -127,7 +127,7 @@ models:
 
   - name: mdl8_lin_upd_modif_linear_19
     description: >
-      Ce modèle se base sur la macro [`update_modif_linearisation_lin`](/#!/macro/macro.test_otv.update_modif_linearisation_lin).
+      Ce modèle se base sur la macro [`mcr_8_maj_modif_linear_lin`](/#!/macro/macro.test_otv.mcr_8_maj_modif_linear_lin).
       Il sert à modifier la linéarisation (id_comptag) de ligne affectées à un autre point de comptage.
       Contrairement au modèle [`mdl7_lin_upd_nouv_point_19`](/#!/model/model.test_otv.mdl7_lin_upd_nouv_point_19) qui traite 
       les nouveaux points de comptage, ce modèle modifie uniquement la linéarisation de comptages déjà présents.
@@ -241,7 +241,7 @@ models:
 
   - name: mdl9_lin_upd_oubli_erreur_linear_19
     description: >
-      Ce modèle se base sur la macro [`update_oubli_erreur_lin`](/#!/macro/macro.test_otv.update_oubli_erreur_lin).
+      Ce modèle se base sur la macro [`mcr_9_maj_oubli_erreur_lin`](/#!/macro/macro.test_otv.mcr_9_maj_oubli_erreur_lin).
       Il sert à corriger les oublis de linéarisation : rattachement de lignes BdTopo qui auraient dû être incluses
       dès la linéarisation initiale mais qui ont été omises. S'appuie sur le résultat de la modification de linéarisation
       (voir modèle [`mdl8_lin_upd_modif_linear_19`](/#!/model/model.test_otv.mdl8_lin_upd_modif_linear_19)).
@@ -359,7 +359,7 @@ models:
 
   - name: mdl10_lin_upd_etire_lin_19
     description: >
-      Ce modèle se base sur la macro [`update_etirer_lin`](/#!/macro/macro.test_otv.update_etirer_lin).
+      Ce modèle se base sur la macro [`mcr_10_maj_etirer_lin`](/#!/macro/macro.test_otv.mcr_10_maj_etirer_lin).
       Il sert à étirer la linéarisation : extension de la linéarisation d'un point de comptage existant
       en y rattachant des lignes BdTopo supplémentaires (étirement de la zone couverte). S'appuie sur le résultat 
       de la correction d'oublis de linéarisation (voir modèle [`mdl9_lin_upd_oubli_erreur_linear_19`](/#!/model/model.test_otv.mdl9_lin_upd_oubli_erreur_linear_19)).
@@ -480,7 +480,7 @@ models:
 
   - name: mdl11_lin_upd_vers_estim_19
     description: >
-      Ce modèle se base sur la macro [`update_vers_estimation_lin`](/#!/macro/macro.test_otv.update_vers_estimation_lin).
+      Ce modèle se base sur la macro [`mcr_11_maj_vers_estim_lin`](/#!/macro/macro.test_otv.mcr_11_maj_vers_estim_lin).
       Il sert à faire basculer des lignes BDTopo linéarisées vers un statut d'estimation. S'appuie sur le résultat de l'étirement de linéarisation 
       (voir modèle [`mdl10_lin_upd_etire_lin_19`](/#!/model/model.test_otv.mdl10_lin_upd_etire_lin_19)).
       Cette macro transforme les lignes spécifiées en supprimant les références de comptage (id_comptag=null, src_cpt=null) 

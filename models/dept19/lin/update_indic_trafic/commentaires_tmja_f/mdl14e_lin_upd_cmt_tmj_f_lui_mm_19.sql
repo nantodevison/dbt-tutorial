@@ -3,7 +3,7 @@
     alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_coment_tmj_f_itself_l'
 ) }}
 
-{{update_coment_tmj_f_itself_lin()}}   
+{{mcr_14e_maj_cmt_tmj_f_itself_lin()}}   
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 

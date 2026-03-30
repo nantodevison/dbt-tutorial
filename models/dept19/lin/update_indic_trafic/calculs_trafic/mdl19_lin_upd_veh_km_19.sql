@@ -5,7 +5,7 @@
     )
 }}
 
-{{ mcr_update_veh_km_lin() }}
+{{ mcr_19_maj_veh_km_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variables : 

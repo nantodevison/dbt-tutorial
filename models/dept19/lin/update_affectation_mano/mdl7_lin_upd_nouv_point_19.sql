@@ -5,7 +5,7 @@
     )
 }}
 
-{{ update_nouveau_point_lin() }}
+{{ mcr_7_maj_nouv_point_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 

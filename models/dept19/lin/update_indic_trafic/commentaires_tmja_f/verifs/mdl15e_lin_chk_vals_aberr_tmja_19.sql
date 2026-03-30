@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_valeurs_aberrantes_tmja() }}
+{{ mcr_15e_vrf_val_aberr_tmja() }}
 
 {#  documentation d'utilisation :
     Dans sa forme basée sur les variables passées manuellement :
