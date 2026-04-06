@@ -3,7 +3,7 @@
     alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_indic_trafic_l'
 )}}
 
-{{ update_indic_trafic_lin() }}
+{{ mcr_12i_maj_indic_traf_lin() }}
 
 
 
@@ -12,5 +12,5 @@
         dbt run --vars '{"dept": "19"}'
     Dans sa forme basée sur les
     variables passées manuellement :
-    {{ update_indic_trafic_lin(dept='19') }}
+    {{ mcr_12i_maj_indic_traf_lin(dept='19') }}
 #}

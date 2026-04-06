@@ -4,7 +4,7 @@
     )
 }}
 
-{{mcr_ajouter_troncon_nouveau_millesime()}}
+{{mcr_xx_aj_tronc_nouv_mill()}}
 
 {#  documentation d'utilisation :
         appel : dbt run --vars '{"annee": 2024, "dept": "19"}'

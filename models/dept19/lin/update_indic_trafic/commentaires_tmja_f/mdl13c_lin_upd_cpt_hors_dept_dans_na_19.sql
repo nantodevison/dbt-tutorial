@@ -3,7 +3,7 @@
     alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_cpt_hors_dept_dans_na_l'
 ) }}
 
-{{update_cpt_hors_dept_dans_na_lin()}}
+{{mcr_13c_maj_cpt_hors_dept_dans_na_lin()}}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 

@@ -4,7 +4,7 @@
     )
 }}
 
-{{ mcr_verifier_sens_tronc_proche_cpt_lin() }}
+{{ mcr_17f_vrf_sens_tronc_proche_cpt_lin() }}
 
 {#
     documentation d'utilisation :

@@ -4,7 +4,7 @@
     )
 }}
 
-{{ mcr_verifier_recup_agglo_lin() }}
+{{ mcr_17d_vrf_recup_agglo_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variables : 

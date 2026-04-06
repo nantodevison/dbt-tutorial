@@ -1,3 +1,3 @@
 {{ config(schema='verif') }}
 
-{{ verifier_dept_limitrophe_lin() }}
+{{ mcr_2b_vrf_dept_limitr_lin() }}

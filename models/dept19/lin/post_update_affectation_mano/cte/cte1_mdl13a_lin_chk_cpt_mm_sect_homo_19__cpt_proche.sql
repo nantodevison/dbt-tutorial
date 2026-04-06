@@ -2,7 +2,7 @@
     schema='cte'
 ) }}
 
-{{cte_verif_cpt_mm_section_homo_lin__cpt_proche(dept=var('dept'))}}
+{{cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche(dept=var('dept'))}}
 {# 
   Documentation d'utilisation :
     appel avec spécification de variable : 

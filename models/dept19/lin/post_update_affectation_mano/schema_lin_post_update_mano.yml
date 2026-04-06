@@ -4,7 +4,7 @@ models:
   - name: mdl12g_lin_chk_stat_lin_pt_cptg_19
     description: >
       Modèle de contrôle statistique post-traitement qui calcule les métriques des nouveaux points de comptage linéarisés.
-      Basé sur la macro [`verifier_stats_linearisation_pt_comptage_lin`](/#!/macro/macro.test_otv.verifier_stats_linearisation_pt_comptage_lin).
+      Basé sur la macro [`mcr_12g_vrf_stats_linear_pt_cptg_lin`](/#!/macro/macro.test_otv.mcr_12g_vrf_stats_linear_pt_cptg_lin).
       Fournit un tableau de bord synthétique pour valider l'impact quantitatif des opérations de linéarisation :
       nombre de compteurs distincts traités et kilométrage total du réseau concerné.
       Les statistiques portent sur les tronçons marqués comme 'nouveau point traf{annee}' dans le champ obs_supl
@@ -41,7 +41,7 @@ models:
   - name: mdl12f_lin_chk_not_lin_why_19
     description: >
       Modèle de contrôle de cohérence post-traitement qui identifie les compteurs avec des statuts contradictoires.
-      Basé sur la macro [`verifier_not_lin_why_lin`](/#!/macro/macro.test_otv.verifier_not_lin_why_lin).
+      Basé sur la macro [`mcr_12f_vrf_not_lin_why_lin`](/#!/macro/macro.test_otv.mcr_12f_vrf_not_lin_why_lin).
       Détecte les compteurs marqués comme "non linéarisables" (not_lin_why IS NOT NULL) dans la source 
       [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) mais qui ont néanmoins été linéarisés 
       dans le modèle 
@@ -73,7 +73,7 @@ models:
     description: >
       Modèle d'identification géographique de tous les compteurs situés dans l'emprise
       du département ayant un motif de non-linéarisation renseigné (not_lin_why IS NOT NULL).
-      Basé sur la macro [`verifier_cptg_not_lin_why_geom_dept_lin`](/#!/macro/macro.test_otv.verifier_cptg_not_lin_why_geom_dept_lin).
+      Basé sur la macro [`mcr_12c_vrf_cptg_not_lin_why_geom_dept_lin`](/#!/macro/macro.test_otv.mcr_12c_vrf_cptg_not_lin_why_geom_dept_lin).
       Utilise une jointure spatiale avec la source [`aire.dpt_bdt_na_ed{annee}_s`](/#!/source/source.test_otv.aire.dpt_bdt_na_ed24_s).
       Complète les informations avec les données de comptage de la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)
       et les définitions des motifs via [`cptg.enum_not_lin_why`](/#!/source/source.test_otv.cptg.enum_not_lin_why).
@@ -105,7 +105,7 @@ models:
     description: >
       Modèle de contrôle post-traitement qui identifie les compteurs linéarisés par OTV 
       disposant de données TMJO (Trafic Moyen Journalier Ouvrable).
-      Basé sur la macro [`verifier_tmjo_lin`](/#!/macro/macro.test_otv.verifier_tmjo_lin).
+      Basé sur la macro [`mcr_12h_vrf_tmjo_lin`](/#!/macro/macro.test_otv.mcr_12h_vrf_tmjo_lin).
       Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
       [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
       avec le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19).
@@ -121,7 +121,7 @@ models:
     description: >
       Modèle de contrôle post-traitement qui vérifie que les compteurs linéarisés par OTV 
       qui sont en TMJO disposent aussi de TMJA (Trafic Moyen Journalier Annuel).
-      Basé sur la macro [`verifier_tmjo_exists_tmja_lin`](/#!/macro/macro.test_otv.verifier_tmjo_exists_tmja_lin).
+      Basé sur la macro [`mcr_13b_vrf_tmjo_exists_tmja_lin`](/#!/macro/macro.test_otv.mcr_13b_vrf_tmjo_exists_tmja_lin).
     columns:
       - name: id_comptag
         description: "Identifiant du compteur linéarisé disposant de données TMJO et TMJA"
@@ -162,7 +162,7 @@ models:
     description: >
       Modèle de contrôle post-traitement qui identifie les compteurs linéarisés ayant une année 
       de mise en place (ann_pt) égale à 2020.
-      Basé sur la macro [`verifier_ann_pt_2020_lin`](/#!/macro/macro.test_otv.verifier_ann_pt_2020_lin).
+      Basé sur la macro [`mcr_12a_vrf_ann_pt_2020_lin`](/#!/macro/macro.test_otv.mcr_12a_vrf_ann_pt_2020_lin).
       Utilise le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
       comme source de données après traitement de linéarisation.
       Retourne la liste distincte et triée des identifiants de compteurs concernés,
@@ -183,7 +183,7 @@ models:
     description: >
       Modèle de vérification qui identifie les sections homogènes (id_simpli) 
       partageant plusieurs compteurs.
-      Basé sur la macro [`verifier_cpt_mm_section_homo_lin`](/#!/macro/macro.test_otv.verifier_cpt_mm_section_homo_lin).
+      Basé sur la macro [`mcr_12b_vrf_cpt_mm_sect_homo_lin`](/#!/macro/macro.test_otv.mcr_12b_vrf_cpt_mm_sect_homo_lin).
       Utilise le modèle [`cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot`](/#!/model/model.test_otv.cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot).
       Permet d'identifier les potentiels problèmes d'affectation : sections homogènes
       fragmentées entre plusieurs compteurs, erreurs de géocodage, ou cas légitimes de compteurs multiples
@@ -236,7 +236,7 @@ models:
   - name: mdl12d_lin_chk_nb_cpt_ann_n_19
     description: >
       Modèle qui compte le nombre de compteurs linéarisés disposant de données 
-      de comptage pour l'année spécifiée. Basé sur la macro [`verifier_nb_cpt_ann_n_lin`](/#!/macro/macro.test_otv.verifier_nb_cpt_ann_n_lin),
+      de comptage pour l'année spécifiée. Basé sur la macro [`mcr_12d_vrf_nb_cpt_ann_n_lin`](/#!/macro/macro.test_otv.mcr_12d_vrf_nb_cpt_ann_n_lin),
       (utilise le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19) 
       et la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)).
       Retourne une seule ligne avec le nombre total de compteurs appariés.
@@ -261,7 +261,7 @@ models:
   - name: mdl12e_lin_chk_nb_tronc_linear_19
     description: >
       Compte le nombre de tronçons linéarisés selon deux métriques complémentaires.
-      Basé sur la macro [`verifier_nb_tronc_linearise_lin`](/#!/macro/macro.test_otv.verifier_nb_tronc_linearise_lin).
+      Basé sur la macro [`mcr_12e_vrf_nb_tronc_linear_lin`](/#!/macro/macro.test_otv.mcr_12e_vrf_nb_tronc_linear_lin).
       Utilise le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
       comme source et effectue deux comptages avec filtres :
       1) nb_cpt_lin_id_cptg : nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL).

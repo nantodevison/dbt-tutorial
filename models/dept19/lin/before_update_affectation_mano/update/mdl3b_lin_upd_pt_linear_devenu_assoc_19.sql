@@ -5,11 +5,11 @@
     )
 }}
 
-{{ update_pt_linearise_devenu_assoc_lin() }}
+{{ mcr_3b_maj_pt_linear_devenu_assoc_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 
         dbt run --vars '{"dept": "19", "annee": "2024"}'
     Dans sa forme basée sur les des variables passées manuellement :
-        {{update_pt_linearise_devenu_assoc_lin(dept='19', annee=2024)}}
+        {{mcr_3b_maj_pt_linear_devenu_assoc_lin(dept='19', annee=2024)}}
 #}

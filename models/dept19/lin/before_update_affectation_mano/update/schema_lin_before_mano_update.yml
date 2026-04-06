@@ -29,7 +29,7 @@ models:
   - name: mdl6_lin_upd_auto_pt_non_linear_19
     description: >
       Résultat final du pipeline de linéarisation automatique des points de comptage non linéarisés.
-      Basé sur la macro [`update_auto_pt_non_linearise_lin`](/#!/macro/macro.test_otv.update_auto_pt_non_linearise_lin).
+      Basé sur la macro [`mcr_6_maj_auto_pt_non_linear_lin`](/#!/macro/macro.test_otv.mcr_6_maj_auto_pt_non_linear_lin).
       Applique les propositions de matching automatique (id_comptag, src_cpt='otv', coment_cpt='linearisation') 
       aux tronçons respectant les seuils de similarité et distance configurables.
       Utilise une architecture de macros imbriquées pour éviter les cycles de dépendances entre modèles.

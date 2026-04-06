@@ -5,11 +5,11 @@
     )
 }}
 
-{{ update_vers_estimation_lin() }}
+{{ mcr_11_maj_vers_estim_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 
         dbt run --vars '{"dept": "19", "annee": "2024"}'
     Dans sa forme basée sur les des variables passées manuellement :
-        {{update_vers_estimation_lin(dept='19', annee=2024)}}
+        {{mcr_11_maj_vers_estim_lin(dept='19', annee=2024)}}
 #}

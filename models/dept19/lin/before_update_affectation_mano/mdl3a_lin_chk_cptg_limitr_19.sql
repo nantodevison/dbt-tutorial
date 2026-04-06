@@ -2,4 +2,4 @@
 {{ config(
     schema='verif'
 ) }}
-{{ verifier_comptage_limitrophe_lin() }}
+{{ mcr_3a_vrf_cptg_limitr_lin() }}

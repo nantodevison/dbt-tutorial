@@ -5,7 +5,7 @@
     )
 }}
 
-{{ mcr_update_pl_final_pl_km_lin() }}
+{{ mcr_20_maj_pl_final_pl_km_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variables : 

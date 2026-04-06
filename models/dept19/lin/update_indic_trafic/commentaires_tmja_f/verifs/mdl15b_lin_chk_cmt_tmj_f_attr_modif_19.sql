@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_coment_tmj_f_attr_modif() }}
+{{ mcr_15b_vrf_cmt_tmj_f_attr_modif() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 

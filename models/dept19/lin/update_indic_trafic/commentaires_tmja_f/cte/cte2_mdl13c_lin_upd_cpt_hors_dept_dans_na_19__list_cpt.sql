@@ -3,7 +3,7 @@
 ) }}
 
 
-{{cte_verif_cpt_hors_dept_dans_na_lin__list_cpt()}}
+{{cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt()}}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 
