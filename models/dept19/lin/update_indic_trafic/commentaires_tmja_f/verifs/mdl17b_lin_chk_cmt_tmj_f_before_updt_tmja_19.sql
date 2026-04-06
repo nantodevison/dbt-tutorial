@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_coment_tmj_f_values_lin(ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ var('dept'))) }}
+{{ mcr_xx_vrf_cmt_tmj_f_val_lin(ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ var('dept'))) }}
 
 {#  documentation d'utilisation :
     appel avec spécification de variables : 

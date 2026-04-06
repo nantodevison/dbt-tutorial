@@ -35,7 +35,7 @@ models:
     description: >
       Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle ajoute un classement (rang) aux tronçons candidats identifiés par la macro
-      [`cte_update_auto_pt_non_linearise_lin__project_cpt`](/#!/macro/macro.test_otv.cte_update_auto_pt_non_linearise_lin__project_cpt).
+      [`cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt`](/#!/macro/macro.test_otv.cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt).
 
       Pour chaque compteur (id_comptag), il applique une logique de classement différentielle :
       - Pour les compteurs  qui comprennent la mention 'entrée' ou 'sortie' sur bretelles : classement par distance croissante uniquement
@@ -56,7 +56,7 @@ models:
     description: >
       Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle sélectionne le **meilleur tronçon candidat** pour chaque compteur à partir des résultats 
-      classés de la macro [`cte_update_auto_pt_non_linearise_lin__rang`](/#!/macro/macro.test_otv.cte_update_auto_pt_non_linearise_lin__rang).
+      classés de la macro [`cte3_mcr_6_maj_auto_pt_non_linear_lin__rang`](/#!/macro/macro.test_otv.cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
       Utilise `SELECT DISTINCT ON (id_comptag)` avec un tri par `id_comptag, rg` pour récupérer 
       uniquement le tronçon ayant le rang 1 (meilleur score) pour chaque compteur.
       Ce modèle constitue le résultat final du processus de linéarisation automatique : 

@@ -4,7 +4,7 @@
         alias='traf' ~ var('annee') ~ '_bdt' ~ var('dept') ~'_ed' ~ (var('annee')|string)[-2:] ~ '_coment_tmj_f_sens_dbl_spl_l')
 }}   
 
-{{ mcr_update_coment_tmj_f_sens_lin() }}   
+{{ mcr_17a_maj_cmt_tmj_f_sens_lin() }}   
 
 {#
     documentation d'utilisation :

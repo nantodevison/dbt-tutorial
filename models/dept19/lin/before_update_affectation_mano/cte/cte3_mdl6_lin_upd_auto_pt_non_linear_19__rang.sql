@@ -2,4 +2,4 @@
     schema='cte'
 ) }}
 
-{{cte_update_auto_pt_non_linearise_lin__rang()}}
+{{cte3_mcr_6_maj_auto_pt_non_linear_lin__rang()}}

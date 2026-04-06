@@ -5,7 +5,7 @@
     )
 }}
 
-{{ mcr_update_tmja_final_lin() }}
+{{ mcr_18a_maj_tmja_final_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variables : 

@@ -4,7 +4,7 @@
     )
 }}
 
-{{ mcr_verifier_cptg_sens_unique_lin(ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ var('dept'))) }}
+{{ mcr_xx_vrf_cptg_sens_unique_lin(ref('mdl16a_lin_upd_cmt_tmj_f_sens_' ~ var('dept'))) }}
 
 {#
     documentation d'utilisation :

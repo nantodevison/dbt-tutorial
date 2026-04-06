@@ -4,7 +4,7 @@
     )
 }}
 
-{{ mcr_verifier_sens_bretelles_rrn_lin() }}
+{{ mcr_16g_vrf_sens_bret_rrn_lin() }}
 
 {#
 documentation d'utilisation :

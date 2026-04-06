@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_coment_tmj_f_recup() }}
+{{ mcr_15c_vrf_cmt_tmj_f_recup() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 

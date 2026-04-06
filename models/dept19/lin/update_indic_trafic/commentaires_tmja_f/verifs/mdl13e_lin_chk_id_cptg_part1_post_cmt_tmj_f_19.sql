@@ -4,7 +4,7 @@
         )
 }}
 
-{{ verifier_split_id_comptag_lin('mdl13c_lin_upd_cpt_hors_dept_dans_na_19') }}
+{{ mcr_13e_vrf_split_id_cptg_lin('mdl13c_lin_upd_cpt_hors_dept_dans_na_19') }}
 
 {# 
 documentation d'utilisation :

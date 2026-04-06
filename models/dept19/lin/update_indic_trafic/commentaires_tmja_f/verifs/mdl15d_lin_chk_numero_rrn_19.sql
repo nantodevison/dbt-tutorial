@@ -4,7 +4,7 @@
     )
 }}
 
-{{ verifier_numero_rrn_lin()}}
+{{ mcr_15d_vrf_numero_rrn_lin()}}
 
 {#  documentation d'utilisation :
     appel avec spécification de variables : 

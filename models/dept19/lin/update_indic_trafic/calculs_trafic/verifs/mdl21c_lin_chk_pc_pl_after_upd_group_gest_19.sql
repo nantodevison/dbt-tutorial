@@ -4,7 +4,7 @@
     )
 }}
 
-{{ mcr_verifier_pc_pl_after_update_group_gest_lin() }}
+{{ mcr_21c_vrf_pc_pl_after_maj_group_gest_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variables : 

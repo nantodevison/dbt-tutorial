@@ -5,11 +5,11 @@
     )
 }}
 
-{{ update_modif_linearisation_lin() }}
+{{ mcr_8_maj_modif_linear_lin() }}
 
 {#  Documentation d'utilisation :
     appel avec spécification de variable: 
         dbt run --vars '{"dept": "19", annee: "2024"}'
     Dans sa forme basée sur les des variables passées manuellement :
-        {{update_modif_linearisation_lin(dept='19', annee=2024)}}
+        {{mcr_8_maj_modif_linear_lin(dept='19', annee=2024)}}
 #}

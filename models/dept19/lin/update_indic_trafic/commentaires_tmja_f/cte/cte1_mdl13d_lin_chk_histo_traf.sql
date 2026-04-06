@@ -2,7 +2,7 @@
     schema='cte',
 )}}
 
-{{ cte_verif_historique_trafic_lin() }}
+{{ cte1_mcr_13d_vrf_histo_traf_lin() }}
 
 {# documentation d'utilisation :
     appel avec spécification de variable : 

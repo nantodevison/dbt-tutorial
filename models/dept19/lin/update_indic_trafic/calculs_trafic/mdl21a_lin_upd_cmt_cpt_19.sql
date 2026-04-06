@@ -5,7 +5,7 @@
     )
 }}
 
-{{ mcr_update_coment_cpt_lin() }}   
+{{ mcr_21a_maj_cmt_cpt_lin() }}   
 
 {# 
 documentation d'utilisation :
