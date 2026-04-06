@@ -1,11 +1,11 @@
 version: 2
 
 models:
-  - name: lin_verif_historique_trafic
+  - name: cte1_mdl13d_lin_chk_histo_traf
     description: >
       Modèle de vérification qui compare l'historique des données de trafic linéarisées
       avec les données sources des comptages.
-      Basé sur la macro [`cte_verif_historique_trafic_lin`](/#!/macro/macro.test_otv.cte_verif_historique_trafic_lin).
+      Basé sur la macro [`cte1_mcr_13d_vrf_histo_traf_lin`](/#!/macro/macro.test_otv.cte1_mcr_13d_vrf_histo_traf_lin).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -21,11 +21,11 @@ models:
                 to: source('cptg', 'compteur')
                 field: id_comptag
 
-  - name: lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt
+  - name: cte2_mdl13c_lin_upd_cpt_hors_dept_dans_na_19__list_cpt
     description: >
       Identifie les compteurs situés géographiquement hors du département
       étudié mais présents dans la région Nouvelle-Aquitaine.
-      Basé sur la macro [`cte_verif_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.test_otv.cte_verif_cpt_hors_dept_dans_na_lin__list_cpt).
+      Basé sur la macro [`cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.test_otv.cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt).
       Doit permettre la mise à jour des indicateurs de trafic pour ces compteurs,
       dont certaines valeurs peuvent ne pas être disponibles (en fonction du cycle d'import de chaque département).
     columns:
@@ -44,12 +44,12 @@ models:
         data_tests:
           - not_null
 
-  - name: lin_cte_update_cpt_hors_dept_dans_na_19__auto
+  - name: cte1_mdl13c_lin_upd_cpt_hors_dept_dans_na_19__auto
     description: >
       Modèle CTE qui enrichit les compteurs hors département (issus du modèle 
-      [`lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt`](/#!/model/model.test_otv.lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt))
+      [`cte2_mdl13c_lin_upd_cpt_hors_dept_dans_na_19__list_cpt`](/#!/model/model.test_otv.cte2_mdl13c_lin_upd_cpt_hors_dept_dans_na_19__list_cpt))
       avec leurs dernières données de trafic disponibles pour l'année spécifiée.
-      Basé sur la macro [`cte_verif_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.test_otv.cte_verif_cpt_hors_dept_dans_na_lin__auto).
+      Basé sur la macro [`cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.test_otv.cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -63,7 +63,7 @@ models:
           - unique
           - relationships:
               arguments:
-                to: ref('lin_cte_update_cpt_hors_dept_dans_na_19__list_cpt')
+                to: ref('cte2_mdl13c_lin_upd_cpt_hors_dept_dans_na_19__list_cpt')
                 field: id_comptag
                 description: "Vérifier que les compteurs enrichis font partie de la liste des compteurs hors département"
       - name: tmja
@@ -90,11 +90,11 @@ models:
                 where: "pl is not null"
                 description: "Vérifier que le trafic PL calculé est positif et inférieur à 150000"
 
-  - name: lin_cte_verif_coherence_cpt_std_lin_19__cpt_lin
+  - name: cte1_mdl14g_lin_chk_coher_cpt_std_lin_19__cpt_lin
     description: >
       Modèle CTE qui récupère les informations des compteurs (id, type, sens, géométrie)
       présents dans la linearisation.
-      Basé sur la macro [`cte_verif_coherence_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte_verif_coherence_cpt_std_lin__cpt_lin).
+      Basé sur la macro [`cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin).
     columns:
       - name: id_comptag
         description: "Identifiant du compteur standard"
@@ -105,13 +105,13 @@ models:
       - name: geom
         description: "Géométrie du compteur"
 
-  - name: lin_cte_verif_vals_abertes_tmja_19__ann_n_n_1
+  - name: cte1_mdl15e_lin_chk_vals_aberr_tmja_19__ann_n_n_1
     description: >
       Modèle CTE de vérification qui extrait l'historique des TMJA sur le millésime 
       actuel et les deux comptages précédents.
       (année N, N-1, N-2) pour chaque compteur linéarisé, permettant ainsi l'analyse
       des variations de trafic et la détection de valeurs aberrantes.
-      Basé sur la macro [`cte_verif_valeurs_aberrantes_tmja__ann_n_n_1`](/#!/macro/macro.test_otv.cte_verif_valeurs_aberrantes_tmja__ann_n_n_1).
+      Basé sur la macro [`cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1`](/#!/macro/macro.test_otv.cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -163,7 +163,7 @@ models:
                 max_value: 300000
                 where: "tmja_n_2 IS NOT NULL"
 
-  - name: lin_cte_verif_vals_abertes_tmja_19__evol_ann_n_n_1
+  - name: cte2_mdl15e_lin_chk_vals_aberr_tmja_19__evo_ann_n_n_1
     description: >
       Modèle CTE de vérification qui calcule l'évolution des valeurs de TMJA entre l'année N 
       et l'année N-1 pour détecter les valeurs aberrantes.
@@ -171,7 +171,7 @@ models:
       absolue (diff_n_n_1) et l'évolution en pourcentage (evol_n_n_1) du trafic entre N et N-1.
       Retourne également le nombre total d'années disponibles par compteur (nb_ann) et les valeurs 
       TMJA des années N, N-1 et N-2.
-      Basé sur la macro [`cte_verif_valeurs_aberrantes_tmja__evol_ann_n_n_1`](/#!/macro/macro.test_otv.cte_verif_valeurs_aberrantes_tmja__evol_ann_n_n_1).
+      Basé sur la macro [`cte2_mcr_15e_vrf_val_aberr_tmja__evo_ann_n_n_1`](/#!/macro/macro.test_otv.cte2_mcr_15e_vrf_val_aberr_tmja__evo_ann_n_n_1).
       Renvoi des warnings si les différences ou évolutions sont hors des plages raisonnables.
     data_tests:
       - dbt_utils.expression_is_true:
@@ -253,7 +253,7 @@ models:
       - name: obs
         description: "Observation ou commentaire associé à la donnée de trafic provenant de la table source des comptages"
 
-  - name: lin_cte_verif_evol_cpt_dev_assoc_19__id_cptg_n
+  - name: cte2_mdl16e_lin_chk_evo_cpt_dev_assoc_19__id_cptg_n
     description: >
       Modèle CTE de vérification qui identifie les points de comptage présents dans 
       la linéarisation de l'année N (millésime actuel).
@@ -265,7 +265,7 @@ models:
           - not_null
           - unique
 
-  - name: lin_cte_verif_evol_cpt_dev_assoc_19__id_cptg_n_1
+  - name: cte3_mdl16e_lin_chk_evo_cpt_dev_assoc_19__id_cptg_n_1
     description: >
       Modèle CTE de vérification qui identifie les points de comptage présents dans 
       la linéarisation de l'année N-1 (année précédente).
@@ -281,7 +281,7 @@ models:
       - name: tmja
         description: "Trafic Moyen Journalier Annuel tous véhicules pour l'année N-1"
 
-  - name: lin_cte_verif_evol_cpt_dev_assoc_19__pt_ann_n
+  - name: cte4_mdl16e_lin_chk_evo_cpt_dev_assoc_19__pt_ann_n
     description: >
       Modèle CTE de vérification qui identifie les points de comptage présents dans 
       la linéarisation de l'année N-1 mais absents de la linéarisation de l'année N (devenus des comptages associés).
@@ -315,10 +315,10 @@ models:
                 max_value: 300000
                 description: "Vérifier que le TMJA N-1 est dans une plage raisonnable"
 
-  - name: lin_cte_verif_evol_assoc_19__pt_ann_n_asso
+  - name: cte1_mdl16e_lin_chk_evo_assoc_19__pt_ann_n_asso
     description: >
       Modèle CTE de vérification qui détaille les compteurs devenus associés (issus du modèle 
-      [`lin_cte_verif_evol_cpt_dev_assoc_19__pt_ann_n`](/#!/model/model.test_otv.lin_cte_verif_evol_cpt_dev_assoc_19__pt_ann_n))
+      [`cte4_mdl16e_lin_chk_evo_cpt_dev_assoc_19__pt_ann_n`](/#!/model/model.test_otv.cte4_mdl16e_lin_chk_evo_cpt_dev_assoc_19__pt_ann_n))
       avec leurs informations de trafic, type de poste et compteur de référence issues de la table des compteurs associés.
       Basé sur la macro [`cte_verif_evol_cpt_devenu_assoc__pt_ann_n_asso`](/#!/macro/macro.test_otv.cte_verif_evol_cpt_devenu_assoc__pt_ann_n_asso).
     columns:

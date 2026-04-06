@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: lin_verif_nbpt_lgkm_19
+  - name: mdl2g_lin_chk_nbpt_lgkm_19
     description: "Vérification du nombre de points de comptage et de la longueur totale linéarisée à partir de ceux-ci"
     columns:
       - name: nb_pt
@@ -18,10 +18,10 @@ models:
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
-  - name: lin_verif_nature_19
+  - name: mdl2f_lin_chk_nature_19
     description: >
       Vérification des valeurs prise par l'attribut nature. Cherche les valeurs aberrantes (sentier, routes empierree...).
-      Ce modèle utilise les données de [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19).
+      Ce modèle utilise les données de [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19).
     columns:
       - name: coment_cpt
         description: "nature de la linéarisation parmi *estimation* ou *linearisation*"
@@ -56,18 +56,18 @@ models:
               arguments:
                 min_value: 1
                 description: "Vérifier que si une nature est inattendue, au moins 1 tronçon est concerné"
-  - name: lin_verif_gest_bdtopo_19
+  - name: mdl2c_lin_chk_gest_bdt_19
     description: >
       Vérification des valeurs du champs gestionaire. 
-      Ce modèle référence les valeurs de [`lin_verif_gest_bdtopo_19_n_1`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19_n_1) 
-      et [`lin_verif_gest_bdtopo_compare_19`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_compare_19).
+      Ce modèle référence les valeurs de [`mdl2d_lin_chk_gest_bdt_19_n_1`](/#!/model/model.test_otv.mdl2d_lin_chk_gest_bdt_19_n_1) 
+      et [`mdl2e_lin_chk_gest_bdt_compare_19`](/#!/model/model.test_otv.mdl2e_lin_chk_gest_bdt_compare_19).
     columns:
       - name: gestionaire
         description: "Valeur BdTopo des gestionnaires"
         data_tests:
           - relationships:
               arguments:
-                to: ref('lin_verif_gest_bdtopo_19_n_1')
+                to: ref('mdl2d_lin_chk_gest_bdt_19_n_1')
                 field: gestionaire
       - name: id
         description: "Identifiant unique généré automatiquement"
@@ -75,20 +75,20 @@ models:
           - not_null
           - unique
       - name: annee
-        description: "Sert principalement pour jointure dans le modele *lin_verif_gest_bdtopo_compare_19*"
+        description: "Sert principalement pour jointure dans le modele *mdl2e_lin_chk_gest_bdt_compare_19*"
         data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               arguments:
                 regex: '^_\d{4}$'
                 description: "Vérifier que l'année est au format _YYYY"
-  - name: lin_verif_gest_bdtopo_19_n_1
+  - name: mdl2d_lin_chk_gest_bdt_19_n_1
     description: >
       Ce modèle sert de base à la comparaison des gestionnaires présents dans la bdtopo, 
       en fournissant les gestionnaires de l'année précédente à celle étudiée. 
-      Il est basé sur la macro `verifier_gestionnaire_bdtopo_lin` (qui s'appuie sur le modèle 
-      [`creer_vue_19`](/#!/model/model.test_otv.creer_vue_19) lui même issu de la macro `creer_vue_dept_annee`) 
-      et sert de référence au test de relationship du modèle [`lin_verif_gest_bdtopo_19`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19).
+      Il est basé sur la macro `mcr_xx_vrf_gest_bdt_lin` (qui s'appuie sur le modèle 
+      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) lui même issu de la macro `mcr_1_creer_vue_dept_annee`) 
+      et sert de référence au test de relationship du modèle [`mdl2c_lin_chk_gest_bdt_19`](/#!/model/model.test_otv.mdl2c_lin_chk_gest_bdt_19).
     columns:
       - name: gestionaire
         description: "Gestionnaire de la voie selon la BDTopo IGN"
@@ -96,10 +96,10 @@ models:
         description: "Année de référence des données (_YYYY)"
       - name: id
         description: "Identifiant unique généré automatiquement"
-  - name: lin_verif_dept_limitrophe_19
+  - name: mdl2b_lin_chk_dept_limitr_19
     description: >
       Ce modèle retourne la liste des départements limitrophes au département 19 (Corrèze),
-      en excluant les départements de la région Nouvelle-Aquitaine. Il est utilisé par le modèle [`lin_verif_cptg_limitrophe_19`](/#!/model/model.test_otv.lin_verif_cptg_limitrophe_19)
+      en excluant les départements de la région Nouvelle-Aquitaine. Il est utilisé par le modèle [`mdl3a_lin_chk_cptg_limitr_19`](/#!/model/model.test_otv.mdl3a_lin_chk_cptg_limitr_19)
       pour vérifier les comptages existants. Il utilise les géométries
       des communes et départements pour déterminer la contiguïté spatiale. Ils servent ensuite à vérifier si des comptages
       existent sur ces départements
@@ -113,9 +113,9 @@ models:
               arguments:  
                 values: ['15', '46', '63']
                 description: "Doit contenir uniquement les codes INSEE des départements limitrophes à la Corrèze (hors Nouvelle-Aquitaine), codés sur 2 chiffres."
-  - name: lin_verif_cptg_limitrophe_19
+  - name: mdl3a_lin_chk_cptg_limitr_19
     description: >
-      Ce modèle permet de vérifier les comptages présents en base de données pour les départements limitrophes à la Corrèze (19) (défini dans [`lin_verif_dept_limitrophe_19`](/#!/model/model.test_otv.lin_verif_dept_limitrophe_19)),
+      Ce modèle permet de vérifier les comptages présents en base de données pour les départements limitrophes à la Corrèze (19) (défini dans [`mdl2b_lin_chk_dept_limitr_19`](/#!/model/model.test_otv.mdl2b_lin_chk_dept_limitr_19)),
       mais en dehors des départements de la région Nouvelle-Aquitaine
 
       Sources web complémentaires pour certains départements limitrophes :
@@ -146,24 +146,24 @@ models:
       - name: gestionnai
         description: "gestionnaire du point de comptage."
 
-  - name: lin_verif_gest_bdtopo_compare_19
+  - name: mdl2e_lin_chk_gest_bdt_compare_19
     description: >
       Ce modèle permet une comparaison facilitée des résultats des modèles 
-      [`lin_verif_gest_bdtopo_19`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19) et 
-      [`lin_verif_gest_bdtopo_19_n_1`](/#!/model/model.test_otv.lin_verif_gest_bdtopo_19_n_1).
+      [`mdl2c_lin_chk_gest_bdt_19`](/#!/model/model.test_otv.mdl2c_lin_chk_gest_bdt_19) et 
+      [`mdl2d_lin_chk_gest_bdt_19_n_1`](/#!/model/model.test_otv.mdl2d_lin_chk_gest_bdt_19_n_1).
     columns:
       - name: gestionnaire_annee_n
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N"
       - name: gestionnaire_annee_2
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N-1"
 
-  - name: lin_verif_attr_modif_19
+  - name: mdl2a_lin_chk_attr_modif_19
     description: >
       Ce modèle met en evidence les attributs (`nature`, `coment_cpt`, `numero`, 
       `importance`, `obs_supl`) des tronçons routiers d'un millésime 
       de la BDTopo dont certains attributs varient avec le millésime précédent
        (analyse de l'attribut `attr_modif`, traduction de variation sur `importance` et `numero`). 
-       Il est basé sur la macro [`verifier_attr_modif_bdtopo_lin`](/#!/macro/macro.test_otv.verifier_attr_modif_bdtopo_lin).
+       Il est basé sur la macro [`mcr_2a_vrf_attr_modif_bdt_lin`](/#!/macro/macro.test_otv.mcr_2a_vrf_attr_modif_bdt_lin).
     columns:
       - name: id_ign
         description: "Identifiant IGN du tronçon"
@@ -209,9 +209,9 @@ models:
       - name: obs_n_1
         description: "Observations supplémentaires millésime précédent"
 
-  - name: lin_verif_pt_sans_geom_19
+  - name: mdl2i_lin_chk_pt_sans_geom_19
     description: >
-      Ce modèle se base sur la macro [`verifier_pt_sans_geom_lin`](/#!/macro/macro.test_otv.verifier_pt_sans_geom_lin).
+      Ce modèle se base sur la macro [`mcr_2i_vrf_pt_sans_geom_lin`](/#!/macro/macro.test_otv.mcr_2i_vrf_pt_sans_geom_lin).
       Il vérifie s'il existe des points de comptage qui ont des valeurs de trafic (indicateur TMJA) 
       mais qui n'ont pas de géométrie associée dans la table compteur.
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs 
@@ -262,10 +262,10 @@ models:
       - name: fichier
         description: "Fichier source de la donnée de comptage"
 
-  - name: lin_verif_pt_linearise_absent_comptage_19
+  - name: mdl2h_lin_chk_pt_linear_absent_cptge_19
     description: >
-      Ce modèle se base sur la macro [`verifier_pt_linearise_absent_comptage_lin`](/#!/macro/macro.test_otv.verifier_pt_linearise_absent_comptage_lin).
-      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['creer_vue_19'](/#!/model/model.test_otv.creer_vue_19)
+      Ce modèle se base sur la macro [`mcr_2h_vrf_pt_linear_absent_cptg_lin`](/#!/macro/macro.test_otv.mcr_2h_vrf_pt_linear_absent_cptg_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl1_creer_vue_19'](/#!/model/model.test_otv.mdl1_creer_vue_19)
       mais absent dans la table des comptages (schéma comptage).
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs référencés sont bien présents dans la table des comptages.
       Si un compteur est absent, le modele teste s'il ets présent dans la table des compteurs associés (schema associe). Un test est réalisé pour vérifier
@@ -293,10 +293,10 @@ models:
       - name: id_cpteur_ref
         description: "Identifiant du compteur de référence (pour les compteurs associés)"
 
-  - name: lin_verif_pt_emprise_dept_non_linearise_19
+  - name: mdl4b_lin_chk_pt_emprise_dept_non_linear_19
     description: >
-      Ce modèle se base sur la macro [`verifier_pt_emprise_dept_non_linearise_lin`](/#!/macro/macro.test_otv.verifier_pt_emprise_dept_non_linearise_lin).
-      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['lin_update_pt_linearise_devenu_assoc_19'](/#!/model/model.test_otv.lin_update_pt_linearise_devenu_assoc_19)
+      Ce modèle se base sur la macro [`mcr_4b_vrf_pt_emprise_dept_non_linear_lin`](/#!/macro/macro.test_otv.mcr_4b_vrf_pt_emprise_dept_non_linear_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl3b_lin_upd_pt_linear_devenu_assoc_19'](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19)
       qui sont situés sur le territoire du département 19 (Corrèze) mais qui ne sont pas linéarisés.
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs situés sur le département 19 sont pas linéarisés.
     columns:
@@ -306,10 +306,10 @@ models:
           - not_null
           - unique
 
-  - name: lin_verif_pt_attr_dept_non_linearise_19
+  - name: mdl4a_lin_chk_pt_attr_dept_non_linear_19
     description: >
-      Ce modèle se base sur la macro [`verifier_pt_attr_dept_non_linearise_lin`](/#!/macro/macro.test_otv.verifier_pt_attr_dept_non_linearise_lin).
-      Il vérifie s'il existe des points de comptage non référencé dans la vue de base ['lin_update_pt_linearise_devenu_assoc_19'](/#!/model/model.test_otv.lin_update_pt_linearise_devenu_assoc_19)
+      Ce modèle se base sur la macro [`mcr_4a_vrf_pt_attr_dept_non_linear_lin`](/#!/macro/macro.test_otv.mcr_4a_vrf_pt_attr_dept_non_linear_lin).
+      Il vérifie s'il existe des points de comptage non référencé dans la vue de base ['mdl3b_lin_upd_pt_linear_devenu_assoc_19'](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19)
       qui ont un attribut dept du département 19 (Corrèze).
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs affecté au département 19 sont linéarisés.
     columns:
@@ -319,10 +319,10 @@ models:
           - not_null
           - unique
 
-  - name: lin_verif_pt_non_linearise_19
+  - name: mdl5_lin_chk_pt_non_linear_19
     description: >
-      Ce modèle combine les résultats des modèles [`lin_verif_pt_emprise_dept_non_linearise_19`](/#!/model/model.test_otv.lin_verif_pt_emprise_dept_non_linearise_19)
-      et [`lin_verif_pt_attr_dept_non_linearise_19`](/#!/model/model.test_otv.lin_verif_pt_attr_dept_non_linearise_19) pour fournir une liste complète
+      Ce modèle combine les résultats des modèles [`mdl4b_lin_chk_pt_emprise_dept_non_linear_19`](/#!/model/model.test_otv.mdl4b_lin_chk_pt_emprise_dept_non_linear_19)
+      et [`mdl4a_lin_chk_pt_attr_dept_non_linear_19`](/#!/model/model.test_otv.mdl4a_lin_chk_pt_attr_dept_non_linear_19) pour fournir une liste complète
       des points de comptage situés dans le département 19 (Corrèze) qui ne sont pas linéarisés.
       Il est utile pour identifier tous les compteurs qui nécessitent une attention particulière en matière de linéarisation.
     columns:

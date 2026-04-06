@@ -1,0 +1,54 @@
+abreviation;mot_complet;categorie;commentaire
+mdl;modèle;prefixe structurel;préfixe des modèles dbt standard (suivi du niveau DAG)
+cte;Common Table Expression;prefixe structurel;préfixe des modèles CTE (suivi du rang et du modèle parent)
+sed;seed;prefixe structurel;préfixe des seeds dbt (suivi du niveau du modèle consommateur)
+lin;linéarisation;domaine;domaine métier principal du projet (linéarisation du trafic)
+chk;vérification (check);operation;modèle de vérification (remplace 'verif')
+upd;mise à jour (update);operation;modèle de mise à jour (remplace 'update')
+cmt;commentaire;operation;commentaire sur un indicateur (remplace 'coment')
+bdt;BD TOPO;source de donnees;base de données topographique de l'IGN (remplace 'bdtopo')
+cptg;comptage;metier;point de comptage routier (remplace 'comptag')
+cpt;comptage / point de comptage;metier;abréviation déjà présente dans les noms originaux
+std;standardisation;operation;processus de standardisation des comptages (remplace 'stdardisation')
+stats;statistiques;operation;calculs statistiques (remplace 'statistiques')
+linear;linéarisation / linéarisé / linéaire;metier;remplace 'linearisation', 'linearise' et 'lineaire'
+gest;gestionnaires;metier;gestionnaires de voirie (remplace 'gestionnaires')
+evo;évolution;metier;évolution d'un indicateur entre années (remplace 'evol')
+estim;estimation;metier;valeur estimée (remplace 'estimation')
+histo;historique;metier;données historiques (remplace 'historique')
+mill;millésime;metier;année de référence des données (remplace 'millessime')
+limitr;limitrophe;metier;département limitrophe (remplace 'limitrophe')
+coher;cohérence;operation;vérification de cohérence (remplace 'coherence')
+traf;trafic;metier;indicateur de trafic routier (remplace 'trafic')
+aberr;aberrantes;metier;valeurs aberrantes (remplace 'abertes')
+nouv;nouveau;metier;nouveau point de comptage (remplace 'nouveau')
+bret;bretelles;metier;bretelles d'accès RRN (remplace 'bretelles')
+sect;section;metier;section homogène de route (remplace 'section')
+h_agglo;hors agglomération;metier;zone hors agglomération (remplace 'horsagglo')
+dept;département;geographie;numéro de département
+na;Nouvelle-Aquitaine;geographie;région Nouvelle-Aquitaine
+pt;point;metier;point de comptage
+attr;attribut;metier;attribut d'une entité
+modif;modification;operation;modification manuelle
+sens;sens;metier;sens de circulation
+assoc;associé;metier;comptage associé
+homo;homogène;metier;section homogène
+indic;indicateur;metier;indicateur de trafic
+tmj;trafic moyen journalier;metier;indicateur de base
+tmja;trafic moyen journalier annuel;metier;indicateur annualisé
+tmjo;trafic moyen journalier observé;metier;indicateur observé (avant correction)
+pl;poids lourds;metier;véhicules poids lourds
+pc;pourcentage;metier;pourcentage (de PL notamment)
+veh;véhicule;metier;véhicule (pour véhicules-km)
+km;kilomètre;metier;unité de distance
+rrn;réseau routier national;metier;routes nationales
+ann;année;metier;année de référence
+agglo;agglomération;metier;zone d'agglomération
+stat;statistique;operation;résultat statistique (forme courte déjà présente)
+nbpt;nombre de points;metier;nombre de points de comptage
+lgkm;longueur en km;metier;longueur du tronçon en kilomètres
+geom;géométrie;metier;géométrie spatiale du point ou tronçon
+mano;manuel;operation;affectation manuelle
+mm;même;metier;même (ex: même section)
+recup;récupération;operation;récupération de données
+val;valeur;metier;valeur d'un indicateur

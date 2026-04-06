@@ -217,7 +217,7 @@ seeds:
           +schema: indic_trafic
           +quote_columns: false
           +delimiter: ','
-          dept19_update_coment_tmj_f_with_ids:
+          sed15a_dept19_upd_cmt_tmj_f_with_ids:
             +quote_columns: false
             +delimiter: ','
             +post-hook: |

@@ -1,12 +1,12 @@
 version: 2
 
 models:
-  - name: lin_update_cpt_hors_dept_dans_na_19
+  - name: mdl13c_lin_upd_cpt_hors_dept_dans_na_19
     description: >
       Modèle final de mise à jour des indicateurs de trafic 
       des lignes référençant des compteurs hors département mais dans les départements NA.
-      Basé sur la macro [`update_cpt_hors_dept_dans_na_lin`](/#!/macro/macro.test_otv.update_cpt_hors_dept_dans_na_lin).
-      les data_tests implémentés ici sont les mêmes que ceux du modèle `creer_vue_19`.
+      Basé sur la macro [`mcr_13c_maj_cpt_hors_dept_dans_na_lin`](/#!/macro/macro.test_otv.mcr_13c_maj_cpt_hors_dept_dans_na_lin).
+      les data_tests implémentés ici sont les mêmes que ceux du modèle `mdl1_creer_vue_19`.
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -20,8 +20,8 @@ models:
             description: "Vérifier la cohérence entre id_comptag et coment_cpt et src_cpt (null->estimation+null, non-null->linearisation+otv)"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
@@ -457,13 +457,13 @@ models:
       - name: id_struct
         description: "A COMPLETER"
 
-  - name: lin_update_coment_tmj_f_lui_mm_19
+  - name: mdl14e_lin_upd_cmt_tmj_f_lui_mm_19
     description: >
       Modèle de mise à jour manuelle du champ coment_tmj_f sur la base d'une modification
       depuis une valeur de coment_tmj_f vers un autre (on remplace toute les lignes ayant une valeur de coment_tmj_f
       définie manuellement par une autre valeur définie manuellement).
       Basé sur la macro [`update_coment_tmj_f_lui_mm_lin`](/#!/macro/macro.test_otv.update_coment_tmj_f_lui_mm_lin).
-      les data_tests implémentés ici sont les mêmes que ceux du modèle `creer_vue_19`.
+      les data_tests implémentés ici sont les mêmes que ceux du modèle `mdl1_creer_vue_19`.
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -477,8 +477,8 @@ models:
             description: "Vérifier la cohérence entre id_comptag et coment_cpt et src_cpt (null->estimation+null, non-null->linearisation+otv)"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
@@ -914,12 +914,12 @@ models:
       - name: id_struct
         description: "A COMPLETER"
         
-  - name: lin_update_coment_tmj_f_ids_19
+  - name: mdl15a_lin_upd_cmt_tmj_f_ids_19
     description: >
       Modele de mise à jour du champ coment_tmj_f à partir d'identifiants fournis manuellement.
-      Ce modèle fusionne les données du seed avec les identifiants et le modèle lin_update_coment_tmj_f_lui_mm_19 : 
+      Ce modèle fusionne les données du seed avec les identifiants et le modèle mdl14e_lin_upd_cmt_tmj_f_lui_mm_19 : 
       Vise à modifier suit a des verifs sur importance, recup, etc...
-      Basé sur la macro [update_coment_tmj_f_with_ids](/#!/macro/macro.test_otv.update_coment_tmj_f_with_ids), qui est réutilisée plus tard.
+      Basé sur la macro [mcr_xx_maj_cmt_tmj_f_with_ids](/#!/macro/macro.test_otv.mcr_xx_maj_cmt_tmj_f_with_ids), qui est réutilisée plus tard.
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -933,8 +933,8 @@ models:
             description: "Vérifier la cohérence entre id_comptag et coment_cpt et src_cpt (null->estimation+null, non-null->linearisation+otv)"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
@@ -1370,12 +1370,12 @@ models:
       - name: id_struct
         description: "A COMPLETER"
 
-  - name: mdl_lin_update_coment_tmj_f_sens_19
+  - name: mdl16a_lin_upd_cmt_tmj_f_sens_19
     description: >
       Modele de mise à jour du champ coment_tmj_f à partir d'identifiants fournis manuellement.
-      Ce modèle fusionne les données du seed avec les identifiants et le modèle lin_update_coment_tmj_f_ids_19 : 
+      Ce modèle fusionne les données du seed avec les identifiants et le modèle mdl15a_lin_upd_cmt_tmj_f_ids_19 : 
       Vise à modifier suite a des verifs sur le sens des tronçons et des compteurs.
-      Basé sur la macro [update_coment_tmj_f_with_ids](/#!/macro/macro.test_otv.update_coment_tmj_f_with_ids), qui est réutilisée plus tard.
+      Basé sur la macro [mcr_xx_maj_cmt_tmj_f_with_ids](/#!/macro/macro.test_otv.mcr_xx_maj_cmt_tmj_f_with_ids), qui est réutilisée plus tard.
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -1389,8 +1389,8 @@ models:
             description: "Vérifier la cohérence entre id_comptag et coment_cpt et src_cpt (null->estimation+null, non-null->linearisation+otv)"
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
@@ -1424,21 +1424,21 @@ models:
               arguments:
                 values: "{{ var('coment_tmj_verif') }}"
 
-  - name: mdl_lin_update_coment_tmj_f_sens_dbl_spl_19
+  - name: mdl17a_lin_upd_cmt_tmj_f_sens_dbl_spl_19
     description: >
       Modèle de mise à jour du champ coment_tmj_f avec gestion des corrections de sens Double / Simple.
-      Ce modèle fusionne les données du seed dept19_update_coment_tmj_f_sens (contenant id_comptag et type_correction)
-      avec le modèle mdl_lin_update_coment_tmj_f_sens_19.
+      Ce modèle fusionne les données du seed sed17a_dept19_upd_cmt_tmj_f_sens (contenant id_comptag et type_correction)
+      avec le modèle mdl16a_lin_upd_cmt_tmj_f_sens_19.
       Les corrections appliquées selon le type_correction sont :
       - 'null -> divise par 2' : affecte '/2' aux tronçons en sens unique (Sens direct/inverse) dont coment_tmj_f est null
       - 'divise par 2 -> null' : affecte null aux tronçons en double sens dont coment_tmj_f vaut '/2'
       Les lignes non présentes dans le seed conservent leur valeur de coment_tmj_f.
-      Basé sur la macro [mcr_update_coment_tmj_f_sens_lin](/#!/macro/macro.test_otv.mcr_update_coment_tmj_f_sens_lin).
+      Basé sur la macro [mcr_17a_maj_cmt_tmj_f_sens_lin](/#!/macro/macro.test_otv.mcr_17a_maj_cmt_tmj_f_sens_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "Vérifier que le nombre de lignes dans ce modèle est identique à celui du modèle de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
@@ -1451,7 +1451,7 @@ models:
           - unique
           - not_null  
       - name: coment_tmj_f
-        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé ; corrigé selon les règles définies dans le seed dept19_update_coment_tmj_f_sens"
+        description: "Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé ; corrigé selon les règles définies dans le seed sed17a_dept19_upd_cmt_tmj_f_sens"
         data_tests:
           - accepted_values:
               arguments:

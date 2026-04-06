@@ -1,15 +1,15 @@
 ﻿version: 2
 
 models:
-  - name: mdl_lin_update_tmja_final_19
+  - name: mdl18a_lin_upd_tmja_final_19
     description: >
       ModÃ¨le de calcul du TMJA final (tmja_final) en appliquant les ratios dÃ©finis dans le champ coment_tmj_f.
-      BasÃ© sur la macro [`mcr_update_tmja_final_lin`](/#!/macro/macro.test_otv.mcr_update_tmja_final_lin).
+      BasÃ© sur la macro [`mcr_18a_maj_tmja_final_lin`](/#!/macro/macro.test_otv.mcr_18a_maj_tmja_final_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR gÃ©nÃ©rÃ© automatiquement"
@@ -55,15 +55,15 @@ models:
                 expression: " > 0"
                 description: "VÃ©rifier que la longueur du tronÃ§on est positive"
 
-  - name: mdl_lin_update_veh_km_19
+  - name: mdl19_lin_upd_veh_km_19
     description: >
       ModÃ¨le de calcul du nombre de vÃ©hicules-kilomÃ¨tres (veh_km) pour les tronÃ§ons linÃ©arisÃ©s.
-      BasÃ© sur la macro [`mcr_update_veh_km_lin`](/#!/macro/macro.test_otv.mcr_update_veh_km_lin).
+      BasÃ© sur la macro [`mcr_19_maj_veh_km_lin`](/#!/macro/macro.test_otv.mcr_19_maj_veh_km_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR gÃ©nÃ©rÃ© automatiquement"
@@ -87,15 +87,15 @@ models:
                 where: "coment_cpt = 'linearisation'"
                 description: "VÃ©rifier que le nombre de vÃ©hicules-kilomÃ¨tres est correctement calculÃ© (et > 0) Ã  partir du TMJA final et de la longueur du tronÃ§on"
 
-  - name: mdl_lin_update_pl_final_pl_km_19
+  - name: mdl20_lin_upd_pl_final_pl_km_19
     description: >
       ModÃ¨le de calcul du nombre de poids lourds final (pl_final) et des poids lourds-kilomÃ¨tres (pl_km).
-      BasÃ© sur la macro [`mcr_update_pl_final_pl_km_lin`](/#!/macro/macro.test_otv.mcr_update_pl_final_pl_km_lin).
+      BasÃ© sur la macro [`mcr_20_maj_pl_final_pl_km_lin`](/#!/macro/macro.test_otv.mcr_20_maj_pl_final_pl_km_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR gÃ©nÃ©rÃ© automatiquement"
@@ -132,16 +132,16 @@ models:
       - name: pl
         description: "Nombre de poids lourds brut issu des donnÃ©es de comptage"
   
-  - name: mdl_lin_update_coment_cpt_19
+  - name: mdl21a_lin_upd_cmt_cpt_19
     description: >
       ModÃ¨le de mise Ã  jour du champ commentaire de comptage (coment_cpt).
       Le champ coment_cpt prend la valeur 'linearisation' si src_cpt = 'otv', sinon 'estimation'.
-      BasÃ© sur la macro [`mcr_update_coment_cpt_lin`](/#!/macro/macro.test_otv.mcr_update_coment_cpt_lin).
+      BasÃ© sur la macro [`mcr_21a_maj_cmt_cpt_lin`](/#!/macro/macro.test_otv.mcr_21a_maj_cmt_cpt_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base mdl1_creer_vue_19"
     columns:
       - name: id
         description: "Identifiant unique interne OTR gÃ©nÃ©rÃ© automatiquement"
@@ -174,18 +174,18 @@ models:
       - name: pl
         description: "Nombre de poids lourds brut issu des donnÃ©es de comptage"
   
-  - name: mdl_lin_update_coment_tmj_f_estim_19
+  - name: mdl22_lin_upd_cmt_tmj_f_estim_19
     description: >
       ModÃ¨le final de mise Ã  jour du champ `coment_tmj_f` pour l'ensemble des tronÃ§ons.
       Pour les estimations (coment_cpt='estimation' et src_cpt is null), calcule coment_tmj_f selon le sens de circulation.
       Pour les non-estimations, conserve les valeurs existantes.
       C'est le dernier modÃ¨le de la partie linearisation - tous les tests finaux de validation doivent Ãªtre implÃ©mentÃ©s ici.
-      BasÃ© sur la macro [`mcr_update_coment_tmj_f_estimation_lin`](/#!/macro/macro.test_otv.mcr_update_coment_tmj_f_estimation_lin).
+      BasÃ© sur la macro [`mcr_22_maj_cmt_tmj_f_estim_lin`](/#!/macro/macro.test_otv.mcr_22_maj_cmt_tmj_f_estim_lin).
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
-            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base creer_vue_19"
+            compare_model: ref('mdl1_creer_vue_19')
+            description: "VÃ©rifier que le nombre de lignes dans ce modÃ¨le est identique Ã  celui du modÃ¨le de base mdl1_creer_vue_19"
       - dbt_utils.expression_is_true:
           arguments:
             expression: "((id_comptag::text ~ '[0-9]{2}-(A|N|D|B)[0-9]{1,4}.*-[0-9]{1,4}\\+[0-9]{1,4}'::text OR id_comptag::text ~ '[0-9]{2}-(VC|C).*-[0-9]{1,4}\\+[0-9]{1,4}'::text OR id_comptag::text ~ '[0-9]{2}-(PISTE|VC).*--*[0-9]\\.[0-9]{0,4};[0-9]{1,2}\\.[0-9]{0,4}'::text OR id_comptag::text ~ '[0-9]{2}-DBAC.*'::text OR id_comptag::text ~ '[a-zA-Z]*.*-[a-zA-Z]*.*--?[0-9]\\.[0-9]{0,4};[0-9]{1,2}\\.[0-9]{0,4}'::text) AND (length(id_comptag::text) - length(replace(id_comptag::text, '-'::text, ''::text))) >= 2)"

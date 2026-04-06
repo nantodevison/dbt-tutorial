@@ -2,14 +2,14 @@ version: 2
 
 models:
 
-  - name: lin_cte_verif_cpt_mm_section_homo_19__cpt_proche
+  - name: cte1_mdl13a_lin_chk_cpt_mm_sect_homo_19__cpt_proche
     description: >
       CTe intermediaire qui identifie le tronçon BDTopo le plus proche 
       de chaque compteur linéarisé par OTV dans un rayon configurable (par défaut 100 mètres).
-      Basé sur la macro [`cte_verif_cpt_mm_section_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__cpt_proche).
+      Basé sur la macro [`cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche).
       Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      et le modèle [`lin_update_vers_estimation_19`](/#!/model/model.test_otv.lin_update_vers_estimation_19).
-      Fais partie de la vérification plus globale qui vise à trouver les compteurs qui partageraient
+      et le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19).
+      Fait partie de la vérification plus globale qui vise à trouver les compteurs qui partageraient
       une même section homogène.
     data_tests:
       - dbt_expectations.expect_table_row_count_to_be_between:
@@ -27,15 +27,15 @@ models:
         data_tests:
           - not_null
 
-  - name: lin_cte_verif_cpt_mm_section_homo_19__lineaire_tot
+  - name: cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot
     description: >
       Modèle intermediaire de recherche des lignes proches des compteurs.
-      Basé sur la macro [`cte_verif_cpt_mm_section_homo_lin__lineaire_tot`](/#!/macro/macro.test_otv.cte_verif_cpt_mm_section_homo_lin__lineaire_tot).
+      Basé sur la macro [`cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot`](/#!/macro/macro.test_otv.cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot).
       Fait partie de la vérification globale visant à trouver les compteurs qui partageraient une même section homogène.
     data_tests:
       - dbt_utils.equal_rowcount:
           arguments:
-            compare_model: ref('creer_vue_19')
+            compare_model: ref('mdl1_creer_vue_19')
           description: "Vérifier que le nombre de lignes est identique au modèle source"
     columns:
       - name: id_cpt_proch
