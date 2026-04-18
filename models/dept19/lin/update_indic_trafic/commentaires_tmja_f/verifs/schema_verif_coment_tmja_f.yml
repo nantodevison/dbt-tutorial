@@ -5,7 +5,7 @@ models:
     description: >
       Modèle de vérification qui identifie les compteurs du Réseau Routier National (RRN) 
       dont l'année de comptage est antérieure à l'année du millésime en cours.
-      Basé sur la macro [`mcr_14f_vrf_annee_rrn_pas_dispo`](/#!/macro/macro.test_otv.mcr_14f_vrf_annee_rrn_pas_dispo).
+      Basé sur la macro [`mcr_14f_vrf_annee_rrn_pas_dispo`](/#!/macro/macro.linearisation.mcr_14f_vrf_annee_rrn_pas_dispo).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -60,8 +60,8 @@ models:
       Modèle de vérification qui identifie les incohérences spatiales entre les compteurs linéarisés 
       et les compteurs standardisé. Détecte les cas où des lignes présentent des identifiant de comptage
       différents du compteur géographiquement très proches (< 10m).
-      Basé sur la macro [`mcr_14g_vrf_coher_cptg_std_vs_linear_lin`](/#!/macro/macro.test_otv.mcr_14g_vrf_coher_cptg_std_vs_linear_lin).
-      et le modèle [`mdl13c_lin_upd_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.mdl13c_lin_upd_cpt_hors_dept_dans_na_19).
+      Basé sur la macro [`mcr_14g_vrf_coher_cptg_std_vs_linear_lin`](/#!/macro/macro.linearisation.mcr_14g_vrf_coher_cptg_std_vs_linear_lin).
+      et le modèle [`mdl13c_lin_upd_cpt_hors_dept_dans_na_19`](/#!/model/model.linearisation.mdl13c_lin_upd_cpt_hors_dept_dans_na_19).
     columns:
       - name: id_comptag_standardise
         description: "Identifiant du compteur standardisé"
@@ -88,8 +88,8 @@ models:
     description: >
       Modèle de vérification qui extrait la liste unique des valeurs du champ coment_tmj_f
       présentes dans les données linéarisées pour le département 19.
-      Basé sur la macro [`mcr_xx_vrf_cmt_tmj_f_val_lin`](/#!/macro/macro.test_otv.mcr_xx_vrf_cmt_tmj_f_val_lin).
-      Utilise le modèle [`mdl13c_lin_upd_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
+      Basé sur la macro [`mcr_xx_vrf_cmt_tmj_f_val_lin`](/#!/macro/macro.linearisation.mcr_xx_vrf_cmt_tmj_f_val_lin).
+      Utilise le modèle [`mdl13c_lin_upd_cpt_hors_dept_dans_na_19`](/#!/model/model.linearisation.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
     columns:
       - name: coment_tmj_f
         description: "Commentaire sur le TMJA (Trafic Moyen Journalier Annuel), valeurs distinctes triées"
@@ -103,7 +103,7 @@ models:
     description: >
       Modèle de vérification qui identifie les compteurs linéarisés dont les données de trafic proviennent
       d'années marquées comme suspectes dans la table des comptages.
-      Basé sur la macro [`mcr_13d_vrf_suspect_indic_lin`](/#!/macro/macro.test_otv.mcr_13d_vrf_suspect_indic_lin).
+      Basé sur la macro [`mcr_13d_vrf_suspect_indic_lin`](/#!/macro/macro.linearisation.mcr_13d_vrf_suspect_indic_lin).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -121,9 +121,9 @@ models:
     description: >
       Modèle de vérification qui identifie les compteurs ponctuels et tournants 
       (départementaux et d'agglomération) dont la période de comptage se situe en juillet ou août (période estivale).
-      Basé sur la macro [`mcr_16b_vrf_periode_lin`](/#!/macro/macro.test_otv.mcr_16b_vrf_periode_lin).
-      S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
-      et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}).
+      Basé sur la macro [`mcr_16b_vrf_periode_lin`](/#!/macro/macro.linearisation.mcr_16b_vrf_periode_lin).
+      S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.linearisation.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
+      et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_ids_{dept}).
     columns:
       - name: id_comptag
         description: "Identifiant du compteur ponctuel ou tournant départemental ou d'agglomération avec comptage estival"
@@ -157,8 +157,8 @@ models:
       Retourne pour chaque combinaison importance/nature existante dans la table (filtrée sur les importances définies par 'importance_verif') :
       le nombre de tronçons estimés, la longueur cumulée en km, et la liste des numéros de route distincts.
       Les combinaisons sans aucune ligne en estimation affichent 0 pour les compteurs et longueurs.
-      Basé sur la macro [`verifier_stat_importance_nature_estim_lin`](/#!/macro/macro.test_otv.verifier_stat_importance_nature_estim_lin).
-      Utilise le modèle [`mdl13c_lin_upd_cpt_hors_dept_dans_na_19`](/#!/model/model.test_otv.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
+      Basé sur la macro [`verifier_stat_importance_nature_estim_lin`](/#!/macro/macro.linearisation.verifier_stat_importance_nature_estim_lin).
+      Utilise le modèle [`mdl13c_lin_upd_cpt_hors_dept_dans_na_19`](/#!/model/model.linearisation.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
       comme source après les mises à jour d'indicateurs de trafic.
     data_tests:
       - dbt_utils.expression_is_true:
@@ -202,7 +202,7 @@ models:
       en fonction du type de réseau routier pour le département 19.
       Extrait le type de réseau (A=Autoroute, N=Nationale, D=Départementale) à partir du 2ème segment 
       de l'id_comptag et le ratio numérique du champ coment_tmj_f (valeur après le slash).
-      Basé sur la macro [`mcr_14h_vrf_cmt_tmj_f_reseau_ratio_lin`](/#!/macro/macro.test_otv.mcr_14h_vrf_cmt_tmj_f_reseau_ratio_lin).
+      Basé sur la macro [`mcr_14h_vrf_cmt_tmj_f_reseau_ratio_lin`](/#!/macro/macro.linearisation.mcr_14h_vrf_cmt_tmj_f_reseau_ratio_lin).
     columns:
       - name: reseau
         description: "Type de réseau routier : A (Autoroute), N (Nationale), D (Départementale)"
@@ -226,7 +226,7 @@ models:
       à cause d'une variation dans le champs natif bdtopo "importance".
       Filtre les troncons RRN (dont la 2e partie de l'id_comptag commence par 'A' (Autoroute) ou 'N' (Nationale))
       et possédant un champ attr_modif renseigné.
-      Basé sur la macro [`mcr_15b_vrf_cmt_tmj_f_attr_modif`](/#!/macro/macro.test_otv.mcr_15b_vrf_cmt_tmj_f_attr_modif).
+      Basé sur la macro [`mcr_15b_vrf_cmt_tmj_f_attr_modif`](/#!/macro/macro.linearisation.mcr_15b_vrf_cmt_tmj_f_attr_modif).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -263,8 +263,8 @@ models:
     description: >
       Modèle de vérification qui permet de vérifier la liste unique des valeurs du champ coment_tmj_f
       présentes dans les données linéarisées avant la mise à jour des indicateurs de trafic (TMJA, %PL).
-      Basé sur la macro [`mcr_xx_vrf_cmt_tmj_f_val_lin`](/#!/macro/macro.test_otv.mcr_xx_vrf_cmt_tmj_f_val_lin).
-      Utilise le modèle [`mdl16a_lin_upd_cmt_tmj_f_sens_19`](/#!/model/model.test_otv.mdl16a_lin_upd_cmt_tmj_f_sens_19)
+      Basé sur la macro [`mcr_xx_vrf_cmt_tmj_f_val_lin`](/#!/macro/macro.linearisation.mcr_xx_vrf_cmt_tmj_f_val_lin).
+      Utilise le modèle [`mdl16a_lin_upd_cmt_tmj_f_sens_19`](/#!/model/model.linearisation.mdl16a_lin_upd_cmt_tmj_f_sens_19)
       comme source.
     columns:
       - name: coment_tmj_f
@@ -282,7 +282,7 @@ models:
       ayant un mode de récupération (champ recup) différent de 'pk_ign' ou 'ad'.
       Filtre les compteurs dont l'id_comptag commence par 'A' (Autoroute) ou 'N' (Nationale)
       dans le second segment de l'identifiant.
-      Basé sur la macro [`mcr_15c_vrf_cmt_tmj_f_recup`](/#!/macro/macro.test_otv.mcr_15c_vrf_cmt_tmj_f_recup).
+      Basé sur la macro [`mcr_15c_vrf_cmt_tmj_f_recup`](/#!/macro/macro.linearisation.mcr_15c_vrf_cmt_tmj_f_recup).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -338,7 +338,7 @@ models:
       Modèle de vérification qui extrait la liste unique des départements ou agglo présents 
       dans les identifiants de comptage (id_comptag) après les mises à jour de coment_tmj_f.
       Utilise la première partie de l'id_comptag (avant le premier '-').
-      Basé sur la macro [`mcr_13e_vrf_split_id_cptg_lin`](/#!/macro/macro.test_otv.mcr_13e_vrf_split_id_cptg_lin).
+      Basé sur la macro [`mcr_13e_vrf_split_id_cptg_lin`](/#!/macro/macro.linearisation.mcr_13e_vrf_split_id_cptg_lin).
     columns:
       - name: split_part
         description: "Code du département extrait de la première partie de l'id_comptag (peut être numérique ou textuel pour les communes)"
@@ -350,7 +350,7 @@ models:
     description: >
       Extrait la liste distincte des numéros de routes
       du Réseau Routier National (RRN) présents dans les tronçons linéarisés.
-      Basé sur la macro [`mcr_15d_vrf_numero_rrn_lin`](/#!/macro/macro.test_otv.mcr_15d_vrf_numero_rrn_lin).
+      Basé sur la macro [`mcr_15d_vrf_numero_rrn_lin`](/#!/macro/macro.linearisation.mcr_15d_vrf_numero_rrn_lin).
     columns:
       - name: numero
         description: "Numéro de route du Réseau Routier National (RRN) présent dans les tronçons linéarisés"
@@ -371,7 +371,7 @@ models:
       - Différence absolue de TMJA (par défaut > 300 véhicules/jour)
       Permet de détecter les incohérences ou erreurs potentielles dans les données de trafic
       nécessitant une investigation approfondie.
-      Basé sur la macro [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.test_otv.mcr_15e_vrf_val_aberr_tmja).
+      Basé sur la macro [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.linearisation.mcr_15e_vrf_val_aberr_tmja).
     data_tests:
       - dbt_utils.expression_is_true:
               arguments:
@@ -424,7 +424,7 @@ models:
       et leurs compteurs de référence. Détecte les cas où un compteur associé possède des données 
       de trafic (TMJA) plus récentes (annee_tmja) que l'année de mise en place du compteur de référence (ann_pt) 
       utilisé dans la linéarisation.
-      Basé sur la macro [`mcr_16c_vrf_ann_cptgassoc_cptgref_lin`](/#!/macro/macro.test_otv.mcr_16c_vrf_ann_cptgassoc_cptgref_lin).
+      Basé sur la macro [`mcr_16c_vrf_ann_cptgassoc_cptgref_lin`](/#!/macro/macro.linearisation.mcr_16c_vrf_ann_cptgassoc_cptgref_lin).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:
@@ -450,7 +450,7 @@ models:
     description: >
       Modèle de vérification qui identifie les compteurs configurés en sens unique
       dans la base de données et présents dans les données linéarisées.
-      Basé sur la macro [`mcr_xx_vrf_cptg_sens_unique_lin`](/#!/macro/macro.test_otv.mcr_xx_vrf_cptg_sens_unique_lin).
+      Basé sur la macro [`mcr_xx_vrf_cptg_sens_unique_lin`](/#!/macro/macro.linearisation.mcr_xx_vrf_cptg_sens_unique_lin).
       Effectué après la premiere MaJ du champ `coment_tmj_f`.
     columns:
       - name: id_comptag
@@ -466,7 +466,7 @@ models:
       du champ `coment_tmj_f` et du sens de circulation.
       Filtre uniquement ceux dont le sens de comptage (`sens_cpt`) 
       correspond à la valeur de sens unique définie dans la variable `cptg_sens_uniq_verif`.
-      Basé sur la macro [`mcr_xx_vrf_cptg_sens_unique_lin`](/#!/macro/macro.test_otv.mcr_xx_vrf_cptg_sens_unique_lin).
+      Basé sur la macro [`mcr_xx_vrf_cptg_sens_unique_lin`](/#!/macro/macro.linearisation.mcr_xx_vrf_cptg_sens_unique_lin).
       Retourne uniquement les identifiants des compteurs (id_comptag).
       Effectué après la seconde MaJ du champs `coment_tmj_f`.
     columns:
@@ -482,7 +482,7 @@ models:
       pour les compteurs devenus associés. Compare les valeurs de trafic d'un compteur associé 
       (via son compteur de référence) entre deux années et calcule la différence absolue 
       et l'évolution en pourcentage.
-      Basé sur la macro [`verifier_evol_cpt_dev_assoc_lin`](/#!/macro/macro.test_otv.verifier_evol_cpt_dev_assoc_lin).
+      Basé sur la macro [`verifier_evol_cpt_dev_assoc_lin`](/#!/macro/macro.linearisation.verifier_evol_cpt_dev_assoc_lin).
       Renvoi un warning si l'évolution en pourcentage dépasse le seuil défini par la variable `seuil_evol_tmja_verif`.
     data_tests:
       - dbt_utils.expression_is_true:
@@ -547,7 +547,7 @@ models:
       Identifie les tronçons gérés par les agglomérations définies dans la variable projet `agglo_19`
       et compte leur répartition selon la présence ou non d'une valeur dans le champ `recup`.
       Permet de suivre quels tronçons ont été récupérés ou modifiés pour chaque gestionnaire d'agglomération.
-      Basé sur la macro [`mcr_17d_vrf_recup_agglo_lin`](/#!/macro/macro.test_otv.mcr_17d_vrf_recup_agglo_lin).
+      Basé sur la macro [`mcr_17d_vrf_recup_agglo_lin`](/#!/macro/macro.linearisation.mcr_17d_vrf_recup_agglo_lin).
     columns:
       - name: gest
         description: "Gestionnaire de l'agglomération (extrait de la première partie de l'id_comptag)"
@@ -580,7 +580,7 @@ models:
       Modèle de vérification qui identifie les incohérences entre le sens de circulation 
       des bretelles RRN (entrées/sorties) dans la BDTopo et le sens configuré dans la table 
       des compteurs, en contrôlant la validité du coefficient `coment_tmj_f`.
-      Basé sur la macro [`mcr_16g_vrf_sens_bret_rrn_lin`](/#!/macro/macro.test_otv.mcr_16g_vrf_sens_bret_rrn_lin).
+      Basé sur la macro [`mcr_16g_vrf_sens_bret_rrn_lin`](/#!/macro/macro.linearisation.mcr_16g_vrf_sens_bret_rrn_lin).
     columns:
       - name: id_ign
         description: "Identifiant IGN du tronçon BDTopo linéarisé"
@@ -631,7 +631,7 @@ models:
     description: >
       Vérifie la cohérence entre le sens des compteurs (sens_cpt) et le champ coment_tmj_f 
       des tronçons linéarisés hors agglomération. 
-      Basé sur la macro [`mcr_17e_vrf_sens_cmt_tmj_f_h_agglo_lin`](/#!/macro/macro.test_otv.mcr_17e_vrf_sens_cmt_tmj_f_h_agglo_lin).
+      Basé sur la macro [`mcr_17e_vrf_sens_cmt_tmj_f_h_agglo_lin`](/#!/macro/macro.linearisation.mcr_17e_vrf_sens_cmt_tmj_f_h_agglo_lin).
     columns:
       - name: id_ign
         description: "Identifiant IGN du tronçon BDTopo présentant une incohérence"
@@ -683,7 +683,7 @@ models:
     description: >
       Vérifie la cohérence entre le sens de comptage (sens_cpt) (issu des données gestionnaires)
       et le sens du tronçon BDTopo (sens) linéarisés le plus proches.
-      Basé sur la macro [`mcr_17f_vrf_sens_tronc_proche_cpt_lin`](/#!/macro/macro.test_otv.mcr_17f_vrf_sens_tronc_proche_cpt_lin).
+      Basé sur la macro [`mcr_17f_vrf_sens_tronc_proche_cpt_lin`](/#!/macro/macro.linearisation.mcr_17f_vrf_sens_tronc_proche_cpt_lin).
     columns:
       - name: id_comptag
         description: "Identifiant du compteur présentant une incohérence de sens"

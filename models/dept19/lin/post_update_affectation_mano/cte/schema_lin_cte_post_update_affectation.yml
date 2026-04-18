@@ -6,9 +6,9 @@ models:
     description: >
       CTe intermediaire qui identifie le tronçon BDTopo le plus proche 
       de chaque compteur linéarisé par OTV dans un rayon configurable (par défaut 100 mètres).
-      Basé sur la macro [`cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche).
-      Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      et le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19).
+      Basé sur la macro [`cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche`](/#!/macro/macro.linearisation.cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche).
+      Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      et le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19).
       Fait partie de la vérification plus globale qui vise à trouver les compteurs qui partageraient
       une même section homogène.
     data_tests:
@@ -30,7 +30,7 @@ models:
   - name: cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot
     description: >
       Modèle intermediaire de recherche des lignes proches des compteurs.
-      Basé sur la macro [`cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot`](/#!/macro/macro.test_otv.cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot).
+      Basé sur la macro [`cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot`](/#!/macro/macro.linearisation.cte1_mcr_12b_vrf_cpt_mm_sect_homo_lin__linear_tot).
       Fait partie de la vérification globale visant à trouver les compteurs qui partageraient une même section homogène.
     data_tests:
       - dbt_utils.equal_rowcount:

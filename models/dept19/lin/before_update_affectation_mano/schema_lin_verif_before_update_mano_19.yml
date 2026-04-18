@@ -21,7 +21,7 @@ models:
   - name: mdl2f_lin_chk_nature_19
     description: >
       Vérification des valeurs prise par l'attribut nature. Cherche les valeurs aberrantes (sentier, routes empierree...).
-      Ce modèle utilise les données de [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19).
+      Ce modèle utilise les données de [`mdl1_creer_vue_19`](/#!/model/model.linearisation.mdl1_creer_vue_19).
     columns:
       - name: coment_cpt
         description: "nature de la linéarisation parmi *estimation* ou *linearisation*"
@@ -59,8 +59,8 @@ models:
   - name: mdl2c_lin_chk_gest_bdt_19
     description: >
       Vérification des valeurs du champs gestionaire. 
-      Ce modèle référence les valeurs de [`mdl2d_lin_chk_gest_bdt_19_n_1`](/#!/model/model.test_otv.mdl2d_lin_chk_gest_bdt_19_n_1) 
-      et [`mdl2e_lin_chk_gest_bdt_compare_19`](/#!/model/model.test_otv.mdl2e_lin_chk_gest_bdt_compare_19).
+      Ce modèle référence les valeurs de [`mdl2d_lin_chk_gest_bdt_19_n_1`](/#!/model/model.linearisation.mdl2d_lin_chk_gest_bdt_19_n_1) 
+      et [`mdl2e_lin_chk_gest_bdt_compare_19`](/#!/model/model.linearisation.mdl2e_lin_chk_gest_bdt_compare_19).
     columns:
       - name: gestionaire
         description: "Valeur BdTopo des gestionnaires"
@@ -87,8 +87,8 @@ models:
       Ce modèle sert de base à la comparaison des gestionnaires présents dans la bdtopo, 
       en fournissant les gestionnaires de l'année précédente à celle étudiée. 
       Il est basé sur la macro `mcr_xx_vrf_gest_bdt_lin` (qui s'appuie sur le modèle 
-      [`mdl1_creer_vue_19`](/#!/model/model.test_otv.mdl1_creer_vue_19) lui même issu de la macro `mcr_1_creer_vue_dept_annee`) 
-      et sert de référence au test de relationship du modèle [`mdl2c_lin_chk_gest_bdt_19`](/#!/model/model.test_otv.mdl2c_lin_chk_gest_bdt_19).
+      [`mdl1_creer_vue_19`](/#!/model/model.linearisation.mdl1_creer_vue_19) lui même issu de la macro `mcr_1_creer_vue_dept_annee`) 
+      et sert de référence au test de relationship du modèle [`mdl2c_lin_chk_gest_bdt_19`](/#!/model/model.linearisation.mdl2c_lin_chk_gest_bdt_19).
     columns:
       - name: gestionaire
         description: "Gestionnaire de la voie selon la BDTopo IGN"
@@ -99,7 +99,7 @@ models:
   - name: mdl2b_lin_chk_dept_limitr_19
     description: >
       Ce modèle retourne la liste des départements limitrophes au département 19 (Corrèze),
-      en excluant les départements de la région Nouvelle-Aquitaine. Il est utilisé par le modèle [`mdl3a_lin_chk_cptg_limitr_19`](/#!/model/model.test_otv.mdl3a_lin_chk_cptg_limitr_19)
+      en excluant les départements de la région Nouvelle-Aquitaine. Il est utilisé par le modèle [`mdl3a_lin_chk_cptg_limitr_19`](/#!/model/model.linearisation.mdl3a_lin_chk_cptg_limitr_19)
       pour vérifier les comptages existants. Il utilise les géométries
       des communes et départements pour déterminer la contiguïté spatiale. Ils servent ensuite à vérifier si des comptages
       existent sur ces départements
@@ -115,7 +115,7 @@ models:
                 description: "Doit contenir uniquement les codes INSEE des départements limitrophes à la Corrèze (hors Nouvelle-Aquitaine), codés sur 2 chiffres."
   - name: mdl3a_lin_chk_cptg_limitr_19
     description: >
-      Ce modèle permet de vérifier les comptages présents en base de données pour les départements limitrophes à la Corrèze (19) (défini dans [`mdl2b_lin_chk_dept_limitr_19`](/#!/model/model.test_otv.mdl2b_lin_chk_dept_limitr_19)),
+      Ce modèle permet de vérifier les comptages présents en base de données pour les départements limitrophes à la Corrèze (19) (défini dans [`mdl2b_lin_chk_dept_limitr_19`](/#!/model/model.linearisation.mdl2b_lin_chk_dept_limitr_19)),
       mais en dehors des départements de la région Nouvelle-Aquitaine
 
       Sources web complémentaires pour certains départements limitrophes :
@@ -149,8 +149,8 @@ models:
   - name: mdl2e_lin_chk_gest_bdt_compare_19
     description: >
       Ce modèle permet une comparaison facilitée des résultats des modèles 
-      [`mdl2c_lin_chk_gest_bdt_19`](/#!/model/model.test_otv.mdl2c_lin_chk_gest_bdt_19) et 
-      [`mdl2d_lin_chk_gest_bdt_19_n_1`](/#!/model/model.test_otv.mdl2d_lin_chk_gest_bdt_19_n_1).
+      [`mdl2c_lin_chk_gest_bdt_19`](/#!/model/model.linearisation.mdl2c_lin_chk_gest_bdt_19) et 
+      [`mdl2d_lin_chk_gest_bdt_19_n_1`](/#!/model/model.linearisation.mdl2d_lin_chk_gest_bdt_19_n_1).
     columns:
       - name: gestionnaire_annee_n
         description: "Gestionnaires présentes dans la BDTopo IGN pour l'année N"
@@ -163,7 +163,7 @@ models:
       `importance`, `obs_supl`) des tronçons routiers d'un millésime 
       de la BDTopo dont certains attributs varient avec le millésime précédent
        (analyse de l'attribut `attr_modif`, traduction de variation sur `importance` et `numero`). 
-       Il est basé sur la macro [`mcr_2a_vrf_attr_modif_bdt_lin`](/#!/macro/macro.test_otv.mcr_2a_vrf_attr_modif_bdt_lin).
+       Il est basé sur la macro [`mcr_2a_vrf_attr_modif_bdt_lin`](/#!/macro/macro.linearisation.mcr_2a_vrf_attr_modif_bdt_lin).
     columns:
       - name: id_ign
         description: "Identifiant IGN du tronçon"
@@ -211,7 +211,7 @@ models:
 
   - name: mdl2i_lin_chk_pt_sans_geom_19
     description: >
-      Ce modèle se base sur la macro [`mcr_2i_vrf_pt_sans_geom_lin`](/#!/macro/macro.test_otv.mcr_2i_vrf_pt_sans_geom_lin).
+      Ce modèle se base sur la macro [`mcr_2i_vrf_pt_sans_geom_lin`](/#!/macro/macro.linearisation.mcr_2i_vrf_pt_sans_geom_lin).
       Il vérifie s'il existe des points de comptage qui ont des valeurs de trafic (indicateur TMJA) 
       mais qui n'ont pas de géométrie associée dans la table compteur.
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs 
@@ -264,8 +264,8 @@ models:
 
   - name: mdl2h_lin_chk_pt_linear_absent_cptge_19
     description: >
-      Ce modèle se base sur la macro [`mcr_2h_vrf_pt_linear_absent_cptg_lin`](/#!/macro/macro.test_otv.mcr_2h_vrf_pt_linear_absent_cptg_lin).
-      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl1_creer_vue_19'](/#!/model/model.test_otv.mdl1_creer_vue_19)
+      Ce modèle se base sur la macro [`mcr_2h_vrf_pt_linear_absent_cptg_lin`](/#!/macro/macro.linearisation.mcr_2h_vrf_pt_linear_absent_cptg_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl1_creer_vue_19'](/#!/model/model.linearisation.mdl1_creer_vue_19)
       mais absent dans la table des comptages (schéma comptage).
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs référencés sont bien présents dans la table des comptages.
       Si un compteur est absent, le modele teste s'il ets présent dans la table des compteurs associés (schema associe). Un test est réalisé pour vérifier
@@ -295,8 +295,8 @@ models:
 
   - name: mdl4b_lin_chk_pt_emprise_dept_non_linear_19
     description: >
-      Ce modèle se base sur la macro [`mcr_4b_vrf_pt_emprise_dept_non_linear_lin`](/#!/macro/macro.test_otv.mcr_4b_vrf_pt_emprise_dept_non_linear_lin).
-      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl3b_lin_upd_pt_linear_devenu_assoc_19'](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19)
+      Ce modèle se base sur la macro [`mcr_4b_vrf_pt_emprise_dept_non_linear_lin`](/#!/macro/macro.linearisation.mcr_4b_vrf_pt_emprise_dept_non_linear_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl3b_lin_upd_pt_linear_devenu_assoc_19'](/#!/model/model.linearisation.mdl3b_lin_upd_pt_linear_devenu_assoc_19)
       qui sont situés sur le territoire du département 19 (Corrèze) mais qui ne sont pas linéarisés.
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs situés sur le département 19 sont pas linéarisés.
     columns:
@@ -308,8 +308,8 @@ models:
 
   - name: mdl4a_lin_chk_pt_attr_dept_non_linear_19
     description: >
-      Ce modèle se base sur la macro [`mcr_4a_vrf_pt_attr_dept_non_linear_lin`](/#!/macro/macro.test_otv.mcr_4a_vrf_pt_attr_dept_non_linear_lin).
-      Il vérifie s'il existe des points de comptage non référencé dans la vue de base ['mdl3b_lin_upd_pt_linear_devenu_assoc_19'](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19)
+      Ce modèle se base sur la macro [`mcr_4a_vrf_pt_attr_dept_non_linear_lin`](/#!/macro/macro.linearisation.mcr_4a_vrf_pt_attr_dept_non_linear_lin).
+      Il vérifie s'il existe des points de comptage non référencé dans la vue de base ['mdl3b_lin_upd_pt_linear_devenu_assoc_19'](/#!/model/model.linearisation.mdl3b_lin_upd_pt_linear_devenu_assoc_19)
       qui ont un attribut dept du département 19 (Corrèze).
       Ce modèle ne devrait idéalement contenir aucune ligne si tous les compteurs affecté au département 19 sont linéarisés.
     columns:
@@ -321,8 +321,8 @@ models:
 
   - name: mdl5_lin_chk_pt_non_linear_19
     description: >
-      Ce modèle combine les résultats des modèles [`mdl4b_lin_chk_pt_emprise_dept_non_linear_19`](/#!/model/model.test_otv.mdl4b_lin_chk_pt_emprise_dept_non_linear_19)
-      et [`mdl4a_lin_chk_pt_attr_dept_non_linear_19`](/#!/model/model.test_otv.mdl4a_lin_chk_pt_attr_dept_non_linear_19) pour fournir une liste complète
+      Ce modèle combine les résultats des modèles [`mdl4b_lin_chk_pt_emprise_dept_non_linear_19`](/#!/model/model.linearisation.mdl4b_lin_chk_pt_emprise_dept_non_linear_19)
+      et [`mdl4a_lin_chk_pt_attr_dept_non_linear_19`](/#!/model/model.linearisation.mdl4a_lin_chk_pt_attr_dept_non_linear_19) pour fournir une liste complète
       des points de comptage situés dans le département 19 (Corrèze) qui ne sont pas linéarisés.
       Il est utile pour identifier tous les compteurs qui nécessitent une attention particulière en matière de linéarisation.
     columns:

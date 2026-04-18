@@ -3,8 +3,8 @@ version: 2
 models:
   - name: mdl3b_lin_upd_pt_linear_devenu_assoc_19
     description: >
-      Ce modèle se base sur la macro [`verifier_pt_linearise_devenu_assoc_lin`](/#!/macro/macro.test_otv.verifier_pt_linearise_devenu_assoc_lin).
-      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl1_creer_vue_19'](/#!/model/model.test_otv.mdl1_creer_vue_19)
+      Ce modèle se base sur la macro [`verifier_pt_linearise_devenu_assoc_lin`](/#!/macro/macro.linearisation.verifier_pt_linearise_devenu_assoc_lin).
+      Il vérifie s'il existe des points de comptage référencé dans la vue de base ['mdl1_creer_vue_19'](/#!/model/model.linearisation.mdl1_creer_vue_19)
       qui étaient linéarisés sur un point de comptage dans le millésime précédent mais qui sont devenus des compteurs associés dans le millésime actuel.
       pour les lignes concernées par ces comptages devenenus associés, le modèle récupère l'id_comptag du compteur de référence (id_cpteur_ref). Pour le reste, les valeurs de
       la vue de référence sont conservées.
@@ -29,12 +29,12 @@ models:
   - name: mdl6_lin_upd_auto_pt_non_linear_19
     description: >
       Résultat final du pipeline de linéarisation automatique des points de comptage non linéarisés.
-      Basé sur la macro [`mcr_6_maj_auto_pt_non_linear_lin`](/#!/macro/macro.test_otv.mcr_6_maj_auto_pt_non_linear_lin).
+      Basé sur la macro [`mcr_6_maj_auto_pt_non_linear_lin`](/#!/macro/macro.linearisation.mcr_6_maj_auto_pt_non_linear_lin).
       Applique les propositions de matching automatique (id_comptag, src_cpt='otv', coment_cpt='linearisation') 
       aux tronçons respectant les seuils de similarité et distance configurables.
       Utilise une architecture de macros imbriquées pour éviter les cycles de dépendances entre modèles.
       Conserve les lignes non modifiées du modèle source 
-      [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
+      [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.linearisation.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
     data_tests:
       - dbt_utils.expression_is_true:
           arguments:

@@ -29,11 +29,11 @@ macros:
       1. **Suppression** : sélectionne les tronçons de la source
       `traf.traf{annee}_bdt_na_ed{annee_sfx}_l` filtrés sur le département,
       en excluant via `NOT EXISTS` les `id_ign` référencés dans le seed
-      [`ad_suppr_row_new_millesime`](/#!/seed/seed.test_otv.ad_suppr_row_new_millesime)
+      [`ad_suppr_row_new_millesime`](/#!/seed/seed.linearisation.ad_suppr_row_new_millesime)
       avec `type_modif='sup'` (tronçons disparus du nouveau millésime à retirer).
 
       2. **Ajout** : complète par UNION avec le modèle
-      [`mdl_ad_troncons_new_millesime`](/#!/model/model.test_otv.mdl_ad_troncons_new_millesime),
+      [`mdl_ad_troncons_new_millesime`](/#!/model/model.linearisation.mdl_ad_troncons_new_millesime),
       qui reconstruit les tronçons référencés dans le seed avec `type_modif='ad'`
       (tronçons absents du nouveau millésime mais à conserver via propagation depuis l'année N-1).
     arguments:
@@ -177,8 +177,8 @@ macros:
       Identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
       Effectue une recherche spatiale (distance < 50m) et calcule un score de similarité textuelle 
       entre le nom de route du compteur et le numéro/nom du tronçon.
-      S'appuie sur les modèles [`lin_verif_pt_non_linearise_{dept}`](/#!/models/models.test_otv.lin_verif_pt_non_linearise_{dept}) et
-      et [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
+      S'appuie sur les modèles [`lin_verif_pt_non_linearise_{dept}`](/#!/models/models.linearisation.lin_verif_pt_non_linearise_{dept}) et
+      et [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.linearisation.lin_update_pt_linearise_devenu_assoc_{dept}).
       Utilise aussi la source `cptg.compteur` 
     arguments:
       - name: annee
@@ -190,7 +190,7 @@ macros:
 
   - name: cte3_mcr_6_maj_auto_pt_non_linear_lin__rang
     description: >
-      Classe les tronçons candidats issus de la macro [cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt](/#!/models/models.test_otv.cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt) 
+      Classe les tronçons candidats issus de la macro [cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt](/#!/models/models.linearisation.cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt) 
       pour chaque compteur selon une logique différentielle :
       entrée/sortie sur bretelles (distance), autres compteurs (similarité puis distance).
       Macro qui imbrique cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt 
@@ -206,7 +206,7 @@ macros:
   - name: cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc
     description: >
       Sélectionne le meilleur tronçon candidat (rang 1) pour chaque compteur non linéarisé,
-      issus de la macro [cte3_mcr_6_maj_auto_pt_non_linear_lin__rang](/#!/models/models.test_otv.cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
+      issus de la macro [cte3_mcr_6_maj_auto_pt_non_linear_lin__rang](/#!/models/models.linearisation.cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
       Utilise DISTINCT ON pour ne garder qu'une seule proposition par compteur.
       Macro finale du processus de matching automatique (imbrique cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
     arguments:
@@ -220,8 +220,8 @@ macros:
   - name: mcr_6_maj_auto_pt_non_linear_lin
     description: >
       Pipeline complet de linéarisation automatique des points de comptage non linéarisés.
-      Utilise la macro [cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc](/#!/models/models.test_otv.cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc)
-      et la joint aux données issues du modèle [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.test_otv.lin_update_pt_linearise_devenu_assoc_{dept}).
+      Utilise la macro [cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc](/#!/models/models.linearisation.cte1_mcr_6_maj_auto_pt_non_linear_lin__choix_cpt_tronc)
+      et la joint aux données issues du modèle [`lin_update_pt_linearise_devenu_assoc_{dept}`](/#!/models/models.linearisation.lin_update_pt_linearise_devenu_assoc_{dept}).
       pour proposer des associations compteur-tronçon basées sur la proximité spatiale et la similarité textuelle, et compléter avec les lignes non concernées.
     arguments:
       - name: annee
@@ -348,8 +348,8 @@ macros:
       Permet de détecter les incohérences entre les données métier de comptage et les traitements 
       automatiques de linéarisation. Retourne tous les attributs de la table comptage pour faciliter 
       l'analyse des cas problématiques et identifier les causes des contradictions.
-      S'appuie sur la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et le modèle 
-      [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19).
+      S'appuie sur la source [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) et le modèle 
+      [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19).
     arguments:
       - name: annee
         type: integer
@@ -363,8 +363,8 @@ macros:
       Identifie les compteurs géographiquement situés dans l'emprise du département 
       qui ont un motif de non-linéarisation renseigné (not_lin_why IS NOT NULL).
       Utilise l'aire géographique
-      du département via la source [`aire.dpt_bdt_na_ed{annee}_s`](/#!/source/source.test_otv.aire.dpt_bdt_na_ed24_s).
-      Effectue ensuite une jointure avec la table [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) 
+      du département via la source [`aire.dpt_bdt_na_ed{annee}_s`](/#!/source/source.linearisation.aire.dpt_bdt_na_ed24_s).
+      Effectue ensuite une jointure avec la table [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) 
       pour récupérer les informations de comptage. Permet un contrôle exhaustif géographique
       des compteurs "problématiques" dans l'emprise territoriale, indépendamment de leur présence
       dans les modèles de linéarisation. Retourne les informations essentielles : identifiant compteur,
@@ -380,9 +380,9 @@ macros:
   - name: mcr_12h_vrf_tmjo_lin
     description: >
       Identifie les compteurs linéarisés par OTV qui disposent de données TMJO (Trafic Moyen Journalier Ouvrable).
-      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
-      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      avec le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19).
+      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.linearisation.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) et [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      avec le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19).
       Applique un DISTINCT ON pour ne retourner qu'un seul résultat par compteur (le plus récent).
       Retourne les informations essentielles : identifiant compteur, année de comptage, gestionnaire.
     arguments:
@@ -393,9 +393,9 @@ macros:
   - name: mcr_13b_vrf_tmjo_exists_tmja_lin
     description: >
       Vérifie que les compteurs linéarisés par OTV qui disposent de données TMJO ont aussi du TMJA.
-      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
-      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage), [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      et le modèle [`lin_verif_tmjo_{dept}`](/#!/model/model.test_otv.mdl12h_lin_chk_tmjo_19).
+      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.linearisation.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage), [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      et le modèle [`lin_verif_tmjo_{dept}`](/#!/model/model.linearisation.mdl12h_lin_chk_tmjo_19).
       Applique un DISTINCT ON pour ne retourner qu'un seul résultat par compteur (le plus récent).
       Retourne les informations complètes de l'indicateur TMJA : identifiant, valeur, fichier source.
     arguments:
@@ -407,7 +407,7 @@ macros:
     description: >
       Identifie les compteurs linéarisés ayant une année de mise en place (ann_pt) égale à 2020.
       Pour rappel, cette année COVID est considérée comme non représentative pour les analyses de trafic.
-      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
+      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
       comme source de données après traitement de linéarisation.
     arguments:
       - name: dept
@@ -418,8 +418,8 @@ macros:
     description: >
       Identifie le tronçon BDTopo le plus proche de chaque compteur linéarisé par OTV
       dans un rayon de distance configurable (par défaut 100 mètres).
-      Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      et le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
+      Utilise une jointure spatiale entre la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      et le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
       Retourne l'identifiant du compteur et l'identifiant IGN du tronçon BDTopo associé.
     arguments:
       - name: dept
@@ -433,7 +433,7 @@ macros:
     description: >
       Ajoute un attribut `id_cpt_proche` (TRUE/FALSE) à la linéarisation indiquant si une ligne peut etre affectée à un
       compteur.
-      Utilise la CTE [`cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche`](/#!/macro/macro.test_otv.cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche)
+      Utilise la CTE [`cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche`](/#!/macro/macro.linearisation.cte1_mcr_13a_vrf_cpt_mm_sect_homo_lin__cpt_proche)
       pour identifier les tronçons les plus proches de chaque compteur dans un rayon configurable (par défaut 100 mètres).
       Filtre uniquement les tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
       Retourne toutes les colonnes du modèle de linéarisation plus l'indicateur de proximité.
@@ -448,7 +448,7 @@ macros:
   - name: mcr_12b_vrf_cpt_mm_sect_homo_lin
     description: >
       Identifie les sections homogènes (id_simpli) qui partagent plusieurs compteurs.
-      Utilise le modèle [`lin_cte_verif_cpt_mm_section_homo_{dept}__lineaire_tot`](/#!/model/model.test_otv.cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot).
+      Utilise le modèle [`lin_cte_verif_cpt_mm_section_homo_{dept}__lineaire_tot`](/#!/model/model.linearisation.cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot).
       Retourne les informations de tronçons concernés : id_ign, id_simpli et id_comptag,
       triées par id_simpli pour faciliter l'analyse groupée.
     arguments:
@@ -461,8 +461,8 @@ macros:
       Connaitre le nombre de compteurs linéarisés
       qui disposent de données de comptage pour l'année spécifiée.
       Peut etre utilisée pour connaitre le nombre de compteurs suspects de l'année considérée.
-      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
-      comme source des compteurs linéarisés et la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)
+      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
+      comme source des compteurs linéarisés et la source [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage)
       filtrée sur l'année spécifiée pour vérifier la disponibilité des données de comptage.
       Retourne un COUNT(*) représentant le nombre de compteurs linéarisés disposant effectivement 
       de données de comptage pour l'année concernée.
@@ -480,7 +480,7 @@ macros:
   - name: mcr_12e_vrf_nb_tronc_linear_lin
     description: >
       Compte le nombre de tronçons linéarisés selon deux métriques complémentaires.
-      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
+      Utilise le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
       comme source des tronçons linéarisés. Effectue deux comptages avec filtres :
       1) nb_cpt_lin_id_cptg : nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
       2) nb_cpt_lin_otv : nombre de tronçons de source OTV (src_cpt='otv').
@@ -495,8 +495,8 @@ macros:
     description: >
       Met à jour les indicateurs de trafic (TMJA, %PL, années) pour les tronçons qui référence des compteurs,
       en utilisant les dernières données de comptage disponibles.
-      S'appuie sur le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.test_otv.mdl11_lin_upd_vers_estim_19)
-      et la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl).
+      S'appuie sur le modèle [`lin_update_vers_estimation_{dept}`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
+      et la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.linearisation.cptg.vue_compteur_last_annee_know_tmja_pc_pl).
       Effectue un processus en trois étapes via une CTE `reset_indic` et deux UNION :
       1) Réinitialise à NULL les indicateurs de trafic (tmja, pc_pl, ann_pt, ann_pc_pl, pl, veh_km, tmja_final, pl_final, pl_km, obs_tmja, obs_pc_pl)
       pour tous les tronçons OTV (src_cpt='otv').
@@ -514,9 +514,9 @@ macros:
       Fournit le valeurs de `tmja`, `pc_pl`, `obs`, `periode` et `src` pour tout les compteurs.
       Un attribut par année ('wide form').
       Basé sur les sources 
-      - [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      - [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage)
-      - [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege).
+      - [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      - [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage)
+      - [`cptg.indic_agrege`](/#!/source/source.linearisation.cptg.indic_agrege).
     arguments:
       - name: annee
         type: integer
@@ -526,9 +526,9 @@ macros:
     description: >
       Identifie les compteurs linéarisés dont les données de trafic proviennent d'années marquées comme suspectes
       dans la table des comptages, puis fournit l'historique des tmja (ou tmjo), pc_pl, obs, periode et src pour ces compteurs.
-      Basé sur le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.mdl12i_lin_upd_indic_traf_19)
-      ,la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et la cte 
-      [cte1_mcr_13d_vrf_histo_traf_lin](/#!/macro/macro.test_otv.cte1_mcr_13d_vrf_histo_traf_lin).
+      Basé sur le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.linearisation.mdl12i_lin_upd_indic_traf_19)
+      ,la source [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) et la cte 
+      [cte1_mcr_13d_vrf_histo_traf_lin](/#!/macro/macro.linearisation.cte1_mcr_13d_vrf_histo_traf_lin).
     arguments:
       - name: dept
         type: string
@@ -540,8 +540,8 @@ macros:
       indique une appartenance à un autre département de la région Nouvelle-Aquitaine.
       Effectue une analyse textuelle de l'id_comptag (extraction des 2 premiers caractères via split_part)
       et compare avec la liste des départements NA (variable 'dept_na').
-      Utilise le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.mdl12i_lin_upd_indic_traf_19)
-      après mise à jour des indicateurs de trafic et joint avec la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
+      Utilise le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.linearisation.mdl12i_lin_upd_indic_traf_19)
+      après mise à jour des indicateurs de trafic et joint avec la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
       pour récupérer le type de poste. 
       Première étape pour la mise à jour des indicateurs de trafic pour ces compteurs,
       dont certaines valeurs peuvent ne pas être disponibles (en fonction du cycle d'import de chaque département).
@@ -553,7 +553,7 @@ macros:
   - name: cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto
     description: >
       Associe les données de trafic de l'année du millésime concerné (si disponibles)
-      aux compteurs issus de la macro [`cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.test_otv.cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt)
+      aux compteurs issus de la macro [`cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt`](/#!/macro/macro.linearisation.cte2_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__list_cpt)
       . Objectif : mise à jour auto des compteurs hors dept mais dans NA.
       Possible doublon avec des processus précédents.
       Permet de vérifier la disponibilité des données de comptage pour les compteurs d'autres départements NA
@@ -568,12 +568,12 @@ macros:
       en intégrant trois sources de données 
       par ordre de priorité : 1) mise à jour automatique des compteurs hors département NA, 
       2) mise à jour manuelle via seed, 3) conservation des valeurs existantes.
-      Utilise le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.test_otv.mdl12i_lin_upd_indic_traf_19)
+      Utilise le modèle [`lin_update_indic_trafic_{dept}`](/#!/model/model.linearisation.mdl12i_lin_upd_indic_traf_19)
       comme base,  Met à jour les compteurs d'autres départements NA ayant des données disponibles
-      pour l'année spécifiée via la CTE [`cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.test_otv.cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto).
+      pour l'année spécifiée via la CTE [`cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto`](/#!/macro/macro.linearisation.cte1_mcr_13c_vrf_cpt_hors_dept_dans_na_lin__auto).
       Remplace ann_pt, tmja, pc_pl et pl par les dernières valeurs disponibles, conserve le reste.
       Applique les corrections manuelles issues du seed 
-      [`dept{dept}_update_cpt_existant_mano`](/#!/seed/seed.test_otv.sed13c_dept19_upd_cpt_existant_mano).
+      [`dept{dept}_update_cpt_existant_mano`](/#!/seed/seed.linearisation.sed13c_dept19_upd_cpt_existant_mano).
     arguments:
       - name: dept
         type: string
@@ -586,7 +586,7 @@ macros:
     description: >
       Calcule les statistiques de linéarisation par année de mise en place des compteurs (ann_pt) :
       nombre de points de comptage distincts et kilométrage total linéarisé.
-      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.linearisation.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
       comme source finale après les mises à jour d'indicateurs de trafic (tmja et pc_pl).
       Filtre uniquement les tronçons linéarisés (src_cpt='otv') pour exclure les estimations.
       Premier modele de verif post-update des tmja et pc_pl
@@ -599,7 +599,7 @@ macros:
     description: >
       Calcule les statistiques de linéarisation par gestionnnaire :
       nombre de points de comptage distincts.
-      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept})
+      Utilise le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.linearisation.lin_update_cpt_hors_dept_dans_na_{dept})
       comme source finale après les mises à jour d'indicateurs de trafic (tmja et pc_pl).
       Filtre uniquement les tronçons linéarisés (src_cpt='otv') pour exclure les estimations.
     arguments:
@@ -614,7 +614,7 @@ macros:
     description: >
       Calcule les statistiques de linéarisation par gestionnaire et par année de comptage (ann_pt) :
       nombre de points de comptage distincts.
-      Utilise la macro [`mcr_14a_vrf_stats_linear_nbpt_gest`](/#!/macro/macro.test_otv.mcr_14a_vrf_stats_linear_nbpt_gest)
+      Utilise la macro [`mcr_14a_vrf_stats_linear_nbpt_gest`](/#!/macro/macro.linearisation.mcr_14a_vrf_stats_linear_nbpt_gest)
       comme base.
     arguments:
       - name: dept
@@ -624,8 +624,8 @@ macros:
   - name: cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin
     description: >
       CTE qui extrait les informations géométriques et techniques des compteurs qui ont été linéarisés.
-      Effectue une jointure INNER entre la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      et le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
+      Effectue une jointure INNER entre la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      et le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.linearisation.mdl13c_lin_upd_cpt_hors_dept_dans_na_19)
       pour ne retenir que les compteurs référencés dans la linéarisation.
       Retourne les informations essentielles du compteur : identifiant, type de poste, sens de comptage,
       et géométrie ponctuelle. Utilisée comme CTE intermédiaire dans les vérifications de cohérence
@@ -639,7 +639,7 @@ macros:
     description: >
       Identifie les incohérences entre les compteurs linéarisés et les compteurs standardisés en détectant
       les cas où l'identifiant du compteur linéarisé est différent du plus proche compteur standardisé.
-      Utilise la macro [`cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin`](/#!/macro/macro.test_otv.cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin).
+      Utilise la macro [`cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin`](/#!/macro/macro.linearisation.cte1_mcr_14g_vrf_coher_cpt_std_lin__cpt_lin).
       Pour chaque compteur linéarisé, retourne le compteur standardisé le plus proche ayant un identifiant différent,
       ainsi que la distance les séparant et la géométrie.
     arguments:
@@ -656,7 +656,7 @@ macros:
       Retourne pour chaque combinaison importance/nature : le nombre de tronçons, la longueur cumulée en km,
       et la liste des numéros de route distincts.
       La liste des valeur de l'attribut "importance" est définie par la variable projet 'importance_verif'.
-      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept}).
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.linearisation.lin_update_cpt_hors_dept_dans_na_{dept}).
     arguments:
       - name: dept
         type: string
@@ -669,7 +669,7 @@ macros:
       Filtre sur les identifiants de compteurs contenant '-N%' ou '-A%'
       qui correspondent aux conventions de nommage des compteurs RRN (Nationale/Autoroutière).
       Retourne les informations de trafic disponibles : TMJA, année de comptage, année du %PL et %PL.
-      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept})
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.linearisation.lin_update_cpt_hors_dept_dans_na_{dept})
       après les mises à jour d'indicateurs de trafic.
     arguments:
       - name: dept
@@ -694,7 +694,7 @@ macros:
       Analyse des valeurs de coment_tmj_f en fonction du type de réseau routier.
       Extrait le type de réseau depuis l'id_comptag : N/A/D
       et le ratio numérique du champ coment_tmj_f (nombre après le slash).
-      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.test_otv.lin_update_cpt_hors_dept_dans_na_{dept}).
+      S'appuie sur le modèle [`lin_update_cpt_hors_dept_dans_na_{dept}`](/#!/model/model.linearisation.lin_update_cpt_hors_dept_dans_na_{dept}).
     arguments:
       - name: dept
         type: string
@@ -720,7 +720,7 @@ macros:
     description: >
       Met à jour le champ `coment_tmj_f` en remplaçant sa valeur par une valeur fournie 
       manuellement.
-      S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_coment_tmj_f`](/#!/seed/seed.test_otv.dept19.lin.sed14e_dept19_upd_cmt_tmj_f_with_cmt_tmj_f)..
+      S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_coment_tmj_f`](/#!/seed/seed.linearisation.dept19.lin.sed14e_dept19_upd_cmt_tmj_f_with_cmt_tmj_f)..
     arguments:
       - name: dept
         type: string
@@ -730,7 +730,7 @@ macros:
     description: >
       Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait avoir été modifié
       à cause d'un changement d'attribut Bdtopo (en particulier le champs `importance`).
-      Utilise le modèle [`lin_update_coment_tmj_f_itself_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_itself_19)
+      Utilise le modèle [`lin_update_coment_tmj_f_itself_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_itself_19)
       comme source de données après mise à jour manuelle du champ `coment_tmj_f`.
     arguments:
       - name: dept
@@ -741,7 +741,7 @@ macros:
     description: >
       Cherche les tronçons linéarisés du RRN dont le champ `coment_tmj_f` pourrait être faux
       puisque ce sont de nouveaux tronçons (le champs `recup` n'est pas null).
-      Utilise le modèle [`lin_update_coment_tmj_f_itself_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_itself_19)
+      Utilise le modèle [`lin_update_coment_tmj_f_itself_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_itself_19)
       comme source de données après mise à jour manuelle du champ `coment_tmj_f`.
     arguments:
       - name: dept
@@ -754,7 +754,7 @@ macros:
       manuellement, avec identifiant des lignes concernees grace au champs id_ign ou id_simpli.
       Peut etre utilisé à différent moment du processus de linéarisation, donc nécessite la saisie en paramètre 
       d'un modèle dbt source.
-      S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_ids`](/#!/seed/seed.test_otv.dept19.lin.sed15a_dept19_upd_cmt_tmj_f_with_ids)..
+      S'appuie sur le seed [`dept{dept}_update_coment_tmj_f_with_ids`](/#!/seed/seed.linearisation.dept19.lin.sed15a_dept19_upd_cmt_tmj_f_with_ids)..
     arguments:
       - name: model_src
         type: relation
@@ -768,7 +768,7 @@ macros:
       Extrait la liste unique des numéros de routes présents dans la base linéarisée 
       pour les routes du Réseau Routier National (RRN) d'un département donné.
       Filtre selon les classes administratives définies dans la variable `cl_admin_rrn_verif`.
-      S'appuie sur le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept}).
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_lui_mm_{dept}).
     arguments:
       - name: dept
         type: string
@@ -778,9 +778,9 @@ macros:
     description: >
       Compare les années de comptage et tmja du dferniere millésimes avec les des deux 
       derniers comptages connus, pour les comptages linearises.
-      Utilise le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept})
-      et la source [`cptg.vue_evolutions_tmja`](/#!/source/source.test_otv.cptg.vue_evolutions_tmja).
-      CTE de la requete globale de vérification d'évolution des trafics [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.test_otv.mcr_15e_vrf_val_aberr_tmja).
+      Utilise le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_lui_mm_{dept})
+      et la source [`cptg.vue_evolutions_tmja`](/#!/source/source.linearisation.cptg.vue_evolutions_tmja).
+      CTE de la requete globale de vérification d'évolution des trafics [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.linearisation.mcr_15e_vrf_val_aberr_tmja).
     arguments:
       - name: dept
         type: string
@@ -792,9 +792,9 @@ macros:
       Pour chaque point de comptage, extrait la dernière année disponible et calcule la différence absolue et 
       l'évolution en pourcentage du trafic. Retourne également le nombre total d'années disponibles 
       par compteur et les valeurs TMJA des millésimes N, N-1 et N-2.
-      S'appuie sur la macro [cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1](/#!/macro/macro.test_otv.cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1)
-      et sur la source [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage).
-      CTE de la requête globale de vérification d'évolution des trafics [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.test_otv.mcr_15e_vrf_val_aberr_tmja).
+      S'appuie sur la macro [cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1](/#!/macro/macro.linearisation.cte1_mcr_15e_vrf_val_aberr_tmja__ann_n_n_1)
+      et sur la source [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage).
+      CTE de la requête globale de vérification d'évolution des trafics [`mcr_15e_vrf_val_aberr_tmja`](/#!/macro/macro.linearisation.mcr_15e_vrf_val_aberr_tmja).
     arguments:
       - name: dept
         type: string
@@ -805,7 +805,7 @@ macros:
       Identifie les valeurs aberrantes de TMJA en analysant l'évolution entre deux millésimes consécutifs.
       Filtre les variations importantes (en pourcentage et en valeur absolue) pour détecter 
       les incohérences ou erreurs potentielles dans les données de trafic.
-      S'appuie sur le modèle [`lin_cte_verif_vals_abertes_tmja_{dept}__evol_ann_n_n_1`](/#!/model/model.test_otv.lin_cte_verif_vals_abertes_tmja_{dept}__evol_ann_n_n_1).
+      S'appuie sur le modèle [`lin_cte_verif_vals_abertes_tmja_{dept}__evol_ann_n_n_1`](/#!/model/model.linearisation.lin_cte_verif_vals_abertes_tmja_{dept}__evol_ann_n_n_1).
     arguments:
       - name: dept
         type: string
@@ -837,7 +837,7 @@ macros:
       de l'année N-1 pour les compteurs qui ne sont plus linéarisés en année N.
       CTE utilisée dans le cadre de la vérification de l'évolution des points de comptage.
       S'appuie sur la linéarisation de l'année précédente 
-      et le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_lui_mm_{dept}).
+      et le modèle [`lin_update_coment_tmj_f_lui_mm_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_lui_mm_{dept}).
     arguments:
       - name: dept
         type: string
@@ -850,7 +850,7 @@ macros:
     description: >
       Enrichit les points de comptage de l'année N-1 devenus associés en année N avec leurs informations 
       de comptage associé (type de poste et compteur de référence). 
-      S'appuie sur la CTE [`cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n`](/#!/macro/macro.test_otv.cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n) 
+      S'appuie sur la CTE [`cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n`](/#!/macro/macro.linearisation.cte4_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n) 
       et la table `comptage_assoc.compteur`.
       Retourne id_cpteur_asso, ann_lin_n_1, tmja_lin_n_1, typ_post_lin_n_1 et id_cpteur_ref 
       pour analyser l'évolution des compteurs ayant changé de statut.
@@ -867,9 +867,9 @@ macros:
       Analyse l'évolution du trafic (TMJA) entre l'année N et N-1 pour les compteurs devenus associés.
       Compare les valeurs de trafic d'un compteur associé (via son compteur de référence) entre deux années
       et calcule la différence absolue et l'évolution en pourcentage.
-      S'appuie sur la CTE [cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso](/#!/macro/macro.test_otv.cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso),
-      le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept})
-      et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+      S'appuie sur la CTE [cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso](/#!/macro/macro.linearisation.cte1_mcr_16e_vrf_evo_cpt_dev_assoc__pt_ann_n_asso),
+      le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_ids_{dept})
+      et la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur).
     arguments:
       - name: dept
         type: string
@@ -883,8 +883,8 @@ macros:
       Identifie les compteurs ponctuels ou tournant, départementaux ou d'agglo dont la période de comptage 
       se situe en juillet ou août (période estivale).
       Permet de détecter les comptages effectués pendant les vacances d'été, 
-      S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
-      et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}).
+      S'appuie sur la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.linearisation.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
+      et le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_ids_{dept}).
     arguments:
       - name: dept
         type: string
@@ -895,9 +895,9 @@ macros:
       Vérifie la cohérence temporelle entre les années de comptage des compteurs associés 
       et leurs compteurs de référence. Identifie les cas où un compteur associé possède 
       des données TMJA plus récentes que celles du compteur de référence qui lui est rattaché.
-      S'appuie sur le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept}),
-      la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
-      et la source [`cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.test_otv.cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl).
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_ids_{dept}),
+      la source [`cptg.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.linearisation.cptg.vue_compteur_last_annee_know_tmja_pc_pl)
+      et la source [`cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl`](/#!/source/source.linearisation.cptg_assoc.vue_compteur_last_annee_know_tmja_pc_pl).
       Retourne pour chaque compteur concerné : id_comptag, type_poste, tmja, ann_pt, période
       ainsi que les informations du compteur associé (id_cpteur_asso, type_poste, tmja, annee_tmja, période).
     arguments:
@@ -911,7 +911,7 @@ macros:
       et présents dans les tronçons linéarisés.
       Filtre uniquement ceux dont le sens de comptage (`sens_cpt`) 
       correspond à la valeur de sens unique définie dans la variable `cptg_sens_uniq_verif`.
-      S'appuie sur la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+      S'appuie sur la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur).
       Retourne uniquement les identifiants des compteurs (id_comptag).
     arguments:
       - name: model_src
@@ -931,8 +931,8 @@ macros:
       - Compteur sens unique + BDTopo double sens → coment_tmj_f='*2' (valide)
       - Compteur double sens + BDTopo double sens → coment_tmj_f null (valide)
       - Compteur double sens + BDTopo sens unique → coment_tmj_f='/2' (valide)
-      S'appuie sur le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_ids_{dept})
-      et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_ids_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_ids_{dept})
+      et la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur).
     arguments:
       - name: dept
         type: string
@@ -944,7 +944,7 @@ macros:
       Identifie les tronçons gérés par les agglomérations définies dans la variable projet (ex: `agglo_19`)
       et compte leur répartition selon la présence ou non d'une valeur dans le champ `recup`.
       Permet de suivre quels tronçons ont été récupérés ou modifiés pour chaque gestionnaire d'agglomération.
-      S'appuie sur le modèle [`lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.lin_update_coment_tmj_f_sens_{dept}).
+      S'appuie sur le modèle [`lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.linearisation.lin_update_coment_tmj_f_sens_{dept}).
       Retourne le gestionnaire, le statut recup, et le nombre de tronçons concernés.
     arguments:
       - name: dept
@@ -960,8 +960,8 @@ macros:
       - Compteur sens unique + BDTopo double sens → coment_tmj_f='*2' (valide)
       - Compteur double sens + BDTopo double sens → coment_tmj_f null (valide)
       - Compteur double sens + BDTopo sens unique → coment_tmj_f='/2' (valide)
-      S'appuie sur la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur)
-      et le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_{dept}).
+      S'appuie sur la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      et le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_tmj_f_sens_{dept}).
     arguments:
       - name: dept
         type: string
@@ -981,8 +981,8 @@ macros:
       (4) compteur double sens sur tronçon sens unique → coment_tmj_f='/2'.
       Exclut les ratios spécifiques (/3, /4, /8) de la vérification.
       Retourne uniquement les lignes où la vérification échoue (verif_coment_tmj_f=false).
-      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_{dept})
-      et la source [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_tmj_f_sens_{dept})
+      et la source [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur).
     arguments:
       - name: dept
         type: string
@@ -992,7 +992,7 @@ macros:
     description: >
       Macro de vérification des tronçons linéarisés issue de la récupération.
       Calcule le nombre de tronçons linéarisés groupés par valeur de `recup`.
-      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
       Filtre uniquement les tronçons linéarisés (coment_cpt='linearisation') pour exclure les estimations.
       Retourne le nombre de tronçons (cnt) et la valeur du champ recup.
     arguments:
@@ -1004,7 +1004,7 @@ macros:
     description: >
       Macro de vérification qui extrait la liste distincte des identifiants de comptage (id_comptag)
       linéarisés pour l'année du millésime en cours.
-      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
       Retourne la liste triée des id_comptag distincts.
     arguments:
       - name: dept
@@ -1022,7 +1022,7 @@ macros:
       - Si coment_tmj_f = '*2' : tmja multiplié par 2 (pour sens unique avec compteur double sens)
       - Si coment_tmj_f like '/%' : tmja divisé par le ratio (ex: '/2' pour compteur double sens sur tronçon en sens unique)
       Filtre uniquement les tronçons linéarisés (coment_cpt='linearisation').
-      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_tmj_f_sens_dbl_spl_{dept}).
       Retourne toutes les colonnes du modèle source plus le champ tmja_final calculé.
     arguments:
       - name: dept
@@ -1034,7 +1034,7 @@ macros:
       Macro de calcul du nombre de véhicules-kilomètres (veh_km) pour les tronçons linéarisés.
       Calcule veh_km = tmja_final * long_km pour les tronçons avec coment_cpt='linearisation'.
       Les tronçons non linéarisés (coment_cpt != 'linearisation' ou null) conservent leur valeur veh_km d'origine.
-      S'appuie sur le modèle [`mdl_lin_update_tmja_final_{dept}`](/#!/model/model.test_otv.mdl_lin_update_tmja_final_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_tmja_final_{dept}`](/#!/model/model.linearisation.mdl_lin_update_tmja_final_{dept}).
       Retourne toutes les colonnes du modèle source avec le champ veh_km recalculé pour les linéarisations.
     arguments:
       - name: dept
@@ -1053,7 +1053,7 @@ macros:
       - Si coment_tmj_f like '/%' et pl <> 0 : pl_final = pl / ratio (ex: '/2')
       Calcule ensuite pl_km = pl_final * long_km.
       Filtre les tronçons linéarisés où pl is not null. Les autres tronçons conservent leurs valeurs d'origine.
-      S'appuie sur le modèle [`mdl_lin_update_veh_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_veh_km_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_veh_km_{dept}`](/#!/model/model.linearisation.mdl_lin_update_veh_km_{dept}).
       Retourne toutes les colonnes du modèle source avec les champs pl_final et pl_km recalculés.
     arguments:
       - name: dept
@@ -1066,7 +1066,7 @@ macros:
       après la mise à jour des indicateurs pl_final et pl_km.
       Filtre uniquement les enregistrements où coment_cpt='linearisation' et pc_pl is null.
       Retourne le nombre total d'enregistrements, le nombre de compteurs distincts concernés, et la liste des id_comptag.
-      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_pl_final_pl_km_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.linearisation.mdl_lin_update_pl_final_pl_km_{dept}).
     arguments:
       - name: dept
         type: string
@@ -1079,7 +1079,7 @@ macros:
       Filtre uniquement les enregistrements où coment_cpt='linearisation' et pc_pl is null.
       Groupe les résultats par gestionnaire et retourne le nombre de compteurs distincts (cnt_cpt) par gestionnaire (gest).
       Le gestionnaire est extrait de l'id_comptag via split_part sur le premier segment avant '-'.
-      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_pl_final_pl_km_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.linearisation.mdl_lin_update_pl_final_pl_km_{dept}).
     arguments:
       - name: dept
         type: string
@@ -1091,8 +1091,8 @@ macros:
       pour une liste spécifique d'identifiants de comptage (id_comptag).
       Fournit l'ensemble des données d'indicateurs agrégés (t1.*) ainsi que l'identifiant de comptage,
       l'année de comptage et le type de poste.
-      S'appuie sur les sources [`cptg.indic_agrege`](/#!/source/source.test_otv.cptg.indic_agrege),
-      [`cptg.comptage`](/#!/source/source.test_otv.cptg.comptage) et [`cptg.compteur`](/#!/source/source.test_otv.cptg.compteur).
+      S'appuie sur les sources [`cptg.indic_agrege`](/#!/source/source.linearisation.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) et [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur).
     arguments:
       - name: list_id_comptag
         description: "Liste des identifiants de comptage à filtrer (par défaut: [] ; exemple: ['19-D001-2+300', '19-D002-1+800', ...])"
@@ -1105,7 +1105,7 @@ macros:
       Met à jour le champ `coment_cpt` en fonction de la valeur du champ `src_cpt`.
       Si `src_cpt = 'otv'`, alors `coment_cpt = 'linearisation'`, sinon `coment_cpt = 'estimation'`.
       Retourne toutes les colonnes du modèle source avec le champ coment_cpt recalculé.
-      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.test_otv.mdl_lin_update_pl_final_pl_km_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_pl_final_pl_km_{dept}`](/#!/model/model.linearisation.mdl_lin_update_pl_final_pl_km_{dept}).
     arguments:
       - name: dept
         type: string
@@ -1118,7 +1118,7 @@ macros:
       si `sens` correspond à un sens unique (selon la variable `bdtopo_sens_uniq_verif`), alors `coment_tmj_f = '/2'`, 
       sinon `coment_tmj_f = null` (pour les doubles sens selon `bdtopo_double_sens_verif`).
       Retourne toutes les colonnes du modèle source avec le champ coment_tmj_f recalculé lorsque nécessaire.
-      S'appuie sur le modèle [`mdl_lin_update_coment_cpt_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_cpt_{dept}).
+      S'appuie sur le modèle [`mdl_lin_update_coment_cpt_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_cpt_{dept}).
     arguments:
       - name: dept
         type: string
@@ -1145,7 +1145,7 @@ macros:
 
   - name: mcr_23a_vue_lin_finale
     description: >
-      Génère la vue finale de linéarisation, basée sur le modèle [`mdl_lin_update_coment_tmj_f_estim_{dept}`](/#!/model/model.test_otv.mdl_lin_update_coment_tmj_f_estim_{dept}).
+      Génère la vue finale de linéarisation, basée sur le modèle [`mdl_lin_update_coment_tmj_f_estim_{dept}`](/#!/model/model.linearisation.mdl_lin_update_coment_tmj_f_estim_{dept}).
     arguments:
       - name: dept
         type: string

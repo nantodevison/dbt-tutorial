@@ -3,10 +3,10 @@ version: 2
 models:
   - name: cte2_mdl6_lin_upd_auto_pt_non_linear_19__project_cpt
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/model/model.linearisation.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle identifie les tronçons BdTopo candidats pour la linéarisation automatique des points de comptage non linéarisés.
-      Le modèle effectue une recherche spatiale (distance < 50m) entre les compteurs sans linéarisation [`mdl5_lin_chk_pt_non_linear_19`](/#!/model/model.test_otv.mdl5_lin_chk_pt_non_linear_19)
-      et les tronçons du modèle [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.test_otv.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
+      Le modèle effectue une recherche spatiale (distance < 50m) entre les compteurs sans linéarisation [`mdl5_lin_chk_pt_non_linear_19`](/#!/model/model.linearisation.mdl5_lin_chk_pt_non_linear_19)
+      et les tronçons du modèle [`mdl3b_lin_upd_pt_linear_devenu_assoc_19`](/#!/model/model.linearisation.mdl3b_lin_upd_pt_linear_devenu_assoc_19).
       Pour chaque compteur, il calcule la similarité textuelle entre le nom de route du compteur et le numéro/nom du tronçon,
       ainsi que la distance géographique. Les résultats sont triés par compteur et distance croissante
       pour faciliter la sélection du meilleur candidat.
@@ -33,9 +33,9 @@ models:
 
   - name: cte3_mdl6_lin_upd_auto_pt_non_linear_19__rang
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.linearisation.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle ajoute un classement (rang) aux tronçons candidats identifiés par la macro
-      [`cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt`](/#!/macro/macro.test_otv.cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt).
+      [`cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt`](/#!/macro/macro.linearisation.cte2_mcr_6_maj_auto_pt_non_linear_lin__project_cpt).
 
       Pour chaque compteur (id_comptag), il applique une logique de classement différentielle :
       - Pour les compteurs  qui comprennent la mention 'entrée' ou 'sortie' sur bretelles : classement par distance croissante uniquement
@@ -54,9 +54,9 @@ models:
 
   - name: cte1_mdl6_lin_upd_auto_pt_non_linear_19__choix_cpt_tronc
     description: >
-      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.test_otv.mdl6_lin_upd_auto_pt_non_linear_19).
+      Ce modèle sert uniquement à vérifier les étapes de l'affectation auto [`mdl6_lin_upd_auto_pt_non_linear_19`](#!/#!/model/model.linearisation.mdl6_lin_upd_auto_pt_non_linear_19).
       Ce modèle sélectionne le **meilleur tronçon candidat** pour chaque compteur à partir des résultats 
-      classés de la macro [`cte3_mcr_6_maj_auto_pt_non_linear_lin__rang`](/#!/macro/macro.test_otv.cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
+      classés de la macro [`cte3_mcr_6_maj_auto_pt_non_linear_lin__rang`](/#!/macro/macro.linearisation.cte3_mcr_6_maj_auto_pt_non_linear_lin__rang).
       Utilise `SELECT DISTINCT ON (id_comptag)` avec un tri par `id_comptag, rg` pour récupérer 
       uniquement le tronçon ayant le rang 1 (meilleur score) pour chaque compteur.
       Ce modèle constitue le résultat final du processus de linéarisation automatique : 

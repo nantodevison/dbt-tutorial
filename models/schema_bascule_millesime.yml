@@ -5,8 +5,8 @@ models:
     description: >
       Génère les tronçons BDTopo à ajouter au fichier de linéarisation suite à des correctif manuel
       lors du passage au nouveau millésime ou lors du process de linearisation / estimation.
-      Ce modèle s'appuie sur la macro [`mcr_xx_aj_tronc_nouv_mill`](/#!/macro/macro.test_otv.mcr_xx_aj_tronc_nouv_mill) et lit le seed
-      [`ad_suppr_row_new_millesime`](/#!/seed/seed.test_otv.ad_suppr_row_new_millesime) (filtre `type_modif='ad'`) pour identifier les id_ign à ajouter.
+      Ce modèle s'appuie sur la macro [`mcr_xx_aj_tronc_nouv_mill`](/#!/macro/macro.linearisation.mcr_xx_aj_tronc_nouv_mill) et lit le seed
+      [`ad_suppr_row_new_millesime`](/#!/seed/seed.linearisation.ad_suppr_row_new_millesime) (filtre `type_modif='ad'`) pour identifier les id_ign à ajouter.
     columns:
       - name: id
         description: "Identifiant unique interne OTR généré automatiquement"
