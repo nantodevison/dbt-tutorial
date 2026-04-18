@@ -1,0 +1,45 @@
+Completed with 5 errors, 0 partial successes, and 0 warnings:
+22:54:44
+22:54:44  Failure in test dbt_utils_expression_is_true_lin_update_nouveau_point_19_NOT_EXISTS_SELECT_1_FROM_ref_dept19_update_nouveau_pt_seed_WHERE_id_ign_ANY_string_to_array_seed_id_ign_OR_id_simpli_1_ANY_string_to_array_seed_id_simpli_integer_AND_src_cpt_otv_OR_coment_cpt_linearisation_ (models\dept19\lin\update\schema_lin_update_19.yml)
+22:54:44    Database Error in test dbt_utils_expression_is_true_lin_update_nouveau_point_19_NOT_EXISTS_SELECT_1_FROM_ref_dept19_update_nouveau_pt_seed_WHERE_id_ign_ANY_string_to_array_seed_id_ign_OR_id_simpli_1_ANY_string_to_array_seed_id_simpli_integer_AND_src_cpt_otv_OR_coment_cpt_linearisation_ (models\dept19\lin\update\schema_lin_update_19.yml)
+  ERREUR:  ne peut pas indicer le type text car il ne supporte pas les indices
+  LINE 22:          OR id_simpli[1] = ANY(string_to_array(seed.id_simpl...
+                       ^
+  compiled code at target\run\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\dbt_utils_expression_is_true_l_6bf104e6c5875437c3296d5227138a04.sql
+22:54:44
+22:54:44    compiled code at target\compiled\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\dbt_utils_expression_is_true_l_6bf104e6c5875437c3296d5227138a04.sql
+22:54:44
+22:54:44  Failure in test not_null_lin_cte_update_auto_pt_non_linearise_19__project_cpt_sim (models\dept19\lin\cte\schema_lin_cte.yml)
+22:54:44    Got 2 results, configured to fail if != 0
+22:54:44
+22:54:44    compiled code at target\compiled\test_otv\models\dept19\lin\cte\schema_lin_cte.yml\not_null_lin_cte_update_auto_p_696986456eb0fea886e0ca376e4dfc0e.sql
+22:54:44
+22:54:44  Failure in test dbt_utils_expression_is_true_lin_update_auto_pt_non_linearise_19_NOT_EXISTS_SELECT_1_FROM_ref_lin_cte_update_auto_pt_non_linearise_19__choix_cpt_tronc_choix_WHERE_choix_id_simpli_id_simpli_AND_src_cpt_otv_OR_coment_cpt_linearisation_ (models\dept19\lin\update\schema_lin_update_19.yml)
+22:54:44    Database Error in test dbt_utils_expression_is_true_lin_update_auto_pt_non_linearise_19_NOT_EXISTS_SELECT_1_FROM_ref_lin_cte_update_auto_pt_non_linearise_19__choix_cpt_tronc_choix_WHERE_choix_id_simpli_id_simpli_AND_src_cpt_otv_OR_coment_cpt_linearisation_ (models\dept19\lin\update\schema_lin_update_19.yml)
+  server closed the connection unexpectedly
+        This probably means the server terminated abnormally
+        before or while processing the request.
+  server closed the connection unexpectedly
+        This probably means the server terminated abnormally
+        before or while processing the request.
+  compiled code at target\run\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\dbt_utils_expression_is_true_l_3067d3eea7265d616292ecbdc4081864.sql
+22:54:44
+22:54:44    compiled code at target\compiled\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\dbt_utils_expression_is_true_l_3067d3eea7265d616292ecbdc4081864.sql
+22:54:44
+22:54:44  Failure in test dbt_utils_expression_is_true_lin_update_auto_pt_non_linearise_19_id_comptag___id_comptag_text_0_9_2_A_N_D_B_0_9_1_4_0_9_1_4_0_9_1_4_text_OR_id_comptag_text_0_9_2_VC_C_0_9_1_4_0_9_1_4_text_OR_id_comptag_text_0_9_2_PISTE_VC_0_9_0_9_0_4_0_9_1_2_0_9_0_4_text_OR_id_comptag_text_0_9_2_DBAC_text_OR_id_comptag_text_a_zA_Z_a_zA_Z_0_9_0_9_0_4_0_9_1_2_0_9_0_4_text_AND_length_id_comptag_text_length_replace_id_comptag_text_text_text_2_ (models\dept19\lin\update\schema_lin_update_19.yml)
+22:54:44    Database Error in test dbt_utils_expression_is_true_lin_update_auto_pt_non_linearise_19_id_comptag___id_comptag_text_0_9_2_A_N_D_B_0_9_1_4_0_9_1_4_0_9_1_4_text_OR_id_comptag_text_0_9_2_VC_C_0_9_1_4_0_9_1_4_text_OR_id_comptag_text_0_9_2_PISTE_VC_0_9_0_9_0_4_0_9_1_2_0_9_0_4_text_OR_id_comptag_text_0_9_2_DBAC_text_OR_id_comptag_text_a_zA_Z_a_zA_Z_0_9_0_9_0_4_0_9_1_2_0_9_0_4_text_AND_length_id_comptag_text_length_replace_id_comptag_text_text_text_2_ (models\dept19\lin\update\schema_lin_update_19.yml)
+  ERREUR:  la fonction id_comptag(boolean) n'existe pas
+  LINE 18: where not(id_comptag ((id_comptag::text ~ '[0-9]{2}-(A|N|D|B...
+                     ^
+  HINT:  Aucune fonction ne correspond au nom donné et aux types d'arguments.
+  Vous devez ajouter des conversions explicites de type.
+  compiled code at target\run\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\dbt_utils_expression_is_true_l_f2975b9a09b9ef819c6fa180e7c63f6e.sql
+22:54:44
+22:54:44    compiled code at target\compiled\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\dbt_utils_expression_is_true_l_f2975b9a09b9ef819c6fa180e7c63f6e.sql
+22:54:44
+22:54:44  Failure in test not_null_lin_update_auto_pt_non_linearise_19_id_comptag (models\dept19\lin\update\schema_lin_update_19.yml)
+22:54:44    Got 50871 results, configured to fail if != 0
+22:54:44
+22:54:44    compiled code at target\compiled\test_otv\models\dept19\lin\update\schema_lin_update_19.yml\not_null_lin_update_auto_pt_non_linearise_19_id_comptag.sql
+22:54:44
+22:54:44  Done. PASS=161 WARN=0 ERROR=5 SKIP=18 NO-OP=0 TOTAL=184

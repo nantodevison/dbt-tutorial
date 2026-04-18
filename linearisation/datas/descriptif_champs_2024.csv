@@ -1,0 +1,100 @@
+CHAMP!TYPE!SOURCE!DESCRIPTION
+id!Entier!!Identifiant unique de chaque enregistrement
+id_ign!Chaîne de caractères!ign!"Identifiant IGN de la BD Topo® classe route du tronçon de route
+Clé primaire"
+nature!Chaîne de caractères (21)!ign!Nature du tronçon de route (Autoroute, Quasi-autoroute, Bretelle, Route à 2 chaussées, Route à 1 chaussée)
+nom_coll_g!Chaîne de caractères (127)!ign!Nom principal de la rue côté gauche, le tronçon étant orienté par son sens de numérisation
+nom_coll_d!Chaîne de caractères (127)!ign!Nom principal de la rue côté droit, le tronçon étant orienté par son sens de numérisation
+numero!Chaîne de caractères (10)!ign!Classement administratif du tronçon de route (ex : A63, N10, D932…), valeurs NULL possibles
+importance!Chaîne de caractères (2)!ign!Hiérarchisation du réseau routier fondée, non pas sur un critère administratif, mais sur l’importance des tronçons de route pour le trafic routier (de 1 à 6)
+cl_admin!Chaîne de caractères (16)!ign!Classement administratif (Autoroute, Nationale, Départementale, Autre), valeurs NULL possibles
+gestion!Chaîne de caractères (3)!ign!Gestionnaire du tronçon de route (ex : ASF, Creuse, DIR Atlantique…), valeurs NULL possibles
+fictif!Chaîne de caractères (3)!ign!« Oui » indique que la géométrie du tronçon de route n’est pas significative, il sert à raccorder une bretelle à l’axe d’une chaussée afin d’assurer la continuité du réseau routier linéaire
+largeur!Nombre décimal (5,2)!ign!Largeur de chaussée
+nb_voies!Entier!ign!Nombre de voies d’une route, d’une rue ou d’une chaussée de route à chaussées séparées
+sens!Chaîne de caractères (7)!ign!Sens de circulation autorisée pour les automobiles sur les voies (Double sens, Sens direct, Sens inverse, Sans objet)
+etat!Chaîne de caractères (15)!ign!Etat du tronçon (En construction, En projet , En service)
+inseecom_g!Chaîne de caractères (5)!ign!Code postal du bureau distributeur des adresses situées à gauche du tronçon par rapport à son sens de numérisation
+inseecom_d!Chaîne de caractères (5)!ign!Code postal du bureau distributeur des adresses situées à droite du tronçon par rapport à son sens de numérisation
+id_voie_g!Chaîne de caractères (9)!ign!Identifiant de la voie associée au côté gauche du tronçon
+id_voie_d!Chaîne de caractères (9)!ign!Identifiant de la voie associée au côté droit du tronçon
+urbain!Chaîne de caractères (3)!ign!« Oui » indique que le tronçon de route est situé en zone urbaine
+vit_moy_vl!Entier!ign!Vitesse moyenne, en km/h, des véhicules légers circulant sur le tronçon
+rest_p!Nombre décimal (6,2)!ign!Traduit l’interdiction de circuler aux véhicules dont le poids total autorisé en charge ou le poids total roulant autorisé est supérieur au poids exprimé (en tonnes). Il s’agit d’une limitation physique ; aucune dérogation n’est possible.
+dept!Chaîne de caractères (2)!!Appartenance départementale 2023 (attributaire ou spatiale) du troncon de route validée
+dept_2023!Chaîne de caractères (2)!!Appartenance départementale 2023 (attributaire ou spatiale) du troncon de route
+dept_2022!Chaîne de caractères (2)!!Appartenance départementale 2022 (attributaire ou spatiale) du troncon de route
+long_km!Nombre décimal!!"Longueur de l’arc du tronçon en km
+Caculer à partir de la géométrie"
+coment_cpt!Chaîne de caractères (20)!!"Méthode utilisée pour affecter un TMJA à un tronçon de route :
+« linearisation » : à partir des points de comptage disponibles
+« estimation » : à partir de l’estimation des trafics manquants"
+src_cpt!Chaîne de caractères (10)!!Source de la données de comptage : otv ou lin_bm
+id_comptag!Chaîne de caractères (20)!!Identifiant du point de comptage associé à la table des points de comptage obtenus par convention
+src_cpteur!Chaîne de caractères (20)!!Source de la données de comptage : convention avec les gestionnaires de voirie,classement sonore,cartographie de trafic,sectionnement agglomération… (compteur,sectionnement,cartographie,bruit…)
+obs_supl!Chaîne de caractères (50)!!Observations supplémentaires
+ann_pt!Chaîne de caractères (10)!!Année du tmja
+tmja!Entier!!Trafic moyen journalier annuel tous véhicules sur le tronçon déterminé à partir de la méthode « linéarisation » ou « estimation »
+coment_tmj!Chaîne de caractères (3)!!Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final repris du millésime N-1
+coment_tmj_f!Chaîne de caractères (3)!!Calcul sur le tmja (ex : /2 si sens = Direct ou Inverse) pour déterminer le tmja final validé
+tmja_final!Entier!!Trafic moyen journalier annuel tous véhicules final sur le tronçon utilisé pour le calcul des véhicules-kilomètres
+veh_km!Nombre décimal!!Nombre de véhicules.kilomètres (formule : tmja_final * long_km)
+ann_pc_pl!Chaîne de caractères (6)!!Année du pourcentage poids-lourds
+pc_pl!Nombre décimal (5,2)!!Part des poids-lourds sur le tronçon de route par rapport au tmja
+pl!Entier!!Trafic moyen journalier annuel poids-lourds sur le tronçon déterminé à partir de la méthode « linéarisation » ou « estimation »
+pl_final!Entier!!Trafic moyen journalier annuel poids-lourds final sur le tronçon utilisé pour le calcul des PL-kilomètres
+pl_km!Nombre décimal!!Nombre de PL.kilomètres (formule : tmja_final * long_km)
+id_cpt1!Chaîne de caractères (20)!!Identifiant d’origine du point de comptage issu de la données fourni par le gestionnaire
+id_cpt2!Chaîne de caractères (20)!!"Identifiant d’origine du point de comptage issu de la données fourni par le gestionnaire
+Complété si autre compteur présent sur la même section et géométrie non dissociée"
+tmja_cpt1!Entier!!Trafic moyen journalier annuel tous véhicules sur le tronçon associé à la donnée de comptage d’origine
+tmja_cpt2!Entier!!Trafic moyen journalier annuel tous véhicules sur le tronçon associé à la donnée de comptage d’origine
+obs_tmj1!Chaîne de caractères (10)!!"Calcul sur le tmja pour déterminer le tmja final  lié aux compteurs
+Si complété, champs coment_tmj non utilisé"
+obs_tmj2!Chaîne de caractères (10)!!"Calcul sur le tmja pour déterminer le tmja final lié au sens du tronçon
+Si complété, champs coment_tmj non utilisé"
+id_sect!Chaîne de caractères (50)!!Identifiant d’origine du sectionnement si fourni par le gestionnaire
+src_sect!Chaîne de caractères (20)!!Source du sectionnement
+codau_cat!Chaîne de caractères (20)!!Aire urbaine travrsée par le tronçon
+obs_tmja!Chaîne de caractères (10)!!"Méthode utilisée pour affecter le TMJA estimée statistiquement à partir des aires urbaines
+« auto » : affection directe resultant du croisement avec les aires urbaines
+« mano » : valeur auto corrigée manuellement"
+obs_pc_pl!Chaîne de caractères (10)!!"Méthode utilisée pour affecter le % estimée statistiquement à partir des aires urbaines
+« auto » : affection directe resultant du croisement avec les aires urbaines
+« mano » : valeur auto corrigée manuellement"
+codau!Chaîne de caractères (5)!!Complété si le tronçon est situé dans une aire urbaine dont la catégorie de la commune dans le zonage des aires urbaines 2010 est 111 ou 112
+milieu!Chaîne de caractères (1)!!Milieu du tronçon traversé déterminé à partir de Corine Land Cover (u : urbain, r : interurbain)
+type_vdf!Entier!!Type de voie selon la méthode développée par le Cerema
+vts_vl_vdf!Nombre décimal (5,2)!!Vitesse des véhicules légers sur le tronçon de route estimée à partir de Corinne Land Cover
+vts_pl_vdf!Nombre décimal (5,2)!!Vitesse des poids-lourds sur le tronçon de route estimée à partir de Corinne Land Cover
+vts_gest!Nombre décimal (5,2)!!Vitesse des véhicules légers sur le tronçon de route pratiquées ou moyenne si fournie par le gestionnaire
+id_vts!Chaîne de caractères (20)!!Identifiant du point de comptage associé à la table des indicateurs de vitesses obtenus par convention
+obs_vts!Chaîne de caractères (10)!!Source et année de la donnée vitesse founie par le gestionnaire (v85,vmoyenne…)
+vts_modif!Chaîne de caractères (5)!!"Source utilisée pour corriger la vitesse (com,osm,gsw,dsr,131,110,80,46…)
+Vérification systématique à partir du plugin qgis go2streetview (google street view sous qgis)"
+vts_vl_f!Nombre décimal (5,2)!!Vitesse des véhicules légers sur le tronçon de route corrigée sinon vistesse estiméee à partir de Corinne Land Cover
+vts_pl_f!Nombre décimal (5,2)!!Vitesse des poids-lourds sur le tronçon de route corrigée sinon vistesse estiméee à partir de Corinne Land Cover
+vts_osm!Entier!!Vitesse réglementaire du tronçon récupérée à partir d’Open Street Map (champs max_speed)
+vma_vl!Entier!!Vitesse réglementaire VL
+vma_pl!Entier!!Vitesse réglementaire PL 
+vma_type!Chaîne de caractères (20)!!Source de la donnée vitesse réglementaire VL du tronçon estimée à partir de la vitesse pratiquée estimée ou vérifiee à partir d’une autre source de données
+vts_type_vl!Chaîne de caractères (20)!!Source de la donnée vitesse pratiquée VL (reglementaire, estimee, gestionnaire)
+vts_type_pl!Chaîne de caractères (20)!!Source de la donnée vitesse pratiquée PL (reglementaire, estimee, gestionnaire)
+src_vma!Chaîne de caractères (10)!!Source de la donnée vitesse maximale autorisée (osm,gsw ou bau)
+codau_cont!Chaîne de caractères (20)!!Correction du codau_cat pour assurer une continuité de TMJA ou % PL quand une section de même importance traverse deux ou plusieurs aires urbaines avec des valeurs différentes
+id_codau_cont!!!
+tmja_cont!Entier!!Correction du codau_cat pour assurer une continuité de TMJA quand une section de même importance traverse deux ou plusieurs aires urbaines avec des valeurs différentes
+pc_pl_cont!Nombre décimal (5,2)!!Correction du codau_cat pour assurer une continuité de % PL quand une section de même importance traverse deux ou plusieurs aires urbaines avec des valeurs différentes
+source!Entier!!"Identifiant du point de départ du tronçon, topologie créée sur la bd topo de la région Nouvelle Aquitaine
+Utilisé pour effectuer des opérations de routage"
+target!Entier!!"Identifiant du point d’arrivée du tronçon, topologie créée sur la bd topo de la région Nouvelle Aquitaine
+Utilisé pour effectuer des opérations de routage"
+cnt_src!!!"Nombre de brins reliés à l’extremité source du troncon
+Utilisé pour définir des sections homogènes de trafic"
+cnt_tgt!!!"Nombre de brins reliés à l’extremité target du troncon
+Utilisé pour définir des sections homogènes de trafic"
+!!!
+!!!
+!!!
+attr_modif!Chaîne de caractères (50)!!Attributs modifiés (importance,numéro) lors du changement d’édition de la bd topo
+geom!Géométrie!!Géométrie de type ligne 3D dans le système de projection Lambert 93 / EPSG 2154 (MultiLineStringZ, 2154)
