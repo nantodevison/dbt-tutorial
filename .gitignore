@@ -1,7 +1,8 @@
-datas/pourDBT.zip
-target/
-dbt_packages/
+datas/
+.vscode/
+.venv/
 logs/
-dbt_internal_packages/
 __pycache__/
 *.pyc
+logs/
+*.log

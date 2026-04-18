@@ -1,0 +1,244 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'linearisation'
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'linearisation'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# variables du projet
+vars:
+  'dbt_date:time_zone': 'Europe/Paris'
+  nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier']
+  rejected_nature_verif : ['Sentier','Chemin', 'Route empierrée']
+  toute_nature_verif: ['Bretelle','Rond-point','Route à 1 chaussée','Route à 2 chaussées','Type autoroutier','Sentier','Chemin', 'Route empierrée']
+  importance_verif: ['1','2','3', '4', '5', '6']
+  sens_verif: ['Double sens','Sens direct','Sens inverse','Sans objets']
+  coment_cpt_verif: ['linearisation', 'estimation']
+  coment_tmj_verif: ['/2', '/3', '/4', '/6', '/12', '/15', '/30']
+  src_cpt_verif: ['otv', 'lin_bm']
+  cl_admin_verif : ['Autoroute', 'Nationale', 'Départementale']
+  cl_admin_rrn_verif : ['Autoroute', 'Nationale']
+  gestion_verif : ["A''LIENOR", 'ASF', 'ATLANDES', 'Cantal', 'Charente', 'Charente-Maritime', 'Charente/Vienne', 'Cher', 'COFIROUTE', 'Corrèze', 'Corrèze/Puy-de-Dôme', 'Creuse', 'Creuse/Puy-de-Dôme', 'Deux-Sèvres', 'Deux-Sèvres/Vienne', 'DIR Atlantique', 'DIR Centre Ouest', 'DIR Ouest', 'DIR Sud Ouest', 'Dordogne', 'Gers', 'Gironde', 'Gironde/Dordogne', 'Gironde/Lot-et-Garonne', 'Haute-Vienne', 'Haute-Vienne/Vienne', 'Hautes-Pyrénées', 'Indre', 'Indre-et-Loire', 'Landes', 'Landes/Gers', 'Landes/Pyrénées-Atlantiques', 'Lot', 'Lot-et-Garonne', 'Lot/Dordogne', 'Maine-et-Loire', 'Pyrénées-Atlantiques', 'Pyrénées-Atlantiques/Hautes-Pyrénées', 'Pyrénées-Atlantiques/Pyrénées-Atlantiques', 'Tarn-et-Garonne', 'Tarn-et-Garonne/Lot-et-Garonne', 'Vendée', 'Vienne', 'Vienne/Deux-Sèvres']
+  etat_verif : ['En construction', 'En projet', 'En service']
+  src_cpteur_verif: ['bruit', 'sectionnement', 'compteur']
+  type_poste_verif: ['permanent', 'tournant', 'ponctuel']
+  obs_tmja_pc_pl_verif: ['auto', 'mano']
+  milieu_verif: ['u', 'r']
+  vts_osm_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]
+  vts_modif_verif: [110,130,50,80,com,dsr,gsw,osm]
+  vts_type_verif: ['reglementaire', 'estimee', 'gestionnaire']
+  src_vma_verif: ['com 30','com 40','com 45','com 50','com 60','com 70','com 80','dsr 10','dsr 15','dsr 20','dsr 30','dsr 40','dsr 45','dsr 50','dsr 60','dsr 70','gsw 110','gsw 130','gsw 20','gsw 30','gsw 40','gsw 45','gsw 50','gsw 60','gsw 70','gsw 80','gsw 90','osm 10','osm 110','osm 130','osm 15','osm 20','osm 25','osm 30','osm 40','osm 45','osm 50','osm 60','osm 70','osm 80','osm 90']
+  vma_vl_verif: [10,15,20,25,30,40,45,50,60,70,80,90,110,130]
+  vma_pl_verif: [10,15,20,25,30,40,45,50,60,70,80,90]
+  vma_type_verif: ['estimee','verifiee']
+  annee: 2024
+  dept: '19'
+  dept_na: ['16', '17', '19', '23', '24', '33', '40', '47', '64', '79', '86', '87']
+  dept_limitrophes: ['03','32','36','37','46','49','65','82']
+  not_lin_why_verif: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+  seuil_evol_tmja_verif: 20
+  seuil_diff_tmja_verif: 300
+  agglo_19: ['Brives']
+  cptg_sens_uniq_verif: 'sens unique'
+  cptg_double_sens_verif: 'double sens'
+  bdtopo_sens_uniq_verif: ['Sens inverse', 'Sens direct']
+  bdtopo_double_sens_verif: 'Double sens'
+  recup_verif: ['ad', 'imp', 'mem_geom', 'pk_ign', 'recurs', 'topo_n']
+  indic_agrege_verif: ['tmja', 'v85', 'v50', 'vma_vl', 'vma_pl', 'vmoy_vl', 'tmjo', 'tmje', 'tmjhe', 'vma', 'vmoy_pl', 'vmoy', 'v85_vl', 'v85_pl', 'v50_vl', 'v50_pl', 'pc_pl', 'pc_pl_o', 'pc_pl_e', 'pc_pl_he']
+  type_modif_new_millesime_verif: ['ad', 'sup']
+
+# configurations supplémentaires
+flags:
+  require_generic_test_arguments_property: True
+  validate_macro_args: True
+  require-dbt-version: '>=1.10.5'
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+  linearisation:    # Nom du projet
+    dept19:
+      +materialized: materialized_view
+      +indexes:
+        - columns: ["id_simpli"]
+          type: gin
+        - columns: ["id_ign"]
+          type: btree
+        - columns: ["id_comptag"]
+          type: btree
+        - columns: ["nature"]
+          type: btree
+        - columns: ["source"]
+          type: btree
+        - columns: ["target"]
+          type: btree
+        - columns: ["gestion"]
+          type: btree
+        - columns: ["dept"]
+          type: btree
+      lin:
+        before_update_affectation_mano:  # Nom du sous-dossier
+          # Les modèles lin_verif_* à la racine de ce dossier n'ont pas les colonnes
+          # id_simpli/id_ign/nature/etc. → on annule l'héritage des indexes de dept19
+          +indexes: []
+          +materialized: view
+          cte:  # Nom du sous-dossier
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+          update:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+        update_affectation_mano:
+          +materialized: table
+          +indexes:
+            - columns: ['id_ign']
+              type: btree
+            - columns: ['id_comptag']
+              type: btree
+            - columns: ['id_simpli']
+              type: gin
+        post_update_affectation_mano:
+          # Les modèles lin_verif_* à la racine de ce dossier n'ont pas les colonnes
+          # id_simpli/id_ign/nature/etc. → on annule l'héritage des indexes de dept19
+          +indexes: []
+          +materialized: view
+          cte:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+        update_indic_trafic:
+          commentaires_tmja_f:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+            verifs:
+              +materialized: view
+            cte:
+              +materialized: table
+              +indexes:
+                - columns: ['id_comptag']
+                  type: btree
+          calculs_trafic:
+            +materialized: table
+            +indexes:
+              - columns: ['id_ign']
+                type: btree
+              - columns: ['id_comptag']
+                type: btree
+              - columns: ['id_simpli']
+                type: gin
+            verifs:
+              +materialized: view
+
+# Configuring Seeds
+seeds:
+  linearisation:    # Nom du projet
+    depts_cpt_integre:
+      +schema: affectation_pt_mano
+    ad_suppr_row_new_millesime:
+      +schema: ref
+      +post-hook: |
+              -- D'abord modifier le type des colonnes
+              ALTER TABLE {{ this }}
+              ALTER COLUMN id_ign TYPE text[] USING (
+                CASE 
+                  WHEN id_ign IS NOT NULL AND id_ign != '' 
+                  THEN string_to_array(id_ign, ';')::text[] 
+                  ELSE NULL 
+                END
+              ),
+              -- puis ajouter la colonne millesime avec la valeur de celui en cours
+              ADD COLUMN millesime integer NOT NULL DEFAULT ({{ var('annee') }});
+
+    dept19:
+      lin:
+        +schema: affectation_pt_mano
+        affectation_pt_mano: # une fois les données importées, on modifie le type des colonnes id_simpli et id_ign vers du array
+          +quote_columns: false
+          +delimiter: ','
+          +post-hook: |
+              -- D'abord modifier le type des colonnes
+              ALTER TABLE {{ this }} 
+              ALTER COLUMN id_simpli TYPE integer[] USING (
+                CASE 
+                  WHEN id_simpli IS NOT NULL AND id_simpli != '' 
+                  THEN string_to_array(id_simpli, ';')::integer[] 
+                  ELSE NULL 
+                END
+              ),
+              ALTER COLUMN id_ign TYPE text[] USING (
+                CASE 
+                  WHEN id_ign IS NOT NULL AND id_ign != '' 
+                  THEN string_to_array(id_ign, ';')::text[] 
+                  ELSE NULL 
+                END
+              );
+        commentaires_tmja_f:
+          +schema: indic_trafic
+          +quote_columns: false
+          +delimiter: ','
+          sed15a_dept19_upd_cmt_tmj_f_with_ids:
+            +quote_columns: false
+            +delimiter: ','
+            +post-hook: |
+                -- D'abord modifier le type des colonnes
+                ALTER TABLE {{ this }} 
+                ALTER COLUMN id_simpli TYPE integer[] USING (
+                  CASE 
+                    WHEN id_simpli IS NOT NULL AND id_simpli != '' 
+                    THEN string_to_array(id_simpli, ';')::integer[] 
+                    ELSE NULL 
+                  END
+                ),
+                ALTER COLUMN id_ign TYPE text[] USING (
+                  CASE 
+                    WHEN id_ign IS NOT NULL AND id_ign != '' 
+                    THEN string_to_array(id_ign, ';')::text[] 
+                    ELSE NULL 
+                  END
+                );
+        verifications:
+          +schema: indic_trafic
+          +quote_columns: false
+          +delimiter: ','
+          

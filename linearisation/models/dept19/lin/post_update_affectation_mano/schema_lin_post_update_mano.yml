@@ -1,0 +1,291 @@
+version: 2
+
+models:
+  - name: mdl12g_lin_chk_stat_lin_pt_cptg_19
+    description: >
+      Modèle de contrôle statistique post-traitement qui calcule les métriques des nouveaux points de comptage linéarisés.
+      Basé sur la macro [`mcr_12g_vrf_stats_linear_pt_cptg_lin`](/#!/macro/macro.linearisation.mcr_12g_vrf_stats_linear_pt_cptg_lin).
+      Fournit un tableau de bord synthétique pour valider l'impact quantitatif des opérations de linéarisation :
+      nombre de compteurs distincts traités et kilométrage total du réseau concerné.
+      Les statistiques portent sur les tronçons marqués comme 'nouveau point traf{annee}' dans le champ obs_supl
+      du modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19).
+    columns:
+      - name: nb_id_comptag
+        description: "Nombre de compteurs distincts ayant fait l'objet d'une linéarisation automatique ou manuelle (nouveaux points)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                description: "Vérifier qu'au moins un compteur a été traité dans le processus de linéarisation"
+      - name: sum_lg_km
+        description: "Kilométrage total du réseau routier concerné par les nouveaux points de comptage (somme des longueurs des tronçons en km, arrondi à 3 décimales)"
+        data_tests:
+          - not_null
+      - name: nb_modif_lin
+        description: "Nombre de compteurs distincts ayant fait l'objet de modifications de linéarisation (obs_supl contenant 'ex' et l'année précédente)"
+        data_tests:
+        - not_null
+        - dbt_utils.accepted_range:
+            arguments:
+                min_value: 0
+                description: "Vérifier que le nombre de modifications est positif ou nul"
+      - name: nb_etire_lin
+        description: "Nombre de compteurs distincts ayant fait l'objet d'étirements de linéarisation (obs_supl = 'linearisation etiree traf{annee}')"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                description: "Vérifier que le nombre d'étirements est positif ou nul"
+  - name: mdl12f_lin_chk_not_lin_why_19
+    description: >
+      Modèle de contrôle de cohérence post-traitement qui identifie les compteurs avec des statuts contradictoires.
+      Basé sur la macro [`mcr_12f_vrf_not_lin_why_lin`](/#!/macro/macro.linearisation.mcr_12f_vrf_not_lin_why_lin).
+      Détecte les compteurs marqués comme "non linéarisables" (not_lin_why IS NOT NULL) dans la source 
+      [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) mais qui ont néanmoins été linéarisés 
+      dans le modèle 
+      [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19).
+      Ces incohérences peuvent indiquer des problèmes de synchronisation entre les données métier
+      et les traitements automatiques, ou des évolutions dans les critères de linéarisation.
+      Retourne toutes les colonnes de la table comptage pour faciliter l'analyse des cas problématiques.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          arguments:
+            value: 0
+            description: "Vérifier qu'il n'existe pas de compteurs linéarisés avec un motif de non-linéarisation renseigné"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur présentant une incohérence de statut"
+        data_tests:
+          - not_null
+          - unique
+      - name: not_lin_why
+        description: "Motif de non-linéarisation renseigné dans la table comptage (source de l'incohérence) - ne peut jamais être null dans ce modèle"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('not_lin_why_verif') }}"
+                description: "Vérifier que les motifs de non-linéarisation appartiennent à la liste attendue"
+
+  - name: mdl12c_lin_chk_cptg_not_lin_why_geom_dept_19
+    description: >
+      Modèle d'identification géographique de tous les compteurs situés dans l'emprise
+      du département ayant un motif de non-linéarisation renseigné (not_lin_why IS NOT NULL).
+      Basé sur la macro [`mcr_12c_vrf_cptg_not_lin_why_geom_dept_lin`](/#!/macro/macro.linearisation.mcr_12c_vrf_cptg_not_lin_why_geom_dept_lin).
+      Utilise une jointure spatiale avec la source [`aire.dpt_bdt_na_ed{annee}_s`](/#!/source/source.linearisation.aire.dpt_bdt_na_ed24_s).
+      Complète les informations avec les données de comptage de la source [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage)
+      et les définitions des motifs via [`cptg.enum_not_lin_why`](/#!/source/source.linearisation.cptg.enum_not_lin_why).
+      Permet un contrôle exhaustif territorial des compteurs "problématiques", indépendamment 
+      de leur présence dans les modèles de linéarisation. Retourne les informations essentielles 
+      pour l'analyse : identifiant, année de mise en place, période de comptage et motif détaillé.
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur situé géographiquement dans le département"
+        data_tests:
+          - not_null
+          - unique
+      - name: not_lin_why
+        description: "Code du motif de non-linéarisation (clé étrangère vers enum_not_lin_why)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: "{{ var('not_lin_why_verif') }}"
+                description: "Vérifier que les motifs de non-linéarisation appartiennent à la liste attendue (1-22)"
+      - name: annee
+        description: "Année du comptage considere"
+      - name: type_poste
+        description: "Type de poste du compteur (issu de la table compteur)"
+      - name: definition
+        description: "Libellé explicite du motif de non-linéarisation (issu de la table enum_not_lin_why)"
+
+  - name: mdl12h_lin_chk_tmjo_19
+    description: >
+      Modèle de contrôle post-traitement qui identifie les compteurs linéarisés par OTV 
+      disposant de données TMJO (Trafic Moyen Journalier Ouvrable).
+      Basé sur la macro [`mcr_12h_vrf_tmjo_lin`](/#!/macro/macro.linearisation.mcr_12h_vrf_tmjo_lin).
+      Utilise une jointure entre les sources [`cptg.indic_agrege`](/#!/source/source.linearisation.cptg.indic_agrege),
+      [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage) et [`cptg.compteur`](/#!/source/source.linearisation.cptg.compteur)
+      avec le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19).
+      Applique un DISTINCT ON pour ne retourner qu'un seul résultat par compteur (le plus récent).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé disposant de données TMJO"
+        data_tests:
+          - not_null
+          - unique
+
+  - name: mdl13b_lin_chk_tmjo_exists_tmja_19
+    description: >
+      Modèle de contrôle post-traitement qui vérifie que les compteurs linéarisés par OTV 
+      qui sont en TMJO disposent aussi de TMJA (Trafic Moyen Journalier Annuel).
+      Basé sur la macro [`mcr_13b_vrf_tmjo_exists_tmja_lin`](/#!/macro/macro.linearisation.mcr_13b_vrf_tmjo_exists_tmja_lin).
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur linéarisé disposant de données TMJO et TMJA"
+        data_tests:
+          - not_null
+          - unique
+      - name: annee
+        description: "Année du comptage TMJA (la plus récente pour le compteur)"
+      - name: type_poste
+        description: "Type de poste du compteur (issu de la table compteur)"
+      - name: id_indic_agrege
+        description: "Identifiant unique de l'indicateur agrégé TMJA"
+      - name: id_comptag_uniq
+        description: "Identifiant unique du comptage (clé étrangère vers la table comptage)"
+      - name: indicateur
+        description: "Type d'indicateur (toujours 'tmja' dans ce modèle)"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['tmja']
+                description: "Vérifier que l'indicateur est toujours TMJA"
+      - name: valeur
+        description: "Valeur du Trafic Moyen Journalier Annuel en véhicules/jour"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 200000
+                description: "Vérifier que les valeurs TMJA sont dans une fourchette réaliste"
+      - name: fichier
+        description: "Nom du fichier source de l'indicateur TMJA"
+        data_tests:
+          - not_null
+
+  - name: mdl12a_lin_chk_ann_pt_2020_19
+    description: >
+      Modèle de contrôle post-traitement qui identifie les compteurs linéarisés ayant une année 
+      de mise en place (ann_pt) égale à 2020.
+      Basé sur la macro [`mcr_12a_vrf_ann_pt_2020_lin`](/#!/macro/macro.linearisation.mcr_12a_vrf_ann_pt_2020_lin).
+      Utilise le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
+      comme source de données après traitement de linéarisation.
+      Retourne la liste distincte et triée des identifiants de compteurs concernés,
+      facilitant les analyses temporelles et le suivi de l'évolution du réseau de comptage par cohorte d'installation.
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          arguments:
+            value: 0
+            description: "Vérifier qu'aucun compteur mis en place en 2020 n'est présent dans les données linéarisées (validation de cohérence temporelle)"
+    columns:
+      - name: id_comptag
+        description: "Identifiant du compteur mis en place en 2020 et linéarisé"
+        data_tests:
+          - not_null
+          - unique
+
+  - name: mdl12b_lin_chk_cpt_mm_sect_homo_19
+    description: >
+      Modèle de vérification qui identifie les sections homogènes (id_simpli) 
+      partageant plusieurs compteurs.
+      Basé sur la macro [`mcr_12b_vrf_cpt_mm_sect_homo_lin`](/#!/macro/macro.linearisation.mcr_12b_vrf_cpt_mm_sect_homo_lin).
+      Utilise le modèle [`cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot`](/#!/model/model.linearisation.cte1_mdl12b_lin_chk_cpt_mm_sect_homo_19__linear_tot).
+      Permet d'identifier les potentiels problèmes d'affectation : sections homogènes
+      fragmentées entre plusieurs compteurs, erreurs de géocodage, ou cas légitimes de compteurs multiples
+      sur une même section. Retourne les informations de tronçons concernés triées par id_simpli 
+      pour faciliter l'analyse groupée des sections problématiques.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: >
+              exists (select COUNT(DISTINCT id_comptag) > 1
+              FROM {{ref('mdl12b_lin_chk_cpt_mm_sect_homo_'~var('dept'))}}
+              group by id_simpli)
+            description: "Vérifier qu'il existe plusieurs compteurs par section homogène"
+    columns:
+      - name: id_ign
+        description: "Identifiant unique IGN du tronçon BDTopo proche du compteur"
+        data_tests:
+          - not_null
+          - unique
+      - name: id_simpli
+        description: "Identifiant de la section homogène ayant plusieurs compteurs"
+        data_tests:
+          - not_null
+      - name: id_comptag
+        description: "Identifiant du compteur affecté au tronçon (plusieurs valeurs distinctes par id_simpli)"
+        data_tests:
+          - not_null
+
+  - name: mdl13a_lin_chk_cpt_mm_sect_homo_19__format_agreg
+    description: >
+      Variation du modèle [`mdl12b_lin_chk_cpt_mm_sect_homo_19`](/#!/model/model.linearisation.mdl12b_lin_chk_cpt_mm_sect_homo_19).
+      Qui propose une analyse par regroupement des id_comptag selon id_simpli.
+      les id_comptag sont présents sous forme d'array.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "array_length(list_id_cpt, 1) > 1"
+            description: "Vérifier que toutes les sections homogènes ont plus que 1 compteur affecté"
+    columns:
+      - name: id_simpli
+        description: "Identifiant de la section homogène ayant plusieurs compteurs"
+        data_tests:
+          - not_null
+          - unique
+      - name: list_id_cpt
+        description: "Array des identifiants des compteurs affectés au tronçon (plusieurs valeurs distinctes par id_simpli)"
+        data_tests:
+          - not_null
+
+  - name: mdl12d_lin_chk_nb_cpt_ann_n_19
+    description: >
+      Modèle qui compte le nombre de compteurs linéarisés disposant de données 
+      de comptage pour l'année spécifiée. Basé sur la macro [`mcr_12d_vrf_nb_cpt_ann_n_lin`](/#!/macro/macro.linearisation.mcr_12d_vrf_nb_cpt_ann_n_lin),
+      (utilise le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19) 
+      et la source [`cptg.comptage`](/#!/source/source.linearisation.cptg.comptage)).
+      Retourne une seule ligne avec le nombre total de compteurs appariés.
+    columns:
+      - name: nb_cpt_tot
+        description: "Nombre de compteurs linéarisés disposant de données de comptage pour l'année considérée"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier qu'il existe au moins un compteur linéarisé avec données de comptage pour l'année"
+      - name: nb_cpt_suspect
+        description: "Nombre de compteurs linéarisés disposant de données de comptage pour l'année considérée"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " = 0"
+                description: "Vérifier qu'il n'existe pas de comptage suspect pour l'annéee considérée"
+
+  - name: mdl12e_lin_chk_nb_tronc_linear_19
+    description: >
+      Compte le nombre de tronçons linéarisés selon deux métriques complémentaires.
+      Basé sur la macro [`mcr_12e_vrf_nb_tronc_linear_lin`](/#!/macro/macro.linearisation.mcr_12e_vrf_nb_tronc_linear_lin).
+      Utilise le modèle [`mdl11_lin_upd_vers_estim_19`](/#!/model/model.linearisation.mdl11_lin_upd_vers_estim_19)
+      comme source et effectue deux comptages avec filtres :
+      1) nb_cpt_lin_id_cptg : nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL).
+      2) nb_cpt_lin_otv : nombre de tronçons de source OTV (src_cpt='otv').
+      Retourne une seule ligne avec les deux compteurs.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "nb_cpt_lin_id_cptg = nb_cpt_lin_otv"
+            description: "Vérifier que le nombre de tronçons avec compteur affecté est égal au nombre de tronçons de source OTV"
+    columns:
+      - name: nb_cpt_lin_id_cptg
+        description: "Nombre de tronçons ayant un compteur affecté (id_comptag IS NOT NULL)"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier que le nombre de tronçons avec compteur affecté est supérieur à 0"
+      - name: nb_cpt_lin_otv
+        description: "Nombre de tronçons de source OTV (src_cpt='otv')"
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: " > 0"
+                description: "Vérifier que le nombre de tronçons avec compteur affecté est supérieur à 0"
